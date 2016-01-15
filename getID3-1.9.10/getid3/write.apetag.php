@@ -17,14 +17,13 @@
 
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.apetag.php', __FILE__, true);
 
-class getid3_write_apetag
-{
+class getid3_write_apetag {
 
 	public $filename;
 	public $tag_data;
 	public $always_preserve_replaygain = true;    // ReplayGain / MP3gain tags will be copied from old tag even if not passed in data
-	public $warnings                   = array(); // any non-critical errors will be stored here
-	public $errors                     = array(); // any critical errors will be stored here
+	public $warnings = array(); // any non-critical errors will be stored here
+	public $errors = array(); // any critical errors will be stored here
 
 	public function getid3_write_apetag() {
 		return true;
@@ -145,7 +144,7 @@ class getid3_write_apetag
 			$valuestring = rtrim($valuestring, "\x00");
 
 			// Length of the assigned value in bytes
-			$tagitem  = getid3_lib::LittleEndian2String(strlen($valuestring), 4);
+			$tagitem = getid3_lib::LittleEndian2String(strlen($valuestring), 4);
 
 			//$tagitem .= $this->GenerateAPEtagFlags(true, true, false, 0, false);
 			$tagitem .= "\x00\x00\x00\x00";
@@ -160,13 +159,13 @@ class getid3_write_apetag
 		return $this->GenerateAPEtagHeaderFooter($items, true).implode('', $items).$this->GenerateAPEtagHeaderFooter($items, false);
 	}
 
-	public function GenerateAPEtagHeaderFooter(&$items, $isheader=false) {
+	public function GenerateAPEtagHeaderFooter(&$items, $isheader = false) {
 		$tagdatalength = 0;
 		foreach ($items as $itemdata) {
 			$tagdatalength += strlen($itemdata);
 		}
 
-		$APEheader  = 'APETAGEX';
+		$APEheader = 'APETAGEX';
 		$APEheader .= getid3_lib::LittleEndian2String(2000, 4);
 		$APEheader .= getid3_lib::LittleEndian2String(32 + $tagdatalength, 4);
 		$APEheader .= getid3_lib::LittleEndian2String(count($items), 4);
@@ -176,7 +175,7 @@ class getid3_write_apetag
 		return $APEheader;
 	}
 
-	public function GenerateAPEtagFlags($header=true, $footer=true, $isheader=false, $encodingid=0, $readonly=false) {
+	public function GenerateAPEtagFlags($header = true, $footer = true, $isheader = false, $encodingid = 0, $readonly = false) {
 		$APEtagFlags = array_fill(0, 4, 0);
 		if ($header) {
 			$APEtagFlags[0] |= 0x80; // Tag contains a header

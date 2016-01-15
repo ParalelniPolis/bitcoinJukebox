@@ -15,14 +15,13 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_au extends getid3_handler
-{
+class getid3_au extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
 		$this->fseek($info['avdataoffset']);
-		$AUheader  = $this->fread(8);
+		$AUheader = $this->fread(8);
 
 		$magic = '.snd';
 		if (substr($AUheader, 0, 4) != $magic) {
@@ -32,22 +31,22 @@ class getid3_au extends getid3_handler
 
 		// shortcut
 		$info['au'] = array();
-		$thisfile_au        = &$info['au'];
+		$thisfile_au = &$info['au'];
 
-		$info['fileformat']            = 'au';
-		$info['audio']['dataformat']   = 'au';
+		$info['fileformat'] = 'au';
+		$info['audio']['dataformat'] = 'au';
 		$info['audio']['bitrate_mode'] = 'cbr';
-		$thisfile_au['encoding']               = 'ISO-8859-1';
+		$thisfile_au['encoding'] = 'ISO-8859-1';
 
-		$thisfile_au['header_length']   = getid3_lib::BigEndian2Int(substr($AUheader,  4, 4));
+		$thisfile_au['header_length'] = getid3_lib::BigEndian2Int(substr($AUheader, 4, 4));
 		$AUheader .= $this->fread($thisfile_au['header_length'] - 8);
 		$info['avdataoffset'] += $thisfile_au['header_length'];
 
-		$thisfile_au['data_size']             = getid3_lib::BigEndian2Int(substr($AUheader,  8, 4));
-		$thisfile_au['data_format_id']        = getid3_lib::BigEndian2Int(substr($AUheader, 12, 4));
-		$thisfile_au['sample_rate']           = getid3_lib::BigEndian2Int(substr($AUheader, 16, 4));
-		$thisfile_au['channels']              = getid3_lib::BigEndian2Int(substr($AUheader, 20, 4));
-		$thisfile_au['comments']['comment'][] =                      trim(substr($AUheader, 24));
+		$thisfile_au['data_size'] = getid3_lib::BigEndian2Int(substr($AUheader, 8, 4));
+		$thisfile_au['data_format_id'] = getid3_lib::BigEndian2Int(substr($AUheader, 12, 4));
+		$thisfile_au['sample_rate'] = getid3_lib::BigEndian2Int(substr($AUheader, 16, 4));
+		$thisfile_au['channels'] = getid3_lib::BigEndian2Int(substr($AUheader, 20, 4));
+		$thisfile_au['comments']['comment'][] = trim(substr($AUheader, 24));
 
 		$thisfile_au['data_format'] = $this->AUdataFormatNameLookup($thisfile_au['data_format_id']);
 		$thisfile_au['used_bits_per_sample'] = $this->AUdataFormatUsedBitsPerSampleLookup($thisfile_au['data_format_id']);
@@ -57,8 +56,8 @@ class getid3_au extends getid3_handler
 			unset($thisfile_au['bits_per_sample']);
 		}
 
-		$info['audio']['sample_rate']  = $thisfile_au['sample_rate'];
-		$info['audio']['channels']     = $thisfile_au['channels'];
+		$info['audio']['sample_rate'] = $thisfile_au['sample_rate'];
+		$info['audio']['channels'] = $thisfile_au['channels'];
 
 		if (($info['avdataoffset'] + $thisfile_au['data_size']) > $info['avdataend']) {
 			$info['warning'][] = 'Possible truncated file - expecting "'.$thisfile_au['data_size'].'" bytes of audio data, only found '.($info['avdataend'] - $info['avdataoffset']).' bytes"';
@@ -72,16 +71,16 @@ class getid3_au extends getid3_handler
 
 	public function AUdataFormatNameLookup($id) {
 		static $AUdataFormatNameLookup = array(
-			0  => 'unspecified format',
-			1  => '8-bit mu-law',
-			2  => '8-bit linear',
-			3  => '16-bit linear',
-			4  => '24-bit linear',
-			5  => '32-bit linear',
-			6  => 'floating-point',
-			7  => 'double-precision float',
-			8  => 'fragmented sampled data',
-			9  => 'SUN_FORMAT_NESTED',
+			0 => 'unspecified format',
+			1 => '8-bit mu-law',
+			2 => '8-bit linear',
+			3 => '16-bit linear',
+			4 => '24-bit linear',
+			5 => '32-bit linear',
+			6 => 'floating-point',
+			7 => 'double-precision float',
+			8 => 'fragmented sampled data',
+			9 => 'SUN_FORMAT_NESTED',
 			10 => 'DSP program',
 			11 => '8-bit fixed-point',
 			12 => '16-bit fixed-point',
@@ -106,13 +105,13 @@ class getid3_au extends getid3_handler
 
 	public function AUdataFormatBitsPerSampleLookup($id) {
 		static $AUdataFormatBitsPerSampleLookup = array(
-			1  => 8,
-			2  => 8,
-			3  => 16,
-			4  => 24,
-			5  => 32,
-			6  => 32,
-			7  => 64,
+			1 => 8,
+			2 => 8,
+			3 => 16,
+			4 => 24,
+			5 => 32,
+			6 => 32,
+			7 => 64,
 
 			11 => 8,
 			12 => 16,
@@ -134,13 +133,13 @@ class getid3_au extends getid3_handler
 
 	public function AUdataFormatUsedBitsPerSampleLookup($id) {
 		static $AUdataFormatUsedBitsPerSampleLookup = array(
-			1  => 8,
-			2  => 8,
-			3  => 16,
-			4  => 24,
-			5  => 32,
-			6  => 32,
-			7  => 64,
+			1 => 8,
+			2 => 8,
+			3 => 16,
+			4 => 24,
+			5 => 32,
+			6 => 32,
+			7 => 64,
 
 			11 => 8,
 			12 => 16,

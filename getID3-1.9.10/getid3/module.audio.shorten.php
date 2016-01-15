@@ -15,8 +15,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_shorten extends getid3_handler
-{
+class getid3_shorten extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
@@ -29,16 +28,16 @@ class getid3_shorten extends getid3_handler
 			$info['error'][] = 'Expecting "'.getid3_lib::PrintHexBytes($magic).'" at offset '.$info['avdataoffset'].', found "'.getid3_lib::PrintHexBytes(substr($ShortenHeader, 0, 4)).'"';
 			return false;
 		}
-		$info['fileformat']            = 'shn';
-		$info['audio']['dataformat']   = 'shn';
-		$info['audio']['lossless']     = true;
+		$info['fileformat'] = 'shn';
+		$info['audio']['dataformat'] = 'shn';
+		$info['audio']['lossless'] = true;
 		$info['audio']['bitrate_mode'] = 'vbr';
 
 		$info['shn']['version'] = getid3_lib::LittleEndian2Int(substr($ShortenHeader, 4, 1));
 
 		$this->fseek($info['avdataend'] - 12);
 		$SeekTableSignatureTest = $this->fread(12);
-		$info['shn']['seektable']['present'] = (bool) (substr($SeekTableSignatureTest, 4, 8) == 'SHNAMPSK');
+		$info['shn']['seektable']['present'] = (bool)(substr($SeekTableSignatureTest, 4, 8) == 'SHNAMPSK');
 		if ($info['shn']['seektable']['present']) {
 			$info['shn']['seektable']['length'] = getid3_lib::LittleEndian2Int(substr($SeekTableSignatureTest, 0, 4));
 			$info['shn']['seektable']['offset'] = $info['avdataend'] - $info['shn']['seektable']['length'];
@@ -140,7 +139,7 @@ class getid3_shorten extends getid3_handler
 				$info['error'][] = 'shorten binary was not found in path or /usr/local/bin';
 				return false;
 			}
-			$commandline = (file_exists('/usr/local/bin/shorten') ? '/usr/local/bin/' : '' ) . 'shorten -x '.escapeshellarg($info['filenamepath']).' - | head -c 64';
+			$commandline = (file_exists('/usr/local/bin/shorten') ? '/usr/local/bin/' : '').'shorten -x '.escapeshellarg($info['filenamepath']).' - | head -c 64';
 
 		}
 
@@ -152,9 +151,9 @@ class getid3_shorten extends getid3_handler
 
 			$fmt_size = getid3_lib::LittleEndian2Int(substr($output, 16, 4));
 			$DecodedWAVFORMATEX = getid3_riff::parseWAVEFORMATex(substr($output, 20, $fmt_size));
-			$info['audio']['channels']        = $DecodedWAVFORMATEX['channels'];
+			$info['audio']['channels'] = $DecodedWAVFORMATEX['channels'];
 			$info['audio']['bits_per_sample'] = $DecodedWAVFORMATEX['bits_per_sample'];
-			$info['audio']['sample_rate']     = $DecodedWAVFORMATEX['sample_rate'];
+			$info['audio']['sample_rate'] = $DecodedWAVFORMATEX['sample_rate'];
 
 			if (substr($output, 20 + $fmt_size, 4) == 'data') {
 

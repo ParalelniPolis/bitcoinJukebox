@@ -25,14 +25,13 @@ echo '<html><head><title>getID3() - Sample tag writer</title></head><style type=
 require_once('../getid3/getid3.php');
 // Initialize getID3 engine
 $getID3 = new getID3;
-$getID3->setOption(array('encoding'=>$TaggingFormat));
+$getID3->setOption(array('encoding' => $TaggingFormat));
 
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, true);
 
 $browsescriptfilename = 'demo.browse.php';
 
 $Filename = (isset($_REQUEST['Filename']) ? $_REQUEST['Filename'] : '');
-
 
 
 if (isset($_POST['WriteTags'])) {
@@ -42,10 +41,10 @@ if (isset($_POST['WriteTags'])) {
 		echo 'starting to write tag(s)<BR>';
 
 		$tagwriter = new getid3_writetags;
-		$tagwriter->filename       = $Filename;
-		$tagwriter->tagformats     = $TagFormatsToWrite;
+		$tagwriter->filename = $Filename;
+		$tagwriter->tagformats = $TagFormatsToWrite;
 		$tagwriter->overwrite_tags = false;
-		$tagwriter->tag_encoding   = $TaggingFormat;
+		$tagwriter->tag_encoding = $TaggingFormat;
 		if (!empty($_POST['remove_other_tags'])) {
 			$tagwriter->remove_other_tags = true;
 		}
@@ -73,16 +72,16 @@ if (isset($_POST['WriteTags'])) {
 					if ($fd = fopen($_FILES['userfile']['tmp_name'], 'rb')) {
 						ob_end_clean();
 						$APICdata = fread($fd, filesize($_FILES['userfile']['tmp_name']));
-						fclose ($fd);
+						fclose($fd);
 
 						list($APIC_width, $APIC_height, $APIC_imageTypeID) = GetImageSize($_FILES['userfile']['tmp_name']);
-						$imagetypes = array(1=>'gif', 2=>'jpeg', 3=>'png');
+						$imagetypes = array(1 => 'gif', 2 => 'jpeg', 3 => 'png');
 						if (isset($imagetypes[$APIC_imageTypeID])) {
 
-							$TagData['attached_picture'][0]['data']          = $APICdata;
+							$TagData['attached_picture'][0]['data'] = $APICdata;
 							$TagData['attached_picture'][0]['picturetypeid'] = $_POST['APICpictureType'];
-							$TagData['attached_picture'][0]['description']   = $_FILES['userfile']['name'];
-							$TagData['attached_picture'][0]['mime']          = 'image/'.$imagetypes[$APIC_imageTypeID];
+							$TagData['attached_picture'][0]['description'] = $_FILES['userfile']['name'];
+							$TagData['attached_picture'][0]['mime'] = 'image/'.$imagetypes[$APIC_imageTypeID];
 
 						} else {
 							echo '<b>invalid image format (only GIF, JPEG, PNG)</b><br>';
@@ -167,10 +166,10 @@ if (!empty($Filename)) {
 				$ValidTagTypes = array();
 				break;
 		}
-		echo '<tr><td align="right"><b>Title</b></td> <td><input type="text" size="40" name="Title"  value="'.htmlentities((!empty($OldThisFileInfo['comments']['title'])  ? implode(', ', $OldThisFileInfo['comments']['title'] ) : ''), ENT_QUOTES).'"></td></tr>';
+		echo '<tr><td align="right"><b>Title</b></td> <td><input type="text" size="40" name="Title"  value="'.htmlentities((!empty($OldThisFileInfo['comments']['title']) ? implode(', ', $OldThisFileInfo['comments']['title']) : ''), ENT_QUOTES).'"></td></tr>';
 		echo '<tr><td align="right"><b>Artist</b></td><td><input type="text" size="40" name="Artist" value="'.htmlentities((!empty($OldThisFileInfo['comments']['artist']) ? implode(', ', $OldThisFileInfo['comments']['artist']) : ''), ENT_QUOTES).'"></td></tr>';
-		echo '<tr><td align="right"><b>Album</b></td> <td><input type="text" size="40" name="Album"  value="'.htmlentities((!empty($OldThisFileInfo['comments']['album'])  ? implode(', ', $OldThisFileInfo['comments']['album'] ) : ''), ENT_QUOTES).'"></td></tr>';
-		echo '<tr><td align="right"><b>Year</b></td>  <td><input type="text" size="4"  name="Year"   value="'.htmlentities((!empty($OldThisFileInfo['comments']['year'])   ? implode(', ', $OldThisFileInfo['comments']['year']  ) : ''), ENT_QUOTES).'"></td></tr>';
+		echo '<tr><td align="right"><b>Album</b></td> <td><input type="text" size="40" name="Album"  value="'.htmlentities((!empty($OldThisFileInfo['comments']['album']) ? implode(', ', $OldThisFileInfo['comments']['album']) : ''), ENT_QUOTES).'"></td></tr>';
+		echo '<tr><td align="right"><b>Year</b></td>  <td><input type="text" size="4"  name="Year"   value="'.htmlentities((!empty($OldThisFileInfo['comments']['year']) ? implode(', ', $OldThisFileInfo['comments']['year']) : ''), ENT_QUOTES).'"></td></tr>';
 
 		$TracksTotal = '';
 		$TrackNumber = '';
@@ -200,7 +199,7 @@ if (!empty($Filename)) {
 		unset($ArrayOfGenres['Cover']);                       // take off these special cases
 		unset($ArrayOfGenres['Remix']);
 		unset($ArrayOfGenres['Unknown']);
-		$ArrayOfGenres['']      = '- Unknown -';              // Add special cases back in with renamed key/value
+		$ArrayOfGenres[''] = '- Unknown -';              // Add special cases back in with renamed key/value
 		$ArrayOfGenres['Cover'] = '-Cover-';
 		$ArrayOfGenres['Remix'] = '-Remix-';
 		asort($ArrayOfGenres);                                // sort into alphabetical order

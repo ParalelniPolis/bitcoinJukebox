@@ -16,13 +16,12 @@
 
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.id3v1.php', __FILE__, true);
 
-class getid3_write_id3v1
-{
+class getid3_write_id3v1 {
 	public $filename;
 	public $filesize;
 	public $tag_data;
 	public $warnings = array(); // any non-critical errors will be stored here
-	public $errors   = array(); // any critical errors will be stored here
+	public $errors = array(); // any critical errors will be stored here
 
 	public function getid3_write_id3v1() {
 		return true;
@@ -46,13 +45,13 @@ class getid3_write_id3v1
 				$this->tag_data['track'] = (isset($this->tag_data['track']) ? $this->tag_data['track'] : (isset($this->tag_data['track_number']) ? $this->tag_data['track_number'] : (isset($this->tag_data['tracknumber']) ? $this->tag_data['tracknumber'] : '')));
 
 				$new_id3v1_tag_data = getid3_id3v1::GenerateID3v1Tag(
-														(isset($this->tag_data['title']  ) ? $this->tag_data['title']   : ''),
-														(isset($this->tag_data['artist'] ) ? $this->tag_data['artist']  : ''),
-														(isset($this->tag_data['album']  ) ? $this->tag_data['album']   : ''),
-														(isset($this->tag_data['year']   ) ? $this->tag_data['year']    : ''),
-														(isset($this->tag_data['genreid']) ? $this->tag_data['genreid'] : ''),
-														(isset($this->tag_data['comment']) ? $this->tag_data['comment'] : ''),
-														(isset($this->tag_data['track']  ) ? $this->tag_data['track']   : ''));
+					(isset($this->tag_data['title']) ? $this->tag_data['title'] : ''),
+					(isset($this->tag_data['artist']) ? $this->tag_data['artist'] : ''),
+					(isset($this->tag_data['album']) ? $this->tag_data['album'] : ''),
+					(isset($this->tag_data['year']) ? $this->tag_data['year'] : ''),
+					(isset($this->tag_data['genreid']) ? $this->tag_data['genreid'] : ''),
+					(isset($this->tag_data['comment']) ? $this->tag_data['comment'] : ''),
+					(isset($this->tag_data['track']) ? $this->tag_data['track'] : ''));
 				fwrite($fp_source, $new_id3v1_tag_data, 128);
 				fclose($fp_source);
 				return true;
@@ -72,11 +71,11 @@ class getid3_write_id3v1
 
 		// Initialize getID3 engine
 		$getID3 = new getID3;
-		$getID3->option_tag_id3v2  = false;
+		$getID3->option_tag_id3v2 = false;
 		$getID3->option_tag_apetag = false;
-		$getID3->option_tags_html  = false;
+		$getID3->option_tags_html = false;
 		$getID3->option_extra_info = false;
-		$getID3->option_tag_id3v1  = true;
+		$getID3->option_tag_id3v1 = true;
 		$ThisFileInfo = $getID3->analyze($this->filename);
 		if (isset($ThisFileInfo['tags']['id3v1'])) {
 			foreach ($ThisFileInfo['tags']['id3v1'] as $key => $value) {
@@ -124,10 +123,10 @@ class getid3_write_id3v1
 		// 32-bit PHP will not return correct values for filesize() if file is >=2GB
 		// but getID3->analyze() has workarounds to get actual filesize
 		$getID3 = new getID3;
-		$getID3->option_tag_id3v1  = false;
-		$getID3->option_tag_id3v2  = false;
+		$getID3->option_tag_id3v1 = false;
+		$getID3->option_tag_id3v2 = false;
 		$getID3->option_tag_apetag = false;
-		$getID3->option_tags_html  = false;
+		$getID3->option_tags_html = false;
 		$getID3->option_extra_info = false;
 		$ThisFileInfo = $getID3->analyze($this->filename);
 		$this->filesize = $ThisFileInfo['filesize'];

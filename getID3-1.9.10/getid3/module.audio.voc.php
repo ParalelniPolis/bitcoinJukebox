@@ -15,15 +15,14 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_voc extends getid3_handler
-{
+class getid3_voc extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
 		$OriginalAVdataOffset = $info['avdataoffset'];
 		$this->fseek($info['avdataoffset']);
-		$VOCheader  = $this->fread(26);
+		$VOCheader = $this->fread(26);
 
 		$magic = 'Creative Voice File';
 		if (substr($VOCheader, 0, 19) != $magic) {
@@ -34,13 +33,13 @@ class getid3_voc extends getid3_handler
 		// shortcuts
 		$thisfile_audio = &$info['audio'];
 		$info['voc'] = array();
-		$thisfile_voc        = &$info['voc'];
+		$thisfile_voc = &$info['voc'];
 
-		$info['fileformat']        = 'voc';
-		$thisfile_audio['dataformat']      = 'voc';
-		$thisfile_audio['bitrate_mode']    = 'cbr';
-		$thisfile_audio['lossless']        = true;
-		$thisfile_audio['channels']        = 1; // might be overriden below
+		$info['fileformat'] = 'voc';
+		$thisfile_audio['dataformat'] = 'voc';
+		$thisfile_audio['bitrate_mode'] = 'cbr';
+		$thisfile_audio['lossless'] = true;
+		$thisfile_audio['channels'] = 1; // might be overriden below
 		$thisfile_audio['bits_per_sample'] = 8; // might be overriden below
 
 		// byte #     Description
@@ -52,16 +51,16 @@ class getid3_voc extends getid3_handler
 		// 18-19      2's Comp of Ver. # + 1234h (VOC-HDR puts 29 11)
 
 		$thisfile_voc['header']['datablock_offset'] = getid3_lib::LittleEndian2Int(substr($VOCheader, 20, 2));
-		$thisfile_voc['header']['minor_version']    = getid3_lib::LittleEndian2Int(substr($VOCheader, 22, 1));
-		$thisfile_voc['header']['major_version']    = getid3_lib::LittleEndian2Int(substr($VOCheader, 23, 1));
+		$thisfile_voc['header']['minor_version'] = getid3_lib::LittleEndian2Int(substr($VOCheader, 22, 1));
+		$thisfile_voc['header']['major_version'] = getid3_lib::LittleEndian2Int(substr($VOCheader, 23, 1));
 
 		do {
 
-			$BlockOffset    = $this->ftell();
-			$BlockData      = $this->fread(4);
-			$BlockType      = ord($BlockData{0});
-			$BlockSize      = getid3_lib::LittleEndian2Int(substr($BlockData, 1, 3));
-			$ThisBlock      = array();
+			$BlockOffset = $this->ftell();
+			$BlockData = $this->fread(4);
+			$BlockType = ord($BlockData{0});
+			$BlockSize = getid3_lib::LittleEndian2Int(substr($BlockData, 1, 3));
+			$ThisBlock = array();
 
 			getid3_lib::safe_inc($thisfile_voc['blocktypes'][$BlockType], 1);
 			switch ($BlockType) {
@@ -76,7 +75,7 @@ class getid3_voc extends getid3_handler
 					}
 					$this->fseek($BlockSize - 2, SEEK_CUR);
 
-					$ThisBlock['sample_rate_id']   = getid3_lib::LittleEndian2Int(substr($BlockData, 4, 1));
+					$ThisBlock['sample_rate_id'] = getid3_lib::LittleEndian2Int(substr($BlockData, 4, 1));
 					$ThisBlock['compression_type'] = getid3_lib::LittleEndian2Int(substr($BlockData, 5, 1));
 
 					$ThisBlock['compression_name'] = $this->VOCcompressionTypeLookup($ThisBlock['compression_type']);
@@ -106,11 +105,11 @@ class getid3_voc extends getid3_handler
 					//00-01  Time Constant:
 					//   Mono: 65536 - (256000000 / sample_rate)
 					// Stereo: 65536 - (256000000 / (sample_rate * 2))
-					$ThisBlock['time_constant'] =        getid3_lib::LittleEndian2Int(substr($BlockData, 4, 2));
-					$ThisBlock['pack_method']   =        getid3_lib::LittleEndian2Int(substr($BlockData, 6, 1));
-					$ThisBlock['stereo']        = (bool) getid3_lib::LittleEndian2Int(substr($BlockData, 7, 1));
+					$ThisBlock['time_constant'] = getid3_lib::LittleEndian2Int(substr($BlockData, 4, 2));
+					$ThisBlock['pack_method'] = getid3_lib::LittleEndian2Int(substr($BlockData, 6, 1));
+					$ThisBlock['stereo'] = (bool)getid3_lib::LittleEndian2Int(substr($BlockData, 7, 1));
 
-					$thisfile_audio['channels']    = ($ThisBlock['stereo'] ? 2 : 1);
+					$thisfile_audio['channels'] = ($ThisBlock['stereo'] ? 2 : 1);
 					$thisfile_audio['sample_rate'] = getid3_lib::trunc((256000000 / (65536 - $ThisBlock['time_constant'])) / $thisfile_audio['channels']);
 					break;
 
@@ -121,19 +120,19 @@ class getid3_voc extends getid3_handler
 					}
 					$this->fseek($BlockSize - 12, SEEK_CUR);
 
-					$ThisBlock['sample_rate']      = getid3_lib::LittleEndian2Int(substr($BlockData,  4, 4));
-					$ThisBlock['bits_per_sample']  = getid3_lib::LittleEndian2Int(substr($BlockData,  8, 1));
-					$ThisBlock['channels']         = getid3_lib::LittleEndian2Int(substr($BlockData,  9, 1));
-					$ThisBlock['wFormat']          = getid3_lib::LittleEndian2Int(substr($BlockData, 10, 2));
+					$ThisBlock['sample_rate'] = getid3_lib::LittleEndian2Int(substr($BlockData, 4, 4));
+					$ThisBlock['bits_per_sample'] = getid3_lib::LittleEndian2Int(substr($BlockData, 8, 1));
+					$ThisBlock['channels'] = getid3_lib::LittleEndian2Int(substr($BlockData, 9, 1));
+					$ThisBlock['wFormat'] = getid3_lib::LittleEndian2Int(substr($BlockData, 10, 2));
 
 					$ThisBlock['compression_name'] = $this->VOCwFormatLookup($ThisBlock['wFormat']);
 					if ($this->VOCwFormatActualBitsPerSampleLookup($ThisBlock['wFormat'])) {
 						$thisfile_voc['compressed_bits_per_sample'] = $this->VOCwFormatActualBitsPerSampleLookup($ThisBlock['wFormat']);
 					}
 
-					$thisfile_audio['sample_rate']     = $ThisBlock['sample_rate'];
+					$thisfile_audio['sample_rate'] = $ThisBlock['sample_rate'];
 					$thisfile_audio['bits_per_sample'] = $ThisBlock['bits_per_sample'];
-					$thisfile_audio['channels']        = $ThisBlock['channels'];
+					$thisfile_audio['channels'] = $ThisBlock['channels'];
 					break;
 
 				default:
@@ -143,8 +142,8 @@ class getid3_voc extends getid3_handler
 			}
 
 			if (!empty($ThisBlock)) {
-				$ThisBlock['block_offset']  = $BlockOffset;
-				$ThisBlock['block_size']    = $BlockSize;
+				$ThisBlock['block_offset'] = $BlockOffset;
+				$ThisBlock['block_size'] = $BlockSize;
 				$ThisBlock['block_type_id'] = $BlockType;
 				$thisfile_voc['blocks'][] = $ThisBlock;
 			}
@@ -190,14 +189,14 @@ class getid3_voc extends getid3_handler
 
 	public function VOCwFormatActualBitsPerSampleLookup($index) {
 		static $VOCwFormatLookup = array(
-			0x0000 =>  8,
-			0x0001 =>  4,
-			0x0002 =>  3,
-			0x0003 =>  2,
+			0x0000 => 8,
+			0x0001 => 4,
+			0x0002 => 3,
+			0x0003 => 2,
 			0x0004 => 16,
-			0x0006 =>  8,
-			0x0007 =>  8,
-			0x2000 =>  4
+			0x0006 => 8,
+			0x0007 => 8,
+			0x2000 => 4
 		);
 		return (isset($VOCwFormatLookup[$index]) ? $VOCwFormatLookup[$index] : false);
 	}

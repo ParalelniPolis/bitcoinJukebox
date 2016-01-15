@@ -15,20 +15,19 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_mpc extends getid3_handler
-{
+class getid3_mpc extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
 		$info['mpc']['header'] = array();
-		$thisfile_mpc_header   = &$info['mpc']['header'];
+		$thisfile_mpc_header = &$info['mpc']['header'];
 
-		$info['fileformat']               = 'mpc';
-		$info['audio']['dataformat']      = 'mpc';
-		$info['audio']['bitrate_mode']    = 'vbr';
-		$info['audio']['channels']        = 2;  // up to SV7 the format appears to have been hardcoded for stereo only
-		$info['audio']['lossless']        = false;
+		$info['fileformat'] = 'mpc';
+		$info['audio']['dataformat'] = 'mpc';
+		$info['audio']['bitrate_mode'] = 'vbr';
+		$info['audio']['channels'] = 2;  // up to SV7 the format appears to have been hardcoded for stereo only
+		$info['audio']['lossless'] = false;
 
 		$this->fseek($info['avdataoffset']);
 		$MPCheaderData = $this->fread(4);
@@ -67,7 +66,7 @@ class getid3_mpc extends getid3_handler
 		$info = &$this->getid3->info;
 		$thisfile_mpc_header = &$info['mpc']['header'];
 
-		$keyNameSize            = 2;
+		$keyNameSize = 2;
 		$maxHandledPacketLength = 9; // specs say: "n*8; 0 < n < 10"
 
 		$offset = $this->ftell();
@@ -80,7 +79,7 @@ class getid3_mpc extends getid3_handler
 			// read enough data in and figure out the exact size later
 			$MPCheaderData = $this->fread($keyNameSize + $maxHandledPacketLength);
 			$packet_offset += $keyNameSize;
-			$thisPacket['key']      = substr($MPCheaderData, 0, $keyNameSize);
+			$thisPacket['key'] = substr($MPCheaderData, 0, $keyNameSize);
 			$thisPacket['key_name'] = $this->MPCsv8PacketName($thisPacket['key']);
 			if ($thisPacket['key'] == $thisPacket['key_name']) {
 				$info['error'][] = 'Found unexpected key value "'.$thisPacket['key'].'" at offset '.$thisPacket['offset'];
@@ -101,34 +100,34 @@ class getid3_mpc extends getid3_handler
 					if ($moreBytesToRead > 0) {
 						$MPCheaderData .= $this->fread($moreBytesToRead);
 					}
-					$thisPacket['crc']               =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 4));
+					$thisPacket['crc'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 4));
 					$packet_offset += 4;
-					$thisPacket['stream_version']    =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
+					$thisPacket['stream_version'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
 					$packet_offset += 1;
 
 					$packetLength = 0;
-					$thisPacket['sample_count']      = $this->SV8variableLengthInteger(substr($MPCheaderData, $packet_offset, $maxHandledPacketLength), $packetLength);
+					$thisPacket['sample_count'] = $this->SV8variableLengthInteger(substr($MPCheaderData, $packet_offset, $maxHandledPacketLength), $packetLength);
 					$packet_offset += $packetLength;
 
 					$packetLength = 0;
 					$thisPacket['beginning_silence'] = $this->SV8variableLengthInteger(substr($MPCheaderData, $packet_offset, $maxHandledPacketLength), $packetLength);
 					$packet_offset += $packetLength;
 
-					$otherUsefulData                 =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
+					$otherUsefulData = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
 					$packet_offset += 2;
-					$thisPacket['sample_frequency_raw'] =        (($otherUsefulData & 0xE000) >> 13);
-					$thisPacket['max_bands_used']       =        (($otherUsefulData & 0x1F00) >>  8);
-					$thisPacket['channels']             =        (($otherUsefulData & 0x00F0) >>  4) + 1;
-					$thisPacket['ms_used']              = (bool) (($otherUsefulData & 0x0008) >>  3);
-					$thisPacket['audio_block_frames']   =        (($otherUsefulData & 0x0007) >>  0);
-					$thisPacket['sample_frequency']     = $this->MPCfrequencyLookup($thisPacket['sample_frequency_raw']);
+					$thisPacket['sample_frequency_raw'] = (($otherUsefulData & 0xE000) >> 13);
+					$thisPacket['max_bands_used'] = (($otherUsefulData & 0x1F00) >> 8);
+					$thisPacket['channels'] = (($otherUsefulData & 0x00F0) >> 4) + 1;
+					$thisPacket['ms_used'] = (bool)(($otherUsefulData & 0x0008) >> 3);
+					$thisPacket['audio_block_frames'] = (($otherUsefulData & 0x0007) >> 0);
+					$thisPacket['sample_frequency'] = $this->MPCfrequencyLookup($thisPacket['sample_frequency_raw']);
 
-					$thisfile_mpc_header['mid_side_stereo']      = $thisPacket['ms_used'];
-					$thisfile_mpc_header['sample_rate']          = $thisPacket['sample_frequency'];
-					$thisfile_mpc_header['samples']              = $thisPacket['sample_count'];
+					$thisfile_mpc_header['mid_side_stereo'] = $thisPacket['ms_used'];
+					$thisfile_mpc_header['sample_rate'] = $thisPacket['sample_frequency'];
+					$thisfile_mpc_header['samples'] = $thisPacket['sample_count'];
 					$thisfile_mpc_header['stream_version_major'] = $thisPacket['stream_version'];
 
-					$info['audio']['channels']    = $thisPacket['channels'];
+					$info['audio']['channels'] = $thisPacket['channels'];
 					$info['audio']['sample_rate'] = $thisPacket['sample_frequency'];
 					$info['playtime_seconds'] = $thisPacket['sample_count'] / $thisPacket['sample_frequency'];
 					$info['audio']['bitrate'] = (($info['avdataend'] - $info['avdataoffset']) * 8) / $info['playtime_seconds'];
@@ -139,21 +138,29 @@ class getid3_mpc extends getid3_handler
 					if ($moreBytesToRead > 0) {
 						$MPCheaderData .= $this->fread($moreBytesToRead);
 					}
-					$thisPacket['replaygain_version']     =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
+					$thisPacket['replaygain_version'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
 					$packet_offset += 1;
-					$thisPacket['replaygain_title_gain']  =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
+					$thisPacket['replaygain_title_gain'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
 					$packet_offset += 2;
-					$thisPacket['replaygain_title_peak']  =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
+					$thisPacket['replaygain_title_peak'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
 					$packet_offset += 2;
-					$thisPacket['replaygain_album_gain']  =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
+					$thisPacket['replaygain_album_gain'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
 					$packet_offset += 2;
-					$thisPacket['replaygain_album_peak']  =       getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
+					$thisPacket['replaygain_album_peak'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 2));
 					$packet_offset += 2;
 
-					if ($thisPacket['replaygain_title_gain']) { $info['replay_gain']['title']['gain'] = $thisPacket['replaygain_title_gain']; }
-					if ($thisPacket['replaygain_title_peak']) { $info['replay_gain']['title']['peak'] = $thisPacket['replaygain_title_peak']; }
-					if ($thisPacket['replaygain_album_gain']) { $info['replay_gain']['album']['gain'] = $thisPacket['replaygain_album_gain']; }
-					if ($thisPacket['replaygain_album_peak']) { $info['replay_gain']['album']['peak'] = $thisPacket['replaygain_album_peak']; }
+					if ($thisPacket['replaygain_title_gain']) {
+						$info['replay_gain']['title']['gain'] = $thisPacket['replaygain_title_gain'];
+					}
+					if ($thisPacket['replaygain_title_peak']) {
+						$info['replay_gain']['title']['peak'] = $thisPacket['replaygain_title_peak'];
+					}
+					if ($thisPacket['replaygain_album_gain']) {
+						$info['replay_gain']['album']['gain'] = $thisPacket['replaygain_album_gain'];
+					}
+					if ($thisPacket['replaygain_album_peak']) {
+						$info['replay_gain']['album']['peak'] = $thisPacket['replaygain_album_peak'];
+					}
 					break;
 
 				case 'EI': // Encoder Info
@@ -161,12 +168,12 @@ class getid3_mpc extends getid3_handler
 					if ($moreBytesToRead > 0) {
 						$MPCheaderData .= $this->fread($moreBytesToRead);
 					}
-					$profile_pns                 = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
+					$profile_pns = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
 					$packet_offset += 1;
-					$quality_int =                   (($profile_pns & 0xF0) >> 4);
-					$quality_dec =                   (($profile_pns & 0x0E) >> 3);
-					$thisPacket['quality'] = (float) $quality_int + ($quality_dec / 8);
-					$thisPacket['pns_tool'] = (bool) (($profile_pns & 0x01) >> 0);
+					$quality_int = (($profile_pns & 0xF0) >> 4);
+					$quality_dec = (($profile_pns & 0x0E) >> 3);
+					$thisPacket['quality'] = (float)$quality_int + ($quality_dec / 8);
+					$thisPacket['pns_tool'] = (bool)(($profile_pns & 0x01) >> 0);
 					$thisPacket['version_major'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
 					$packet_offset += 1;
 					$thisPacket['version_minor'] = getid3_lib::BigEndian2Int(substr($MPCheaderData, $packet_offset, 1));
@@ -178,7 +185,7 @@ class getid3_mpc extends getid3_handler
 					$info['audio']['encoder'] = 'MPC v'.$thisPacket['version'].' ('.(($thisPacket['version_minor'] % 2) ? 'unstable' : 'stable').')';
 					$thisfile_mpc_header['encoder_version'] = $info['audio']['encoder'];
 					//$thisfile_mpc_header['quality']         = (float) ($thisPacket['quality'] / 1.5875); // values can range from 0.000 to 15.875, mapped to qualities of 0.0 to 10.0
-					$thisfile_mpc_header['quality']         = (float) ($thisPacket['quality'] - 5); // values can range from 0.000 to 15.875, of which 0..4 are "reserved/experimental", and 5..15 are mapped to qualities of 0.0 to 10.0
+					$thisfile_mpc_header['quality'] = (float)($thisPacket['quality'] - 5); // values can range from 0.000 to 15.875, of which 0..4 are "reserved/experimental", and 5..15 are mapped to qualities of 0.0 to 10.0
 					break;
 
 				case 'SO': // Seek Table Offset
@@ -217,15 +224,15 @@ class getid3_mpc extends getid3_handler
 		$offset = 0;
 
 		$thisfile_mpc_header['size'] = 28;
-		$MPCheaderData  = $info['mpc']['header']['preamble'];
+		$MPCheaderData = $info['mpc']['header']['preamble'];
 		$MPCheaderData .= $this->fread($thisfile_mpc_header['size'] - strlen($info['mpc']['header']['preamble']));
 		$offset = strlen('MP+');
 
-		$StreamVersionByte                           = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 1));
+		$StreamVersionByte = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 1));
 		$offset += 1;
 		$thisfile_mpc_header['stream_version_major'] = ($StreamVersionByte & 0x0F) >> 0;
 		$thisfile_mpc_header['stream_version_minor'] = ($StreamVersionByte & 0xF0) >> 4; // should always be 0, subversions no longer exist in SV8
-		$thisfile_mpc_header['frame_count']          = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 4));
+		$thisfile_mpc_header['frame_count'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 4));
 		$offset += 4;
 
 		if ($thisfile_mpc_header['stream_version_major'] != 7) {
@@ -233,48 +240,48 @@ class getid3_mpc extends getid3_handler
 			return false;
 		}
 
-		$FlagsDWORD1                                   = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 4));
+		$FlagsDWORD1 = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 4));
 		$offset += 4;
-		$thisfile_mpc_header['intensity_stereo']       = (bool) (($FlagsDWORD1 & 0x80000000) >> 31);
-		$thisfile_mpc_header['mid_side_stereo']        = (bool) (($FlagsDWORD1 & 0x40000000) >> 30);
-		$thisfile_mpc_header['max_subband']            =         ($FlagsDWORD1 & 0x3F000000) >> 24;
-		$thisfile_mpc_header['raw']['profile']         =         ($FlagsDWORD1 & 0x00F00000) >> 20;
-		$thisfile_mpc_header['begin_loud']             = (bool) (($FlagsDWORD1 & 0x00080000) >> 19);
-		$thisfile_mpc_header['end_loud']               = (bool) (($FlagsDWORD1 & 0x00040000) >> 18);
-		$thisfile_mpc_header['raw']['sample_rate']     =         ($FlagsDWORD1 & 0x00030000) >> 16;
-		$thisfile_mpc_header['max_level']              =         ($FlagsDWORD1 & 0x0000FFFF);
+		$thisfile_mpc_header['intensity_stereo'] = (bool)(($FlagsDWORD1 & 0x80000000) >> 31);
+		$thisfile_mpc_header['mid_side_stereo'] = (bool)(($FlagsDWORD1 & 0x40000000) >> 30);
+		$thisfile_mpc_header['max_subband'] = ($FlagsDWORD1 & 0x3F000000) >> 24;
+		$thisfile_mpc_header['raw']['profile'] = ($FlagsDWORD1 & 0x00F00000) >> 20;
+		$thisfile_mpc_header['begin_loud'] = (bool)(($FlagsDWORD1 & 0x00080000) >> 19);
+		$thisfile_mpc_header['end_loud'] = (bool)(($FlagsDWORD1 & 0x00040000) >> 18);
+		$thisfile_mpc_header['raw']['sample_rate'] = ($FlagsDWORD1 & 0x00030000) >> 16;
+		$thisfile_mpc_header['max_level'] = ($FlagsDWORD1 & 0x0000FFFF);
 
-		$thisfile_mpc_header['raw']['title_peak']      = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2));
+		$thisfile_mpc_header['raw']['title_peak'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2));
 		$offset += 2;
-		$thisfile_mpc_header['raw']['title_gain']      = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2), true);
-		$offset += 2;
-
-		$thisfile_mpc_header['raw']['album_peak']      = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2));
-		$offset += 2;
-		$thisfile_mpc_header['raw']['album_gain']      = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2), true);
+		$thisfile_mpc_header['raw']['title_gain'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2), true);
 		$offset += 2;
 
-		$FlagsDWORD2                                   = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 4));
+		$thisfile_mpc_header['raw']['album_peak'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2));
+		$offset += 2;
+		$thisfile_mpc_header['raw']['album_gain'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 2), true);
+		$offset += 2;
+
+		$FlagsDWORD2 = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 4));
 		$offset += 4;
-		$thisfile_mpc_header['true_gapless']           = (bool) (($FlagsDWORD2 & 0x80000000) >> 31);
-		$thisfile_mpc_header['last_frame_length']      =         ($FlagsDWORD2 & 0x7FF00000) >> 20;
+		$thisfile_mpc_header['true_gapless'] = (bool)(($FlagsDWORD2 & 0x80000000) >> 31);
+		$thisfile_mpc_header['last_frame_length'] = ($FlagsDWORD2 & 0x7FF00000) >> 20;
 
 
-		$thisfile_mpc_header['raw']['not_sure_what']   = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 3));
+		$thisfile_mpc_header['raw']['not_sure_what'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 3));
 		$offset += 3;
 		$thisfile_mpc_header['raw']['encoder_version'] = getid3_lib::LittleEndian2Int(substr($MPCheaderData, $offset, 1));
 		$offset += 1;
 
-		$thisfile_mpc_header['profile']     = $this->MPCprofileNameLookup($thisfile_mpc_header['raw']['profile']);
+		$thisfile_mpc_header['profile'] = $this->MPCprofileNameLookup($thisfile_mpc_header['raw']['profile']);
 		$thisfile_mpc_header['sample_rate'] = $this->MPCfrequencyLookup($thisfile_mpc_header['raw']['sample_rate']);
 		if ($thisfile_mpc_header['sample_rate'] == 0) {
 			$info['error'][] = 'Corrupt MPC file: frequency == zero';
 			return false;
 		}
 		$info['audio']['sample_rate'] = $thisfile_mpc_header['sample_rate'];
-		$thisfile_mpc_header['samples']       = ((($thisfile_mpc_header['frame_count'] - 1) * 1152) + $thisfile_mpc_header['last_frame_length']) * $info['audio']['channels'];
+		$thisfile_mpc_header['samples'] = ((($thisfile_mpc_header['frame_count'] - 1) * 1152) + $thisfile_mpc_header['last_frame_length']) * $info['audio']['channels'];
 
-		$info['playtime_seconds']     = ($thisfile_mpc_header['samples'] / $info['audio']['channels']) / $info['audio']['sample_rate'];
+		$info['playtime_seconds'] = ($thisfile_mpc_header['samples'] / $info['audio']['channels']) / $info['audio']['sample_rate'];
 		if ($info['playtime_seconds'] == 0) {
 			$info['error'][] = 'Corrupt MPC file: playtime_seconds == zero';
 			return false;
@@ -285,22 +292,22 @@ class getid3_mpc extends getid3_handler
 
 		$info['audio']['bitrate'] = (($info['avdataend'] - $info['avdataoffset']) * 8) / $info['playtime_seconds'];
 
-		$thisfile_mpc_header['title_peak']        = $thisfile_mpc_header['raw']['title_peak'];
-		$thisfile_mpc_header['title_peak_db']     = $this->MPCpeakDBLookup($thisfile_mpc_header['title_peak']);
+		$thisfile_mpc_header['title_peak'] = $thisfile_mpc_header['raw']['title_peak'];
+		$thisfile_mpc_header['title_peak_db'] = $this->MPCpeakDBLookup($thisfile_mpc_header['title_peak']);
 		if ($thisfile_mpc_header['raw']['title_gain'] < 0) {
-			$thisfile_mpc_header['title_gain_db'] = (float) (32768 + $thisfile_mpc_header['raw']['title_gain']) / -100;
+			$thisfile_mpc_header['title_gain_db'] = (float)(32768 + $thisfile_mpc_header['raw']['title_gain']) / -100;
 		} else {
-			$thisfile_mpc_header['title_gain_db'] = (float) $thisfile_mpc_header['raw']['title_gain'] / 100;
+			$thisfile_mpc_header['title_gain_db'] = (float)$thisfile_mpc_header['raw']['title_gain'] / 100;
 		}
 
-		$thisfile_mpc_header['album_peak']        = $thisfile_mpc_header['raw']['album_peak'];
-		$thisfile_mpc_header['album_peak_db']     = $this->MPCpeakDBLookup($thisfile_mpc_header['album_peak']);
+		$thisfile_mpc_header['album_peak'] = $thisfile_mpc_header['raw']['album_peak'];
+		$thisfile_mpc_header['album_peak_db'] = $this->MPCpeakDBLookup($thisfile_mpc_header['album_peak']);
 		if ($thisfile_mpc_header['raw']['album_gain'] < 0) {
-			$thisfile_mpc_header['album_gain_db'] = (float) (32768 + $thisfile_mpc_header['raw']['album_gain']) / -100;
+			$thisfile_mpc_header['album_gain_db'] = (float)(32768 + $thisfile_mpc_header['raw']['album_gain']) / -100;
 		} else {
-			$thisfile_mpc_header['album_gain_db'] = (float) $thisfile_mpc_header['raw']['album_gain'] / 100;;
+			$thisfile_mpc_header['album_gain_db'] = (float)$thisfile_mpc_header['raw']['album_gain'] / 100;;
 		}
-		$thisfile_mpc_header['encoder_version']   = $this->MPCencoderVersionLookup($thisfile_mpc_header['raw']['encoder_version']);
+		$thisfile_mpc_header['encoder_version'] = $this->MPCencoderVersionLookup($thisfile_mpc_header['raw']['encoder_version']);
 
 		$info['replay_gain']['track']['adjustment'] = $thisfile_mpc_header['title_gain_db'];
 		$info['replay_gain']['album']['adjustment'] = $thisfile_mpc_header['album_gain_db'];
@@ -317,7 +324,7 @@ class getid3_mpc extends getid3_handler
 		//$info['audio']['encoder'] = 'SV'.$thisfile_mpc_header['stream_version_major'].'.'.$thisfile_mpc_header['stream_version_minor'].', '.$thisfile_mpc_header['encoder_version'];
 		$info['audio']['encoder'] = $thisfile_mpc_header['encoder_version'];
 		$info['audio']['encoder_options'] = $thisfile_mpc_header['profile'];
-		$thisfile_mpc_header['quality'] = (float) ($thisfile_mpc_header['raw']['profile'] - 5); // values can range from 0 to 15, of which 0..4 are "reserved/experimental", and 5..15 are mapped to qualities of 0.0 to 10.0
+		$thisfile_mpc_header['quality'] = (float)($thisfile_mpc_header['raw']['profile'] - 5); // values can range from 0 to 15, of which 0..4 are "reserved/experimental", and 5..15 are mapped to qualities of 0.0 to 10.0
 
 		return true;
 	}
@@ -351,13 +358,13 @@ class getid3_mpc extends getid3_handler
 		// e = maxband       = anything
 		// f = blocksize     = 000001 for SV5+, anything(?) for SV4
 
-		$thisfile_mpc_header['target_bitrate']       =        (($HeaderDWORD[0] & 0xFF800000) >> 23);
-		$thisfile_mpc_header['intensity_stereo']     = (bool) (($HeaderDWORD[0] & 0x00400000) >> 22);
-		$thisfile_mpc_header['mid_side_stereo']      = (bool) (($HeaderDWORD[0] & 0x00200000) >> 21);
-		$thisfile_mpc_header['stream_version_major'] =         ($HeaderDWORD[0] & 0x001FF800) >> 11;
+		$thisfile_mpc_header['target_bitrate'] = (($HeaderDWORD[0] & 0xFF800000) >> 23);
+		$thisfile_mpc_header['intensity_stereo'] = (bool)(($HeaderDWORD[0] & 0x00400000) >> 22);
+		$thisfile_mpc_header['mid_side_stereo'] = (bool)(($HeaderDWORD[0] & 0x00200000) >> 21);
+		$thisfile_mpc_header['stream_version_major'] = ($HeaderDWORD[0] & 0x001FF800) >> 11;
 		$thisfile_mpc_header['stream_version_minor'] = 0; // no sub-version numbers before SV7
-		$thisfile_mpc_header['max_band']             =         ($HeaderDWORD[0] & 0x000007C0) >>  6;  // related to lowpass frequency, not sure how it translates exactly
-		$thisfile_mpc_header['block_size']           =         ($HeaderDWORD[0] & 0x0000003F);
+		$thisfile_mpc_header['max_band'] = ($HeaderDWORD[0] & 0x000007C0) >> 6;  // related to lowpass frequency, not sure how it translates exactly
+		$thisfile_mpc_header['block_size'] = ($HeaderDWORD[0] & 0x0000003F);
 
 		switch ($thisfile_mpc_header['stream_version_major']) {
 			case 4:
@@ -366,7 +373,7 @@ class getid3_mpc extends getid3_handler
 
 			case 5:
 			case 6:
-				$thisfile_mpc_header['frame_count'] =  $HeaderDWORD[1];
+				$thisfile_mpc_header['frame_count'] = $HeaderDWORD[1];
 				break;
 
 			default:
@@ -380,9 +387,9 @@ class getid3_mpc extends getid3_handler
 			$info['warning'][] = 'Block size expected to be 1, actual value found: '.$thisfile_mpc_header['block_size'];
 		}
 
-		$thisfile_mpc_header['sample_rate']   = 44100; // AB: used by all files up to SV7
+		$thisfile_mpc_header['sample_rate'] = 44100; // AB: used by all files up to SV7
 		$info['audio']['sample_rate'] = $thisfile_mpc_header['sample_rate'];
-		$thisfile_mpc_header['samples']       = $thisfile_mpc_header['frame_count'] * 1152 * $info['audio']['channels'];
+		$thisfile_mpc_header['samples'] = $thisfile_mpc_header['frame_count'] * 1152 * $info['audio']['channels'];
 
 		if ($thisfile_mpc_header['target_bitrate'] == 0) {
 			$info['audio']['bitrate_mode'] = 'vbr';
@@ -390,7 +397,7 @@ class getid3_mpc extends getid3_handler
 			$info['audio']['bitrate_mode'] = 'cbr';
 		}
 
-		$info['mpc']['bitrate']   = ($info['avdataend'] - $info['avdataoffset']) * 8 * 44100 / $thisfile_mpc_header['frame_count'] / 1152;
+		$info['mpc']['bitrate'] = ($info['avdataend'] - $info['avdataoffset']) * 8 * 44100 / $thisfile_mpc_header['frame_count'] / 1152;
 		$info['audio']['bitrate'] = $info['mpc']['bitrate'];
 		$info['audio']['encoder'] = 'SV'.$thisfile_mpc_header['stream_version_major'];
 
@@ -400,16 +407,16 @@ class getid3_mpc extends getid3_handler
 
 	public function MPCprofileNameLookup($profileid) {
 		static $MPCprofileNameLookup = array(
-			0  => 'no profile',
-			1  => 'Experimental',
-			2  => 'unused',
-			3  => 'unused',
-			4  => 'unused',
-			5  => 'below Telephone (q = 0.0)',
-			6  => 'below Telephone (q = 1.0)',
-			7  => 'Telephone (q = 2.0)',
-			8  => 'Thumb (q = 3.0)',
-			9  => 'Radio (q = 4.0)',
+			0 => 'no profile',
+			1 => 'Experimental',
+			2 => 'unused',
+			3 => 'unused',
+			4 => 'unused',
+			5 => 'below Telephone (q = 0.0)',
+			6 => 'below Telephone (q = 1.0)',
+			7 => 'Telephone (q = 2.0)',
+			8 => 'Thumb (q = 3.0)',
+			9 => 'Radio (q = 4.0)',
 			10 => 'Standard (q = 5.0)',
 			11 => 'Extreme (q = 6.0)',
 			12 => 'Insane (q = 7.0)',
@@ -464,7 +471,7 @@ class getid3_mpc extends getid3_handler
 		return number_format($encoderversion / 100, 2).' alpha';
 	}
 
-	public function SV8variableLengthInteger($data, &$packetLength, $maxHandledPacketLength=9) {
+	public function SV8variableLengthInteger($data, &$packetLength, $maxHandledPacketLength = 9) {
 		$packet_size = 0;
 		for ($packetLength = 1; $packetLength <= $maxHandledPacketLength; $packetLength++) {
 			// variable-length size field:

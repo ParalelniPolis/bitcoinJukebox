@@ -16,8 +16,7 @@
 
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
 
-class getid3_la extends getid3_handler
-{
+class getid3_la extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
@@ -30,13 +29,13 @@ class getid3_la extends getid3_handler
 			case 'LA02':
 			case 'LA03':
 			case 'LA04':
-				$info['fileformat']          = 'la';
+				$info['fileformat'] = 'la';
 				$info['audio']['dataformat'] = 'la';
-				$info['audio']['lossless']   = true;
+				$info['audio']['lossless'] = true;
 
-				$info['la']['version_major'] = (int) substr($rawdata, $offset + 2, 1);
-				$info['la']['version_minor'] = (int) substr($rawdata, $offset + 3, 1);
-				$info['la']['version']       = (float) $info['la']['version_major'] + ($info['la']['version_minor'] / 10);
+				$info['la']['version_major'] = (int)substr($rawdata, $offset + 2, 1);
+				$info['la']['version_minor'] = (int)substr($rawdata, $offset + 3, 1);
+				$info['la']['version'] = (float)$info['la']['version_major'] + ($info['la']['version_minor'] / 10);
 				$offset += 4;
 
 				$info['la']['uncompressed_size'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
@@ -56,7 +55,7 @@ class getid3_la extends getid3_handler
 				$info['la']['fmt_size'] = 24;
 				if ($info['la']['version'] >= 0.3) {
 
-					$info['la']['fmt_size']    = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
+					$info['la']['fmt_size'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
 					$info['la']['header_size'] = 49 + $info['la']['fmt_size'] - 24;
 					$offset += 4;
 
@@ -76,41 +75,41 @@ class getid3_la extends getid3_handler
 				$fmt_size = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
 				$offset += 4;
 
-				$info['la']['raw']['format']  = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
+				$info['la']['raw']['format'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
 				$offset += 2;
 
-				$info['la']['channels']       = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
+				$info['la']['channels'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
 				$offset += 2;
 				if ($info['la']['channels'] == 0) {
 					$info['error'][] = 'Corrupt LA file: channels == zero';
-						return false;
+					return false;
 				}
 
 				$info['la']['sample_rate'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
 				$offset += 4;
 				if ($info['la']['sample_rate'] == 0) {
 					$info['error'][] = 'Corrupt LA file: sample_rate == zero';
-						return false;
+					return false;
 				}
 
-				$info['la']['bytes_per_second']     = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
+				$info['la']['bytes_per_second'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
 				$offset += 4;
-				$info['la']['bytes_per_sample']     = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
+				$info['la']['bytes_per_sample'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
 				$offset += 2;
-				$info['la']['bits_per_sample']      = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
+				$info['la']['bits_per_sample'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 2));
 				$offset += 2;
 
-				$info['la']['samples']              = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
+				$info['la']['samples'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
 				$offset += 4;
 
-				$info['la']['raw']['flags']         = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 1));
+				$info['la']['raw']['flags'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 1));
 				$offset += 1;
-				$info['la']['flags']['seekable']             = (bool) ($info['la']['raw']['flags'] & 0x01);
+				$info['la']['flags']['seekable'] = (bool)($info['la']['raw']['flags'] & 0x01);
 				if ($info['la']['version'] >= 0.4) {
-					$info['la']['flags']['high_compression'] = (bool) ($info['la']['raw']['flags'] & 0x02);
+					$info['la']['flags']['high_compression'] = (bool)($info['la']['raw']['flags'] & 0x02);
 				}
 
-				$info['la']['original_crc']         = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
+				$info['la']['original_crc'] = getid3_lib::LittleEndian2Int(substr($rawdata, $offset, 4));
 				$offset += 4;
 
 				// mikeØbevin*de
@@ -191,19 +190,19 @@ class getid3_la extends getid3_handler
 				}
 
 				// $info['avdataoffset'] should be zero to begin with, but just in case it's not, include the addition anyway
-				$info['avdataend']    = $info['avdataoffset'] + $info['la']['footerstart'];
+				$info['avdataend'] = $info['avdataoffset'] + $info['la']['footerstart'];
 				$info['avdataoffset'] = $info['avdataoffset'] + $offset;
 
-				$info['la']['compression_ratio']    = (float) (($info['avdataend'] - $info['avdataoffset']) / $info['la']['uncompressed_size']);
-				$info['playtime_seconds']           = (float) ($info['la']['samples'] / $info['la']['sample_rate']) / $info['la']['channels'];
+				$info['la']['compression_ratio'] = (float)(($info['avdataend'] - $info['avdataoffset']) / $info['la']['uncompressed_size']);
+				$info['playtime_seconds'] = (float)($info['la']['samples'] / $info['la']['sample_rate']) / $info['la']['channels'];
 				if ($info['playtime_seconds'] == 0) {
 					$info['error'][] = 'Corrupt LA file: playtime_seconds == zero';
 					return false;
 				}
 
-				$info['audio']['bitrate']            = ($info['avdataend'] - $info['avdataoffset']) * 8 / $info['playtime_seconds'];
+				$info['audio']['bitrate'] = ($info['avdataend'] - $info['avdataoffset']) * 8 / $info['playtime_seconds'];
 				//$info['audio']['codec']              = $info['la']['codec'];
-				$info['audio']['bits_per_sample']    = $info['la']['bits_per_sample'];
+				$info['audio']['bits_per_sample'] = $info['la']['bits_per_sample'];
 				break;
 
 			default:
@@ -216,9 +215,9 @@ class getid3_la extends getid3_handler
 				break;
 		}
 
-		$info['audio']['channels']    = $info['la']['channels'];
-		$info['audio']['sample_rate'] = (int) $info['la']['sample_rate'];
-		$info['audio']['encoder']     = 'LA v'.$info['la']['version'];
+		$info['audio']['channels'] = $info['la']['channels'];
+		$info['audio']['sample_rate'] = (int)$info['la']['sample_rate'];
+		$info['audio']['encoder'] = 'LA v'.$info['la']['version'];
 
 		return true;
 	}

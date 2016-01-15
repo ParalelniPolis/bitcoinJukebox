@@ -16,18 +16,17 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_jpg extends getid3_handler
-{
+class getid3_jpg extends getid3_handler {
 
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
-		$info['fileformat']                  = 'jpg';
-		$info['video']['dataformat']         = 'jpg';
-		$info['video']['lossless']           = false;
-		$info['video']['bits_per_sample']    = 24;
-		$info['video']['pixel_aspect_ratio'] = (float) 1;
+		$info['fileformat'] = 'jpg';
+		$info['video']['dataformat'] = 'jpg';
+		$info['video']['lossless'] = false;
+		$info['video']['bits_per_sample'] = 24;
+		$info['video']['pixel_aspect_ratio'] = (float)1;
 
 		$this->fseek($info['avdataoffset']);
 
@@ -109,7 +108,7 @@ class getid3_jpg extends getid3_handler
 				$computed_time[3] = (isset($explodedGPSDateStamp[1]) ? $explodedGPSDateStamp[1] : '');
 				$computed_time[4] = (isset($explodedGPSDateStamp[2]) ? $explodedGPSDateStamp[2] : '');
 
-				$computed_time = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 5=>0);
+				$computed_time = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
 				if (isset($info['jpg']['exif']['GPS']['GPSTimeStamp']) && is_array($info['jpg']['exif']['GPS']['GPSTimeStamp'])) {
 					foreach ($info['jpg']['exif']['GPS']['GPSTimeStamp'] as $key => $value) {
 						$computed_time[$key] = getid3_lib::DecimalizeFraction($value);
@@ -174,7 +173,7 @@ class getid3_jpg extends getid3_handler
 		} elseif (preg_match('#^[0-9]+$#', $value)) {
 			return getid3_lib::CastAsInt($value);
 		} elseif (preg_match('#^[0-9\.]+$#', $value)) {
-			return (float) $value;
+			return (float)$value;
 		}
 		return $value;
 	}
@@ -203,57 +202,57 @@ class getid3_jpg extends getid3_handler
 		if (empty($IPTCrecordTagName)) {
 			$IPTCrecordTagName = array(
 				1 => array( // IPTC EnvelopeRecord Tags
-					0   => 'EnvelopeRecordVersion',
-					5   => 'Destination',
-					20  => 'FileFormat',
-					22  => 'FileVersion',
-					30  => 'ServiceIdentifier',
-					40  => 'EnvelopeNumber',
-					50  => 'ProductID',
-					60  => 'EnvelopePriority',
-					70  => 'DateSent',
-					80  => 'TimeSent',
-					90  => 'CodedCharacterSet',
+					0 => 'EnvelopeRecordVersion',
+					5 => 'Destination',
+					20 => 'FileFormat',
+					22 => 'FileVersion',
+					30 => 'ServiceIdentifier',
+					40 => 'EnvelopeNumber',
+					50 => 'ProductID',
+					60 => 'EnvelopePriority',
+					70 => 'DateSent',
+					80 => 'TimeSent',
+					90 => 'CodedCharacterSet',
 					100 => 'UniqueObjectName',
 					120 => 'ARMIdentifier',
 					122 => 'ARMVersion',
 				),
 				2 => array( // IPTC ApplicationRecord Tags
-					0   => 'ApplicationRecordVersion',
-					3   => 'ObjectTypeReference',
-					4   => 'ObjectAttributeReference',
-					5   => 'ObjectName',
-					7   => 'EditStatus',
-					8   => 'EditorialUpdate',
-					10  => 'Urgency',
-					12  => 'SubjectReference',
-					15  => 'Category',
-					20  => 'SupplementalCategories',
-					22  => 'FixtureIdentifier',
-					25  => 'Keywords',
-					26  => 'ContentLocationCode',
-					27  => 'ContentLocationName',
-					30  => 'ReleaseDate',
-					35  => 'ReleaseTime',
-					37  => 'ExpirationDate',
-					38  => 'ExpirationTime',
-					40  => 'SpecialInstructions',
-					42  => 'ActionAdvised',
-					45  => 'ReferenceService',
-					47  => 'ReferenceDate',
-					50  => 'ReferenceNumber',
-					55  => 'DateCreated',
-					60  => 'TimeCreated',
-					62  => 'DigitalCreationDate',
-					63  => 'DigitalCreationTime',
-					65  => 'OriginatingProgram',
-					70  => 'ProgramVersion',
-					75  => 'ObjectCycle',
-					80  => 'By-line',
-					85  => 'By-lineTitle',
-					90  => 'City',
-					92  => 'Sub-location',
-					95  => 'Province-State',
+					0 => 'ApplicationRecordVersion',
+					3 => 'ObjectTypeReference',
+					4 => 'ObjectAttributeReference',
+					5 => 'ObjectName',
+					7 => 'EditStatus',
+					8 => 'EditorialUpdate',
+					10 => 'Urgency',
+					12 => 'SubjectReference',
+					15 => 'Category',
+					20 => 'SupplementalCategories',
+					22 => 'FixtureIdentifier',
+					25 => 'Keywords',
+					26 => 'ContentLocationCode',
+					27 => 'ContentLocationName',
+					30 => 'ReleaseDate',
+					35 => 'ReleaseTime',
+					37 => 'ExpirationDate',
+					38 => 'ExpirationTime',
+					40 => 'SpecialInstructions',
+					42 => 'ActionAdvised',
+					45 => 'ReferenceService',
+					47 => 'ReferenceDate',
+					50 => 'ReferenceNumber',
+					55 => 'DateCreated',
+					60 => 'TimeCreated',
+					62 => 'DigitalCreationDate',
+					63 => 'DigitalCreationTime',
+					65 => 'OriginatingProgram',
+					70 => 'ProgramVersion',
+					75 => 'ObjectCycle',
+					80 => 'By-line',
+					85 => 'By-lineTitle',
+					90 => 'City',
+					92 => 'Sub-location',
+					95 => 'Province-State',
 					100 => 'Country-PrimaryLocationCode',
 					101 => 'Country-PrimaryLocationName',
 					103 => 'OriginalTransmissionReference',
@@ -290,23 +289,23 @@ class getid3_jpg extends getid3_handler
 					232 => 'ExifCameraInfo',
 				),
 				3 => array( // IPTC NewsPhoto Tags
-					0   => 'NewsPhotoVersion',
-					10  => 'IPTCPictureNumber',
-					20  => 'IPTCImageWidth',
-					30  => 'IPTCImageHeight',
-					40  => 'IPTCPixelWidth',
-					50  => 'IPTCPixelHeight',
-					55  => 'SupplementalType',
-					60  => 'ColorRepresentation',
-					64  => 'InterchangeColorSpace',
-					65  => 'ColorSequence',
-					66  => 'ICC_Profile',
-					70  => 'ColorCalibrationMatrix',
-					80  => 'LookupTable',
-					84  => 'NumIndexEntries',
-					85  => 'ColorPalette',
-					86  => 'IPTCBitsPerSample',
-					90  => 'SampleStructure',
+					0 => 'NewsPhotoVersion',
+					10 => 'IPTCPictureNumber',
+					20 => 'IPTCImageWidth',
+					30 => 'IPTCImageHeight',
+					40 => 'IPTCPixelWidth',
+					50 => 'IPTCPixelHeight',
+					55 => 'SupplementalType',
+					60 => 'ColorRepresentation',
+					64 => 'InterchangeColorSpace',
+					65 => 'ColorSequence',
+					66 => 'ICC_Profile',
+					70 => 'ColorCalibrationMatrix',
+					80 => 'LookupTable',
+					84 => 'NumIndexEntries',
+					85 => 'ColorPalette',
+					86 => 'IPTCBitsPerSample',
+					90 => 'SampleStructure',
 					100 => 'ScanningDirection',
 					102 => 'IPTCImageRotation',
 					110 => 'DataCompressionMethod',
@@ -318,16 +317,16 @@ class getid3_jpg extends getid3_handler
 					145 => 'GammaCompensatedValue',
 				),
 				7 => array( // IPTC PreObjectData Tags
-					10  => 'SizeMode',
-					20  => 'MaxSubfileSize',
-					90  => 'ObjectSizeAnnounced',
-					95  => 'MaximumObjectSize',
+					10 => 'SizeMode',
+					20 => 'MaxSubfileSize',
+					90 => 'ObjectSizeAnnounced',
+					95 => 'MaximumObjectSize',
 				),
 				8 => array( // IPTC ObjectData Tags
-					10  => 'SubFile',
+					10 => 'SubFile',
 				),
 				9 => array( // IPTC PostObjectData Tags
-					10  => 'ConfirmedObjectSize',
+					10 => 'ConfirmedObjectSize',
 				),
 			);
 

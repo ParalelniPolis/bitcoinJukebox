@@ -15,8 +15,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_rar extends getid3_handler
-{
+class getid3_rar extends getid3_handler {
 
 	public $option_use_rar_extension = false;
 

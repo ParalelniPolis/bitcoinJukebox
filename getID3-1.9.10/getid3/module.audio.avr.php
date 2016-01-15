@@ -15,8 +15,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_avr extends getid3_handler
-{
+class getid3_avr extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
@@ -66,7 +65,7 @@ class getid3_avr extends getid3_handler
 		$this->fseek($info['avdataoffset']);
 		$AVRheader = $this->fread(128);
 
-		$info['avr']['raw']['magic'] = substr($AVRheader,  0,  4);
+		$info['avr']['raw']['magic'] = substr($AVRheader, 0, 4);
 		$magic = '2BIT';
 		if ($info['avr']['raw']['magic'] != $magic) {
 			$info['error'][] = 'Expecting "'.getid3_lib::PrintHexBytes($magic).'" at offset '.$info['avdataoffset'].', found "'.getid3_lib::PrintHexBytes($info['avr']['raw']['magic']).'"';
@@ -76,26 +75,26 @@ class getid3_avr extends getid3_handler
 		}
 		$info['avdataoffset'] += 128;
 
-		$info['avr']['sample_name']        =         rtrim(substr($AVRheader,  4,  8));
-		$info['avr']['raw']['mono']        = getid3_lib::BigEndian2Int(substr($AVRheader, 12,  2));
-		$info['avr']['bits_per_sample']    = getid3_lib::BigEndian2Int(substr($AVRheader, 14,  2));
-		$info['avr']['raw']['signed']      = getid3_lib::BigEndian2Int(substr($AVRheader, 16,  2));
-		$info['avr']['raw']['loop']        = getid3_lib::BigEndian2Int(substr($AVRheader, 18,  2));
-		$info['avr']['raw']['midi']        = getid3_lib::BigEndian2Int(substr($AVRheader, 20,  2));
-		$info['avr']['raw']['replay_freq'] = getid3_lib::BigEndian2Int(substr($AVRheader, 22,  1));
-		$info['avr']['sample_rate']        = getid3_lib::BigEndian2Int(substr($AVRheader, 23,  3));
-		$info['avr']['sample_length']      = getid3_lib::BigEndian2Int(substr($AVRheader, 26,  4));
-		$info['avr']['loop_start']         = getid3_lib::BigEndian2Int(substr($AVRheader, 30,  4));
-		$info['avr']['loop_end']           = getid3_lib::BigEndian2Int(substr($AVRheader, 34,  4));
-		$info['avr']['midi_split']         = getid3_lib::BigEndian2Int(substr($AVRheader, 38,  2));
-		$info['avr']['sample_compression'] = getid3_lib::BigEndian2Int(substr($AVRheader, 40,  2));
-		$info['avr']['reserved']           = getid3_lib::BigEndian2Int(substr($AVRheader, 42,  2));
-		$info['avr']['sample_name_extra']  =         rtrim(substr($AVRheader, 44, 20));
-		$info['avr']['comment']            =         rtrim(substr($AVRheader, 64, 64));
+		$info['avr']['sample_name'] = rtrim(substr($AVRheader, 4, 8));
+		$info['avr']['raw']['mono'] = getid3_lib::BigEndian2Int(substr($AVRheader, 12, 2));
+		$info['avr']['bits_per_sample'] = getid3_lib::BigEndian2Int(substr($AVRheader, 14, 2));
+		$info['avr']['raw']['signed'] = getid3_lib::BigEndian2Int(substr($AVRheader, 16, 2));
+		$info['avr']['raw']['loop'] = getid3_lib::BigEndian2Int(substr($AVRheader, 18, 2));
+		$info['avr']['raw']['midi'] = getid3_lib::BigEndian2Int(substr($AVRheader, 20, 2));
+		$info['avr']['raw']['replay_freq'] = getid3_lib::BigEndian2Int(substr($AVRheader, 22, 1));
+		$info['avr']['sample_rate'] = getid3_lib::BigEndian2Int(substr($AVRheader, 23, 3));
+		$info['avr']['sample_length'] = getid3_lib::BigEndian2Int(substr($AVRheader, 26, 4));
+		$info['avr']['loop_start'] = getid3_lib::BigEndian2Int(substr($AVRheader, 30, 4));
+		$info['avr']['loop_end'] = getid3_lib::BigEndian2Int(substr($AVRheader, 34, 4));
+		$info['avr']['midi_split'] = getid3_lib::BigEndian2Int(substr($AVRheader, 38, 2));
+		$info['avr']['sample_compression'] = getid3_lib::BigEndian2Int(substr($AVRheader, 40, 2));
+		$info['avr']['reserved'] = getid3_lib::BigEndian2Int(substr($AVRheader, 42, 2));
+		$info['avr']['sample_name_extra'] = rtrim(substr($AVRheader, 44, 20));
+		$info['avr']['comment'] = rtrim(substr($AVRheader, 64, 64));
 
-		$info['avr']['flags']['stereo'] = (($info['avr']['raw']['mono']   == 0) ? false : true);
+		$info['avr']['flags']['stereo'] = (($info['avr']['raw']['mono'] == 0) ? false : true);
 		$info['avr']['flags']['signed'] = (($info['avr']['raw']['signed'] == 0) ? false : true);
-		$info['avr']['flags']['loop']   = (($info['avr']['raw']['loop']   == 0) ? false : true);
+		$info['avr']['flags']['loop'] = (($info['avr']['raw']['loop'] == 0) ? false : true);
 
 		$info['avr']['midi_notes'] = array();
 		if (($info['avr']['raw']['midi'] & 0xFF00) != 0xFF00) {
@@ -109,14 +108,14 @@ class getid3_avr extends getid3_handler
 			$info['warning'][] = 'Probable truncated file: expecting '.($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 1 : 2)).' bytes of audio data, found '.($info['avdataend'] - $info['avdataoffset']);
 		}
 
-		$info['audio']['dataformat']      = 'avr';
-		$info['audio']['lossless']        = true;
-		$info['audio']['bitrate_mode']    = 'cbr';
+		$info['audio']['dataformat'] = 'avr';
+		$info['audio']['lossless'] = true;
+		$info['audio']['bitrate_mode'] = 'cbr';
 		$info['audio']['bits_per_sample'] = $info['avr']['bits_per_sample'];
-		$info['audio']['sample_rate']     = $info['avr']['sample_rate'];
-		$info['audio']['channels']        = ($info['avr']['flags']['stereo'] ? 2 : 1);
-		$info['playtime_seconds']         = ($info['avr']['sample_length'] / $info['audio']['channels']) / $info['avr']['sample_rate'];
-		$info['audio']['bitrate']         = ($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 8 : 16)) / $info['playtime_seconds'];
+		$info['audio']['sample_rate'] = $info['avr']['sample_rate'];
+		$info['audio']['channels'] = ($info['avr']['flags']['stereo'] ? 2 : 1);
+		$info['playtime_seconds'] = ($info['avr']['sample_length'] / $info['audio']['channels']) / $info['avr']['sample_rate'];
+		$info['audio']['bitrate'] = ($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 8 : 16)) / $info['playtime_seconds'];
 
 
 		return true;

@@ -15,8 +15,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_par2 extends getid3_handler
-{
+class getid3_par2 extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;

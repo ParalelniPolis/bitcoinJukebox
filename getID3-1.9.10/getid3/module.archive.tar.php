@@ -20,8 +20,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_tar extends getid3_handler
-{
+class getid3_tar extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
@@ -50,23 +49,23 @@ class getid3_tar extends getid3_handler
 			for ($i = 156; $i < 512; $i++) {
 				$checksum += ord($buffer{$i});
 			}
-			$attr    = unpack($unpack_header, $buffer);
-			$name    =       (isset($attr['fname']  ) ? trim($attr['fname']  ) : '');
-			$mode    = octdec(isset($attr['mode']   ) ? trim($attr['mode']   ) : '');
-			$uid     = octdec(isset($attr['uid']    ) ? trim($attr['uid']    ) : '');
-			$gid     = octdec(isset($attr['gid']    ) ? trim($attr['gid']    ) : '');
-			$size    = octdec(isset($attr['size']   ) ? trim($attr['size']   ) : '');
-			$mtime   = octdec(isset($attr['mtime']  ) ? trim($attr['mtime']  ) : '');
-			$chksum  = octdec(isset($attr['chksum'] ) ? trim($attr['chksum'] ) : '');
-			$typflag =       (isset($attr['typflag']) ? trim($attr['typflag']) : '');
-			$lnkname =       (isset($attr['lnkname']) ? trim($attr['lnkname']) : '');
-			$magic   =       (isset($attr['magic']  ) ? trim($attr['magic']  ) : '');
-			$ver     =       (isset($attr['ver']    ) ? trim($attr['ver']    ) : '');
-			$uname   =       (isset($attr['uname']  ) ? trim($attr['uname']  ) : '');
-			$gname   =       (isset($attr['gname']  ) ? trim($attr['gname']  ) : '');
-			$devmaj  = octdec(isset($attr['devmaj'] ) ? trim($attr['devmaj'] ) : '');
-			$devmin  = octdec(isset($attr['devmin'] ) ? trim($attr['devmin'] ) : '');
-			$prefix  =       (isset($attr['prefix'] ) ? trim($attr['prefix'] ) : '');
+			$attr = unpack($unpack_header, $buffer);
+			$name = (isset($attr['fname']) ? trim($attr['fname']) : '');
+			$mode = octdec(isset($attr['mode']) ? trim($attr['mode']) : '');
+			$uid = octdec(isset($attr['uid']) ? trim($attr['uid']) : '');
+			$gid = octdec(isset($attr['gid']) ? trim($attr['gid']) : '');
+			$size = octdec(isset($attr['size']) ? trim($attr['size']) : '');
+			$mtime = octdec(isset($attr['mtime']) ? trim($attr['mtime']) : '');
+			$chksum = octdec(isset($attr['chksum']) ? trim($attr['chksum']) : '');
+			$typflag = (isset($attr['typflag']) ? trim($attr['typflag']) : '');
+			$lnkname = (isset($attr['lnkname']) ? trim($attr['lnkname']) : '');
+			$magic = (isset($attr['magic']) ? trim($attr['magic']) : '');
+			$ver = (isset($attr['ver']) ? trim($attr['ver']) : '');
+			$uname = (isset($attr['uname']) ? trim($attr['uname']) : '');
+			$gname = (isset($attr['gname']) ? trim($attr['gname']) : '');
+			$devmaj = octdec(isset($attr['devmaj']) ? trim($attr['devmaj']) : '');
+			$devmin = octdec(isset($attr['devmin']) ? trim($attr['devmin']) : '');
+			$prefix = (isset($attr['prefix']) ? trim($attr['prefix']) : '');
 			if (($checksum == 256) && ($chksum == 0)) {
 				// EOF Found
 				break;
@@ -94,21 +93,21 @@ class getid3_tar extends getid3_handler
 			if ($name == '') {
 				break;
 			}
-			$info['tar']['file_details'][$name] = array (
-				'name'     => $name,
+			$info['tar']['file_details'][$name] = array(
+				'name' => $name,
 				'mode_raw' => $mode,
-				'mode'     => self::display_perms($mode),
-				'uid'      => $uid,
-				'gid'      => $gid,
-				'size'     => $size,
-				'mtime'    => $mtime,
-				'chksum'   => $chksum,
+				'mode' => self::display_perms($mode),
+				'uid' => $uid,
+				'gid' => $gid,
+				'size' => $size,
+				'mtime' => $mtime,
+				'chksum' => $chksum,
 				'typeflag' => self::get_flag_type($typflag),
 				'linkname' => $lnkname,
-				'magic'    => $magic,
-				'version'  => $ver,
-				'uname'    => $uname,
-				'gname'    => $gname,
+				'magic' => $magic,
+				'version' => $ver,
+				'uname' => $uname,
+				'gname' => $gname,
 				'devmajor' => $devmaj,
 				'devminor' => $devmin
 			);
@@ -120,24 +119,24 @@ class getid3_tar extends getid3_handler
 	// Parses the file mode to file permissions
 	public function display_perms($mode) {
 		// Determine Type
-		if     ($mode & 0x1000) $type='p'; // FIFO pipe
-		elseif ($mode & 0x2000) $type='c'; // Character special
-		elseif ($mode & 0x4000) $type='d'; // Directory
-		elseif ($mode & 0x6000) $type='b'; // Block special
-		elseif ($mode & 0x8000) $type='-'; // Regular
-		elseif ($mode & 0xA000) $type='l'; // Symbolic Link
-		elseif ($mode & 0xC000) $type='s'; // Socket
-		else                    $type='u'; // UNKNOWN
+		if ($mode & 0x1000) $type = 'p'; // FIFO pipe
+		elseif ($mode & 0x2000) $type = 'c'; // Character special
+		elseif ($mode & 0x4000) $type = 'd'; // Directory
+		elseif ($mode & 0x6000) $type = 'b'; // Block special
+		elseif ($mode & 0x8000) $type = '-'; // Regular
+		elseif ($mode & 0xA000) $type = 'l'; // Symbolic Link
+		elseif ($mode & 0xC000) $type = 's'; // Socket
+		else                    $type = 'u'; // UNKNOWN
 
 		// Determine permissions
-		$owner['read']    = (($mode & 00400) ? 'r' : '-');
-		$owner['write']   = (($mode & 00200) ? 'w' : '-');
+		$owner['read'] = (($mode & 00400) ? 'r' : '-');
+		$owner['write'] = (($mode & 00200) ? 'w' : '-');
 		$owner['execute'] = (($mode & 00100) ? 'x' : '-');
-		$group['read']    = (($mode & 00040) ? 'r' : '-');
-		$group['write']   = (($mode & 00020) ? 'w' : '-');
+		$group['read'] = (($mode & 00040) ? 'r' : '-');
+		$group['write'] = (($mode & 00020) ? 'w' : '-');
 		$group['execute'] = (($mode & 00010) ? 'x' : '-');
-		$world['read']    = (($mode & 00004) ? 'r' : '-');
-		$world['write']   = (($mode & 00002) ? 'w' : '-');
+		$world['read'] = (($mode & 00004) ? 'r' : '-');
+		$world['write'] = (($mode & 00002) ? 'w' : '-');
 		$world['execute'] = (($mode & 00001) ? 'x' : '-');
 
 		// Adjust for SUID, SGID and sticky bit
@@ -145,9 +144,9 @@ class getid3_tar extends getid3_handler
 		if ($mode & 0x400) $group['execute'] = ($group['execute'] == 'x') ? 's' : 'S';
 		if ($mode & 0x200) $world['execute'] = ($world['execute'] == 'x') ? 't' : 'T';
 
-		$s  = sprintf('%1s', $type);
-		$s .= sprintf('%1s%1s%1s',      $owner['read'], $owner['write'], $owner['execute']);
-		$s .= sprintf('%1s%1s%1s',      $group['read'], $group['write'], $group['execute']);
+		$s = sprintf('%1s', $type);
+		$s .= sprintf('%1s%1s%1s', $owner['read'], $owner['write'], $owner['execute']);
+		$s .= sprintf('%1s%1s%1s', $group['read'], $group['write'], $group['execute']);
 		$s .= sprintf('%1s%1s%1s'."\n", $world['read'], $world['write'], $world['execute']);
 		return $s;
 	}

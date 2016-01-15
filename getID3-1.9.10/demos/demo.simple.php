@@ -43,10 +43,10 @@ while (($file = readdir($dir)) !== false) {
 		// output desired information in whatever format you want
 		echo '<tr>';
 		echo '<td>'.htmlentities($ThisFileInfo['filenamepath']).'</td>';
-		echo '<td>'              .htmlentities(!empty($ThisFileInfo['comments_html']['artist']) ? implode('<br>', $ThisFileInfo['comments_html']['artist'])         : chr(160)).'</td>';
-		echo '<td>'              .htmlentities(!empty($ThisFileInfo['comments_html']['title'])  ? implode('<br>', $ThisFileInfo['comments_html']['title'])          : chr(160)).'</td>';
-		echo '<td align="right">'.htmlentities(!empty($ThisFileInfo['audio']['bitrate'])        ?           round($ThisFileInfo['audio']['bitrate'] / 1000).' kbps' : chr(160)).'</td>';
-		echo '<td align="right">'.htmlentities(!empty($ThisFileInfo['playtime_string'])         ?                 $ThisFileInfo['playtime_string']                  : chr(160)).'</td>';
+		echo '<td>'.htmlentities(!empty($ThisFileInfo['comments_html']['artist']) ? implode('<br>', $ThisFileInfo['comments_html']['artist']) : chr(160)).'</td>';
+		echo '<td>'.htmlentities(!empty($ThisFileInfo['comments_html']['title']) ? implode('<br>', $ThisFileInfo['comments_html']['title']) : chr(160)).'</td>';
+		echo '<td align="right">'.htmlentities(!empty($ThisFileInfo['audio']['bitrate']) ? round($ThisFileInfo['audio']['bitrate'] / 1000).' kbps' : chr(160)).'</td>';
+		echo '<td align="right">'.htmlentities(!empty($ThisFileInfo['playtime_string']) ? $ThisFileInfo['playtime_string'] : chr(160)).'</td>';
 		echo '</tr>';
 	}
 }

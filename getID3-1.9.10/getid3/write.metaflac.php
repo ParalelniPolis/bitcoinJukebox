@@ -15,13 +15,12 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_write_metaflac
-{
+class getid3_write_metaflac {
 
 	public $filename;
 	public $tag_data;
 	public $warnings = array(); // any non-critical errors will be stored here
-	public $errors   = array(); // any critical errors will be stored here
+	public $errors = array(); // any critical errors will be stored here
 
 	public function getid3_write_metaflac() {
 		return true;

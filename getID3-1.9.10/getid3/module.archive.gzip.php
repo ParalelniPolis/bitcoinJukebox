@@ -80,18 +80,18 @@ class getid3_gzip extends getid3_handler {
 			$buff = "\x1F\x8B\x08".$arr_members[$i];
 
 			$attr = unpack($unpack_header, substr($buff, 0, $start_length));
-			$thisInfo['filemtime']      = getid3_lib::LittleEndian2Int($attr['mtime']);
-			$thisInfo['raw']['id1']     = ord($attr['cmethod']);
-			$thisInfo['raw']['id2']     = ord($attr['cmethod']);
+			$thisInfo['filemtime'] = getid3_lib::LittleEndian2Int($attr['mtime']);
+			$thisInfo['raw']['id1'] = ord($attr['cmethod']);
+			$thisInfo['raw']['id2'] = ord($attr['cmethod']);
 			$thisInfo['raw']['cmethod'] = ord($attr['cmethod']);
-			$thisInfo['raw']['os']      = ord($attr['os']);
-			$thisInfo['raw']['xflags']  = ord($attr['xflags']);
-			$thisInfo['raw']['flags']   = ord($attr['flags']);
+			$thisInfo['raw']['os'] = ord($attr['os']);
+			$thisInfo['raw']['xflags'] = ord($attr['xflags']);
+			$thisInfo['raw']['flags'] = ord($attr['flags']);
 
-			$thisInfo['flags']['crc16']    = (bool) ($thisInfo['raw']['flags'] & 0x02);
-			$thisInfo['flags']['extra']    = (bool) ($thisInfo['raw']['flags'] & 0x04);
-			$thisInfo['flags']['filename'] = (bool) ($thisInfo['raw']['flags'] & 0x08);
-			$thisInfo['flags']['comment']  = (bool) ($thisInfo['raw']['flags'] & 0x10);
+			$thisInfo['flags']['crc16'] = (bool)($thisInfo['raw']['flags'] & 0x02);
+			$thisInfo['flags']['extra'] = (bool)($thisInfo['raw']['flags'] & 0x04);
+			$thisInfo['flags']['filename'] = (bool)($thisInfo['raw']['flags'] & 0x08);
+			$thisInfo['flags']['comment'] = (bool)($thisInfo['raw']['flags'] & 0x10);
 
 			$thisInfo['compression'] = $this->get_xflag_type($thisInfo['raw']['xflags']);
 
@@ -182,7 +182,7 @@ class getid3_gzip extends getid3_handler {
 			//}
 			// bits 5, 6, 7 - reserved
 
-			$thisInfo['crc32']    = getid3_lib::LittleEndian2Int(substr($buff, strlen($buff) - 8, 4));
+			$thisInfo['crc32'] = getid3_lib::LittleEndian2Int(substr($buff, strlen($buff) - 8, 4));
 			$thisInfo['filesize'] = getid3_lib::LittleEndian2Int(substr($buff, strlen($buff) - 4));
 
 			$info['gzip']['files'] = getid3_lib::array_merge_clobber($info['gzip']['files'], getid3_lib::CreateDeepArray($thisInfo['filename'], '/', $thisInfo['filesize']));
@@ -199,7 +199,7 @@ class getid3_gzip extends getid3_handler {
 					$inflated = gzinflate($cdata);
 
 					// Calculate CRC32 for inflated content
-					$thisInfo['crc32_valid'] = (bool) (sprintf('%u', crc32($inflated)) == $thisInfo['crc32']);
+					$thisInfo['crc32_valid'] = (bool)(sprintf('%u', crc32($inflated)) == $thisInfo['crc32']);
 
 					// determine format
 					$formattest = substr($inflated, 0, 32774);
@@ -249,20 +249,20 @@ class getid3_gzip extends getid3_handler {
 	// Converts the OS type
 	public function get_os_type($key) {
 		static $os_type = array(
-			'0'   => 'FAT filesystem (MS-DOS, OS/2, NT/Win32)',
-			'1'   => 'Amiga',
-			'2'   => 'VMS (or OpenVMS)',
-			'3'   => 'Unix',
-			'4'   => 'VM/CMS',
-			'5'   => 'Atari TOS',
-			'6'   => 'HPFS filesystem (OS/2, NT)',
-			'7'   => 'Macintosh',
-			'8'   => 'Z-System',
-			'9'   => 'CP/M',
-			'10'  => 'TOPS-20',
-			'11'  => 'NTFS filesystem (NT)',
-			'12'  => 'QDOS',
-			'13'  => 'Acorn RISCOS',
+			'0' => 'FAT filesystem (MS-DOS, OS/2, NT/Win32)',
+			'1' => 'Amiga',
+			'2' => 'VMS (or OpenVMS)',
+			'3' => 'Unix',
+			'4' => 'VM/CMS',
+			'5' => 'Atari TOS',
+			'6' => 'HPFS filesystem (OS/2, NT)',
+			'7' => 'Macintosh',
+			'8' => 'Z-System',
+			'9' => 'CP/M',
+			'10' => 'TOPS-20',
+			'11' => 'NTFS filesystem (NT)',
+			'12' => 'QDOS',
+			'13' => 'Acorn RISCOS',
 			'255' => 'unknown'
 		);
 		return (isset($os_type[$key]) ? $os_type[$key] : '');

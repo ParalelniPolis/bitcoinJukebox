@@ -15,8 +15,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_msoffice extends getid3_handler
-{
+class getid3_msoffice extends getid3_handler {
 
 	public function Analyze() {
 		$info = &$this->getid3->info;
@@ -30,8 +29,8 @@ class getid3_msoffice extends getid3_handler
 		}
 		$info['fileformat'] = 'msoffice';
 
-$info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of getID3() ['.$this->getid3->version().']';
-return false;
+		$info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of getID3() ['.$this->getid3->version().']';
+		return false;
 
 	}
 

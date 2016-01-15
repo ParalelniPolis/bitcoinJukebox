@@ -16,19 +16,18 @@
 
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.id3v2.php', __FILE__, true);
 
-class getid3_write_id3v2
-{
+class getid3_write_id3v2 {
 	public $filename;
 	public $tag_data;
-	public $fread_buffer_size           = 32768;    // read buffer size in bytes
-	public $paddedlength                = 4096;     // minimum length of ID3v2 tag in bytes
-	public $majorversion                = 3;        // ID3v2 major version (2, 3 (recommended), 4)
-	public $minorversion                = 0;        // ID3v2 minor version - always 0
-	public $merge_existing_data         = false;    // if true, merge new data with existing tags; if false, delete old tag data and only write new tags
-	public $id3v2_default_encodingid    = 0;        // default text encoding (ISO-8859-1) if not explicitly passed
+	public $fread_buffer_size = 32768;    // read buffer size in bytes
+	public $paddedlength = 4096;     // minimum length of ID3v2 tag in bytes
+	public $majorversion = 3;        // ID3v2 major version (2, 3 (recommended), 4)
+	public $minorversion = 0;        // ID3v2 minor version - always 0
+	public $merge_existing_data = false;    // if true, merge new data with existing tags; if false, delete old tag data and only write new tags
+	public $id3v2_default_encodingid = 0;        // default text encoding (ISO-8859-1) if not explicitly passed
 	public $id3v2_use_unsynchronisation = false;    // the specs say it should be TRUE, but most other ID3v2-aware programs are broken if unsynchronization is used, so by default don't use it.
-	public $warnings                    = array();  // any non-critical errors will be stored here
-	public $errors                      = array();  // any critical errors will be stored here
+	public $warnings = array();  // any non-critical errors will be stored here
+	public $errors = array();  // any critical errors will be stored here
 
 	public function getid3_write_id3v2() {
 		return true;
@@ -230,25 +229,25 @@ class getid3_write_id3v2
 		switch ($this->majorversion) {
 			case 4:
 				// %abcd0000
-				$flag  = (!empty($flags['unsynchronisation']) ? '1' : '0'); // a - Unsynchronisation
-				$flag .= (!empty($flags['extendedheader']   ) ? '1' : '0'); // b - Extended header
-				$flag .= (!empty($flags['experimental']     ) ? '1' : '0'); // c - Experimental indicator
-				$flag .= (!empty($flags['footer']           ) ? '1' : '0'); // d - Footer present
+				$flag = (!empty($flags['unsynchronisation']) ? '1' : '0'); // a - Unsynchronisation
+				$flag .= (!empty($flags['extendedheader']) ? '1' : '0'); // b - Extended header
+				$flag .= (!empty($flags['experimental']) ? '1' : '0'); // c - Experimental indicator
+				$flag .= (!empty($flags['footer']) ? '1' : '0'); // d - Footer present
 				$flag .= '0000';
 				break;
 
 			case 3:
 				// %abc00000
-				$flag  = (!empty($flags['unsynchronisation']) ? '1' : '0'); // a - Unsynchronisation
-				$flag .= (!empty($flags['extendedheader']   ) ? '1' : '0'); // b - Extended header
-				$flag .= (!empty($flags['experimental']     ) ? '1' : '0'); // c - Experimental indicator
+				$flag = (!empty($flags['unsynchronisation']) ? '1' : '0'); // a - Unsynchronisation
+				$flag .= (!empty($flags['extendedheader']) ? '1' : '0'); // b - Extended header
+				$flag .= (!empty($flags['experimental']) ? '1' : '0'); // c - Experimental indicator
 				$flag .= '00000';
 				break;
 
 			case 2:
 				// %ab000000
-				$flag  = (!empty($flags['unsynchronisation']) ? '1' : '0'); // a - Unsynchronisation
-				$flag .= (!empty($flags['compression']      ) ? '1' : '0'); // b - Compression
+				$flag = (!empty($flags['unsynchronisation']) ? '1' : '0'); // a - Unsynchronisation
+				$flag .= (!empty($flags['compression']) ? '1' : '0'); // b - Compression
 				$flag .= '000000';
 				break;
 
@@ -260,34 +259,34 @@ class getid3_write_id3v2
 	}
 
 
-	public function GenerateID3v2FrameFlags($TagAlter=false, $FileAlter=false, $ReadOnly=false, $Compression=false, $Encryption=false, $GroupingIdentity=false, $Unsynchronisation=false, $DataLengthIndicator=false) {
+	public function GenerateID3v2FrameFlags($TagAlter = false, $FileAlter = false, $ReadOnly = false, $Compression = false, $Encryption = false, $GroupingIdentity = false, $Unsynchronisation = false, $DataLengthIndicator = false) {
 		switch ($this->majorversion) {
 			case 4:
 				// %0abc0000 %0h00kmnp
-				$flag1  = '0';
-				$flag1 .= $TagAlter  ? '1' : '0'; // a - Tag alter preservation (true == discard)
+				$flag1 = '0';
+				$flag1 .= $TagAlter ? '1' : '0'; // a - Tag alter preservation (true == discard)
 				$flag1 .= $FileAlter ? '1' : '0'; // b - File alter preservation (true == discard)
-				$flag1 .= $ReadOnly  ? '1' : '0'; // c - Read only (true == read only)
+				$flag1 .= $ReadOnly ? '1' : '0'; // c - Read only (true == read only)
 				$flag1 .= '0000';
 
-				$flag2  = '0';
-				$flag2 .= $GroupingIdentity    ? '1' : '0'; // h - Grouping identity (true == contains group information)
+				$flag2 = '0';
+				$flag2 .= $GroupingIdentity ? '1' : '0'; // h - Grouping identity (true == contains group information)
 				$flag2 .= '00';
-				$flag2 .= $Compression         ? '1' : '0'; // k - Compression (true == compressed)
-				$flag2 .= $Encryption          ? '1' : '0'; // m - Encryption (true == encrypted)
-				$flag2 .= $Unsynchronisation   ? '1' : '0'; // n - Unsynchronisation (true == unsynchronised)
+				$flag2 .= $Compression ? '1' : '0'; // k - Compression (true == compressed)
+				$flag2 .= $Encryption ? '1' : '0'; // m - Encryption (true == encrypted)
+				$flag2 .= $Unsynchronisation ? '1' : '0'; // n - Unsynchronisation (true == unsynchronised)
 				$flag2 .= $DataLengthIndicator ? '1' : '0'; // p - Data length indicator (true == data length indicator added)
 				break;
 
 			case 3:
 				// %abc00000 %ijk00000
-				$flag1  = $TagAlter  ? '1' : '0';  // a - Tag alter preservation (true == discard)
+				$flag1 = $TagAlter ? '1' : '0';  // a - Tag alter preservation (true == discard)
 				$flag1 .= $FileAlter ? '1' : '0';  // b - File alter preservation (true == discard)
-				$flag1 .= $ReadOnly  ? '1' : '0';  // c - Read only (true == read only)
+				$flag1 .= $ReadOnly ? '1' : '0';  // c - Read only (true == read only)
 				$flag1 .= '00000';
 
-				$flag2  = $Compression      ? '1' : '0';      // i - Compression (true == compressed)
-				$flag2 .= $Encryption       ? '1' : '0';      // j - Encryption (true == encrypted)
+				$flag2 = $Compression ? '1' : '0';      // i - Compression (true == compressed)
+				$flag2 .= $Encryption ? '1' : '0';      // j - Encryption (true == encrypted)
 				$flag2 .= $GroupingIdentity ? '1' : '0';      // k - Grouping identity (true == contains group information)
 				$flag2 .= '00000';
 				break;
@@ -456,12 +455,12 @@ class getid3_write_id3v2
 					foreach ($source_data_array as $key => $val) {
 						if (($key != 'framesbetweenreferences') && ($key != 'bytesbetweenreferences') && ($key != 'msbetweenreferences') && ($key != 'bitsforbytesdeviation') && ($key != 'bitsformsdeviation') && ($key != 'flags')) {
 							$unwrittenbitstream .= str_pad(getid3_lib::Dec2Bin($val['bytedeviation']), $source_data_array['bitsforbytesdeviation'], '0', STR_PAD_LEFT);
-							$unwrittenbitstream .= str_pad(getid3_lib::Dec2Bin($val['msdeviation']),   $source_data_array['bitsformsdeviation'],    '0', STR_PAD_LEFT);
+							$unwrittenbitstream .= str_pad(getid3_lib::Dec2Bin($val['msdeviation']), $source_data_array['bitsformsdeviation'], '0', STR_PAD_LEFT);
 						}
 					}
 					for ($i = 0; $i < strlen($unwrittenbitstream); $i += 8) {
 						$highnibble = bindec(substr($unwrittenbitstream, $i, 4)) << 4;
-						$lownibble  = bindec(substr($unwrittenbitstream, $i + 4, 4));
+						$lownibble = bindec(substr($unwrittenbitstream, $i + 4, 4));
 						$framedata .= chr($highnibble & $lownibble);
 					}
 					break;
@@ -618,35 +617,37 @@ class getid3_write_id3v2
 						$this->errors[] = 'Invalid Bits For Volume Description byte in '.$frame_name.' ('.$source_data_array['bitsvolume'].') (range = 1 to 255)';
 					} else {
 						$incdecflag .= '00';
-						$incdecflag .= $source_data_array['incdec']['right']     ? '1' : '0';     // a - Relative volume change, right
-						$incdecflag .= $source_data_array['incdec']['left']      ? '1' : '0';      // b - Relative volume change, left
+						$incdecflag .= $source_data_array['incdec']['right'] ? '1' : '0';     // a - Relative volume change, right
+						$incdecflag .= $source_data_array['incdec']['left'] ? '1' : '0';      // b - Relative volume change, left
 						$incdecflag .= $source_data_array['incdec']['rightrear'] ? '1' : '0'; // c - Relative volume change, right back
-						$incdecflag .= $source_data_array['incdec']['leftrear']  ? '1' : '0';  // d - Relative volume change, left back
-						$incdecflag .= $source_data_array['incdec']['center']    ? '1' : '0';    // e - Relative volume change, center
-						$incdecflag .= $source_data_array['incdec']['bass']      ? '1' : '0';      // f - Relative volume change, bass
+						$incdecflag .= $source_data_array['incdec']['leftrear'] ? '1' : '0';  // d - Relative volume change, left back
+						$incdecflag .= $source_data_array['incdec']['center'] ? '1' : '0';    // e - Relative volume change, center
+						$incdecflag .= $source_data_array['incdec']['bass'] ? '1' : '0';      // f - Relative volume change, bass
 						$framedata .= chr(bindec($incdecflag));
 						$framedata .= chr($source_data_array['bitsvolume']);
 						$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['right'], ceil($source_data_array['bitsvolume'] / 8), false);
-						$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['left'],  ceil($source_data_array['bitsvolume'] / 8), false);
+						$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['left'], ceil($source_data_array['bitsvolume'] / 8), false);
 						$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['right'], ceil($source_data_array['bitsvolume'] / 8), false);
-						$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['left'],  ceil($source_data_array['bitsvolume'] / 8), false);
+						$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['left'], ceil($source_data_array['bitsvolume'] / 8), false);
 						if ($source_data_array['volumechange']['rightrear'] || $source_data_array['volumechange']['leftrear'] ||
 							$source_data_array['peakvolume']['rightrear'] || $source_data_array['peakvolume']['leftrear'] ||
 							$source_data_array['volumechange']['center'] || $source_data_array['peakvolume']['center'] ||
-							$source_data_array['volumechange']['bass'] || $source_data_array['peakvolume']['bass']) {
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['rightrear'], ceil($source_data_array['bitsvolume']/8), false);
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['leftrear'],  ceil($source_data_array['bitsvolume']/8), false);
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['rightrear'], ceil($source_data_array['bitsvolume']/8), false);
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['leftrear'],  ceil($source_data_array['bitsvolume']/8), false);
+							$source_data_array['volumechange']['bass'] || $source_data_array['peakvolume']['bass']
+						) {
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['rightrear'], ceil($source_data_array['bitsvolume'] / 8), false);
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['leftrear'], ceil($source_data_array['bitsvolume'] / 8), false);
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['rightrear'], ceil($source_data_array['bitsvolume'] / 8), false);
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['leftrear'], ceil($source_data_array['bitsvolume'] / 8), false);
 						}
 						if ($source_data_array['volumechange']['center'] || $source_data_array['peakvolume']['center'] ||
-							$source_data_array['volumechange']['bass'] || $source_data_array['peakvolume']['bass']) {
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['center'], ceil($source_data_array['bitsvolume']/8), false);
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['center'], ceil($source_data_array['bitsvolume']/8), false);
+							$source_data_array['volumechange']['bass'] || $source_data_array['peakvolume']['bass']
+						) {
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['center'], ceil($source_data_array['bitsvolume'] / 8), false);
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['center'], ceil($source_data_array['bitsvolume'] / 8), false);
 						}
 						if ($source_data_array['volumechange']['bass'] || $source_data_array['peakvolume']['bass']) {
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['bass'], ceil($source_data_array['bitsvolume']/8), false);
-								$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['bass'], ceil($source_data_array['bitsvolume']/8), false);
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['volumechange']['bass'], ceil($source_data_array['bitsvolume'] / 8), false);
+							$framedata .= getid3_lib::BigEndian2String($source_data_array['peakvolume']['bass'], ceil($source_data_array['bitsvolume'] / 8), false);
 						}
 					}
 					break;
@@ -1531,7 +1532,7 @@ class getid3_write_id3v2
 		return true;
 	}
 
-	public function GenerateID3v2Tag($noerrorsonly=true) {
+	public function GenerateID3v2Tag($noerrorsonly = true) {
 		$this->ID3v2FrameIsAllowed(null, ''); // clear static array in case this isn't the first call to $this->GenerateID3v2Tag()
 
 		$tagstring = '';
@@ -1543,7 +1544,7 @@ class getid3_write_id3v2
 						unset($frame_flags);
 						$frame_data = false;
 						if ($this->ID3v2FrameIsAllowed($frame_name, $source_data_array)) {
-							if(array_key_exists('description', $source_data_array) && array_key_exists('encodingid', $source_data_array) && array_key_exists('encoding', $this->tag_data)) {
+							if (array_key_exists('description', $source_data_array) && array_key_exists('encodingid', $source_data_array) && array_key_exists('encoding', $this->tag_data)) {
 								$source_data_array['description'] = getid3_lib::iconv_fallback($this->tag_data['encoding'], $source_data_array['encoding'], $source_data_array['description']);
 							}
 							if ($frame_data = $this->GenerateID3v2FrameData($frame_name, $source_data_array)) {
@@ -1574,7 +1575,7 @@ class getid3_write_id3v2
 								} else {
 									$frame_length = getid3_lib::BigEndian2String(strlen($frame_data), 4, false);
 								}
-								$frame_flags  = $this->GenerateID3v2FrameFlags($this->ID3v2FrameFlagsLookupTagAlter($frame_name), $this->ID3v2FrameFlagsLookupFileAlter($frame_name), false, false, false, false, $FrameUnsynchronisation, false);
+								$frame_flags = $this->GenerateID3v2FrameFlags($this->ID3v2FrameFlagsLookupTagAlter($frame_name), $this->ID3v2FrameFlagsLookupFileAlter($frame_name), false, false, false, false, $FrameUnsynchronisation, false);
 							}
 						} else {
 							$this->errors[] = 'Frame "'.$frame_name.'" is NOT allowed';
@@ -1633,10 +1634,10 @@ class getid3_write_id3v2
 				$tagstring .= "\x00";
 			}
 
-			$tagheader  = 'ID3';
+			$tagheader = 'ID3';
 			$tagheader .= chr($this->majorversion);
 			$tagheader .= chr($this->minorversion);
-			$tagheader .= $this->GenerateID3v2TagFlags(array('unsynchronisation'=>$TagUnsynchronisation));
+			$tagheader .= $this->GenerateID3v2TagFlags(array('unsynchronisation' => $TagUnsynchronisation));
 			$tagheader .= getid3_lib::BigEndian2String(strlen($tagstring), 4, true);
 
 			return $tagheader.$tagstring;
@@ -1842,7 +1843,7 @@ class getid3_write_id3v2
 		return false;
 	}
 
-	public function IsWithinBitRange($number, $maxbits, $signed=false) {
+	public function IsWithinBitRange($number, $maxbits, $signed = false) {
 		if ($signed) {
 			if (($number > (0 - pow(2, $maxbits - 1))) && ($number <= pow(2, $maxbits - 1))) {
 				return true;
@@ -1858,15 +1859,15 @@ class getid3_write_id3v2
 	public function safe_parse_url($url) {
 		$parts = @parse_url($url);
 		$parts['scheme'] = (isset($parts['scheme']) ? $parts['scheme'] : '');
-		$parts['host']   = (isset($parts['host'])   ? $parts['host']   : '');
-		$parts['user']   = (isset($parts['user'])   ? $parts['user']   : '');
-		$parts['pass']   = (isset($parts['pass'])   ? $parts['pass']   : '');
-		$parts['path']   = (isset($parts['path'])   ? $parts['path']   : '');
-		$parts['query']  = (isset($parts['query'])  ? $parts['query']  : '');
+		$parts['host'] = (isset($parts['host']) ? $parts['host'] : '');
+		$parts['user'] = (isset($parts['user']) ? $parts['user'] : '');
+		$parts['pass'] = (isset($parts['pass']) ? $parts['pass'] : '');
+		$parts['path'] = (isset($parts['path']) ? $parts['path'] : '');
+		$parts['query'] = (isset($parts['query']) ? $parts['query'] : '');
 		return $parts;
 	}
 
-	public function IsValidURL($url, $allowUserPass=false) {
+	public function IsValidURL($url, $allowUserPass = false) {
 		if ($url == '') {
 			return false;
 		}
@@ -1903,150 +1904,150 @@ class getid3_write_id3v2
 		if (empty($ID3v2ShortFrameNameLookup)) {
 
 			// The following are unique to ID3v2.2
-			$ID3v2ShortFrameNameLookup[2]['comment']                                          = 'COM';
-			$ID3v2ShortFrameNameLookup[2]['album']                                            = 'TAL';
-			$ID3v2ShortFrameNameLookup[2]['beats_per_minute']                                 = 'TBP';
-			$ID3v2ShortFrameNameLookup[2]['composer']                                         = 'TCM';
-			$ID3v2ShortFrameNameLookup[2]['genre']                                            = 'TCO';
-			$ID3v2ShortFrameNameLookup[2]['itunescompilation']                                = 'TCP';
-			$ID3v2ShortFrameNameLookup[2]['copyright']                                        = 'TCR';
-			$ID3v2ShortFrameNameLookup[2]['encoded_by']                                       = 'TEN';
-			$ID3v2ShortFrameNameLookup[2]['language']                                         = 'TLA';
-			$ID3v2ShortFrameNameLookup[2]['length']                                           = 'TLE';
-			$ID3v2ShortFrameNameLookup[2]['original_artist']                                  = 'TOA';
-			$ID3v2ShortFrameNameLookup[2]['original_filename']                                = 'TOF';
-			$ID3v2ShortFrameNameLookup[2]['original_lyricist']                                = 'TOL';
-			$ID3v2ShortFrameNameLookup[2]['original_album_title']                             = 'TOT';
-			$ID3v2ShortFrameNameLookup[2]['artist']                                           = 'TP1';
-			$ID3v2ShortFrameNameLookup[2]['band']                                             = 'TP2';
-			$ID3v2ShortFrameNameLookup[2]['conductor']                                        = 'TP3';
-			$ID3v2ShortFrameNameLookup[2]['remixer']                                          = 'TP4';
-			$ID3v2ShortFrameNameLookup[2]['publisher']                                        = 'TPB';
-			$ID3v2ShortFrameNameLookup[2]['isrc']                                             = 'TRC';
-			$ID3v2ShortFrameNameLookup[2]['tracknumber']                                      = 'TRK';
-			$ID3v2ShortFrameNameLookup[2]['track_number']                                     = 'TRK';
-			$ID3v2ShortFrameNameLookup[2]['size']                                             = 'TSI';
-			$ID3v2ShortFrameNameLookup[2]['encoder_settings']                                 = 'TSS';
-			$ID3v2ShortFrameNameLookup[2]['description']                                      = 'TT1';
-			$ID3v2ShortFrameNameLookup[2]['title']                                            = 'TT2';
-			$ID3v2ShortFrameNameLookup[2]['subtitle']                                         = 'TT3';
-			$ID3v2ShortFrameNameLookup[2]['lyricist']                                         = 'TXT';
-			$ID3v2ShortFrameNameLookup[2]['user_text']                                        = 'TXX';
-			$ID3v2ShortFrameNameLookup[2]['year']                                             = 'TYE';
-			$ID3v2ShortFrameNameLookup[2]['unique_file_identifier']                           = 'UFI';
-			$ID3v2ShortFrameNameLookup[2]['unsynchronised_lyrics']                            = 'ULT';
-			$ID3v2ShortFrameNameLookup[2]['url_file']                                         = 'WAF';
-			$ID3v2ShortFrameNameLookup[2]['url_artist']                                       = 'WAR';
-			$ID3v2ShortFrameNameLookup[2]['url_source']                                       = 'WAS';
-			$ID3v2ShortFrameNameLookup[2]['copyright_information']                            = 'WCP';
-			$ID3v2ShortFrameNameLookup[2]['url_publisher']                                    = 'WPB';
-			$ID3v2ShortFrameNameLookup[2]['url_user']                                         = 'WXX';
+			$ID3v2ShortFrameNameLookup[2]['comment'] = 'COM';
+			$ID3v2ShortFrameNameLookup[2]['album'] = 'TAL';
+			$ID3v2ShortFrameNameLookup[2]['beats_per_minute'] = 'TBP';
+			$ID3v2ShortFrameNameLookup[2]['composer'] = 'TCM';
+			$ID3v2ShortFrameNameLookup[2]['genre'] = 'TCO';
+			$ID3v2ShortFrameNameLookup[2]['itunescompilation'] = 'TCP';
+			$ID3v2ShortFrameNameLookup[2]['copyright'] = 'TCR';
+			$ID3v2ShortFrameNameLookup[2]['encoded_by'] = 'TEN';
+			$ID3v2ShortFrameNameLookup[2]['language'] = 'TLA';
+			$ID3v2ShortFrameNameLookup[2]['length'] = 'TLE';
+			$ID3v2ShortFrameNameLookup[2]['original_artist'] = 'TOA';
+			$ID3v2ShortFrameNameLookup[2]['original_filename'] = 'TOF';
+			$ID3v2ShortFrameNameLookup[2]['original_lyricist'] = 'TOL';
+			$ID3v2ShortFrameNameLookup[2]['original_album_title'] = 'TOT';
+			$ID3v2ShortFrameNameLookup[2]['artist'] = 'TP1';
+			$ID3v2ShortFrameNameLookup[2]['band'] = 'TP2';
+			$ID3v2ShortFrameNameLookup[2]['conductor'] = 'TP3';
+			$ID3v2ShortFrameNameLookup[2]['remixer'] = 'TP4';
+			$ID3v2ShortFrameNameLookup[2]['publisher'] = 'TPB';
+			$ID3v2ShortFrameNameLookup[2]['isrc'] = 'TRC';
+			$ID3v2ShortFrameNameLookup[2]['tracknumber'] = 'TRK';
+			$ID3v2ShortFrameNameLookup[2]['track_number'] = 'TRK';
+			$ID3v2ShortFrameNameLookup[2]['size'] = 'TSI';
+			$ID3v2ShortFrameNameLookup[2]['encoder_settings'] = 'TSS';
+			$ID3v2ShortFrameNameLookup[2]['description'] = 'TT1';
+			$ID3v2ShortFrameNameLookup[2]['title'] = 'TT2';
+			$ID3v2ShortFrameNameLookup[2]['subtitle'] = 'TT3';
+			$ID3v2ShortFrameNameLookup[2]['lyricist'] = 'TXT';
+			$ID3v2ShortFrameNameLookup[2]['user_text'] = 'TXX';
+			$ID3v2ShortFrameNameLookup[2]['year'] = 'TYE';
+			$ID3v2ShortFrameNameLookup[2]['unique_file_identifier'] = 'UFI';
+			$ID3v2ShortFrameNameLookup[2]['unsynchronised_lyrics'] = 'ULT';
+			$ID3v2ShortFrameNameLookup[2]['url_file'] = 'WAF';
+			$ID3v2ShortFrameNameLookup[2]['url_artist'] = 'WAR';
+			$ID3v2ShortFrameNameLookup[2]['url_source'] = 'WAS';
+			$ID3v2ShortFrameNameLookup[2]['copyright_information'] = 'WCP';
+			$ID3v2ShortFrameNameLookup[2]['url_publisher'] = 'WPB';
+			$ID3v2ShortFrameNameLookup[2]['url_user'] = 'WXX';
 
 			// The following are common to ID3v2.3 and ID3v2.4
-			$ID3v2ShortFrameNameLookup[3]['audio_encryption']                                 = 'AENC';
-			$ID3v2ShortFrameNameLookup[3]['attached_picture']                                 = 'APIC';
-			$ID3v2ShortFrameNameLookup[3]['picture']                                          = 'APIC';
-			$ID3v2ShortFrameNameLookup[3]['comment']                                          = 'COMM';
-			$ID3v2ShortFrameNameLookup[3]['commercial']                                       = 'COMR';
-			$ID3v2ShortFrameNameLookup[3]['encryption_method_registration']                   = 'ENCR';
-			$ID3v2ShortFrameNameLookup[3]['event_timing_codes']                               = 'ETCO';
-			$ID3v2ShortFrameNameLookup[3]['general_encapsulated_object']                      = 'GEOB';
-			$ID3v2ShortFrameNameLookup[3]['group_identification_registration']                = 'GRID';
-			$ID3v2ShortFrameNameLookup[3]['linked_information']                               = 'LINK';
-			$ID3v2ShortFrameNameLookup[3]['music_cd_identifier']                              = 'MCDI';
-			$ID3v2ShortFrameNameLookup[3]['mpeg_location_lookup_table']                       = 'MLLT';
-			$ID3v2ShortFrameNameLookup[3]['ownership']                                        = 'OWNE';
-			$ID3v2ShortFrameNameLookup[3]['play_counter']                                     = 'PCNT';
-			$ID3v2ShortFrameNameLookup[3]['popularimeter']                                    = 'POPM';
-			$ID3v2ShortFrameNameLookup[3]['position_synchronisation']                         = 'POSS';
-			$ID3v2ShortFrameNameLookup[3]['private']                                          = 'PRIV';
-			$ID3v2ShortFrameNameLookup[3]['recommended_buffer_size']                          = 'RBUF';
-			$ID3v2ShortFrameNameLookup[3]['reverb']                                           = 'RVRB';
-			$ID3v2ShortFrameNameLookup[3]['synchronised_lyrics']                              = 'SYLT';
-			$ID3v2ShortFrameNameLookup[3]['synchronised_tempo_codes']                         = 'SYTC';
-			$ID3v2ShortFrameNameLookup[3]['album']                                            = 'TALB';
-			$ID3v2ShortFrameNameLookup[3]['beats_per_minute']                                 = 'TBPM';
-			$ID3v2ShortFrameNameLookup[3]['itunescompilation']                                = 'TCMP';
-			$ID3v2ShortFrameNameLookup[3]['composer']                                         = 'TCOM';
-			$ID3v2ShortFrameNameLookup[3]['genre']                                            = 'TCON';
-			$ID3v2ShortFrameNameLookup[3]['copyright']                                        = 'TCOP';
-			$ID3v2ShortFrameNameLookup[3]['playlist_delay']                                   = 'TDLY';
-			$ID3v2ShortFrameNameLookup[3]['encoded_by']                                       = 'TENC';
-			$ID3v2ShortFrameNameLookup[3]['lyricist']                                         = 'TEXT';
-			$ID3v2ShortFrameNameLookup[3]['file_type']                                        = 'TFLT';
-			$ID3v2ShortFrameNameLookup[3]['content_group_description']                        = 'TIT1';
-			$ID3v2ShortFrameNameLookup[3]['title']                                            = 'TIT2';
-			$ID3v2ShortFrameNameLookup[3]['subtitle']                                         = 'TIT3';
-			$ID3v2ShortFrameNameLookup[3]['initial_key']                                      = 'TKEY';
-			$ID3v2ShortFrameNameLookup[3]['language']                                         = 'TLAN';
-			$ID3v2ShortFrameNameLookup[3]['length']                                           = 'TLEN';
-			$ID3v2ShortFrameNameLookup[3]['media_type']                                       = 'TMED';
-			$ID3v2ShortFrameNameLookup[3]['original_album_title']                             = 'TOAL';
-			$ID3v2ShortFrameNameLookup[3]['original_filename']                                = 'TOFN';
-			$ID3v2ShortFrameNameLookup[3]['original_lyricist']                                = 'TOLY';
-			$ID3v2ShortFrameNameLookup[3]['original_artist']                                  = 'TOPE';
-			$ID3v2ShortFrameNameLookup[3]['file_owner']                                       = 'TOWN';
-			$ID3v2ShortFrameNameLookup[3]['artist']                                           = 'TPE1';
-			$ID3v2ShortFrameNameLookup[3]['band']                                             = 'TPE2';
-			$ID3v2ShortFrameNameLookup[3]['conductor']                                        = 'TPE3';
-			$ID3v2ShortFrameNameLookup[3]['remixer']                                          = 'TPE4';
-			$ID3v2ShortFrameNameLookup[3]['part_of_a_set']                                    = 'TPOS';
-			$ID3v2ShortFrameNameLookup[3]['publisher']                                        = 'TPUB';
-			$ID3v2ShortFrameNameLookup[3]['tracknumber']                                      = 'TRCK';
-			$ID3v2ShortFrameNameLookup[3]['track_number']                                     = 'TRCK';
-			$ID3v2ShortFrameNameLookup[3]['internet_radio_station_name']                      = 'TRSN';
-			$ID3v2ShortFrameNameLookup[3]['internet_radio_station_owner']                     = 'TRSO';
-			$ID3v2ShortFrameNameLookup[3]['isrc']                                             = 'TSRC';
-			$ID3v2ShortFrameNameLookup[3]['encoder_settings']                                 = 'TSSE';
-			$ID3v2ShortFrameNameLookup[3]['user_text']                                        = 'TXXX';
-			$ID3v2ShortFrameNameLookup[3]['unique_file_identifier']                           = 'UFID';
-			$ID3v2ShortFrameNameLookup[3]['terms_of_use']                                     = 'USER';
-			$ID3v2ShortFrameNameLookup[3]['unsynchronised_lyrics']                            = 'USLT';
-			$ID3v2ShortFrameNameLookup[3]['commercial']                                       = 'WCOM';
-			$ID3v2ShortFrameNameLookup[3]['copyright_information']                            = 'WCOP';
-			$ID3v2ShortFrameNameLookup[3]['url_file']                                         = 'WOAF';
-			$ID3v2ShortFrameNameLookup[3]['url_artist']                                       = 'WOAR';
-			$ID3v2ShortFrameNameLookup[3]['url_source']                                       = 'WOAS';
-			$ID3v2ShortFrameNameLookup[3]['url_station']                                      = 'WORS';
-			$ID3v2ShortFrameNameLookup[3]['payment']                                          = 'WPAY';
-			$ID3v2ShortFrameNameLookup[3]['url_publisher']                                    = 'WPUB';
-			$ID3v2ShortFrameNameLookup[3]['url_user']                                         = 'WXXX';
+			$ID3v2ShortFrameNameLookup[3]['audio_encryption'] = 'AENC';
+			$ID3v2ShortFrameNameLookup[3]['attached_picture'] = 'APIC';
+			$ID3v2ShortFrameNameLookup[3]['picture'] = 'APIC';
+			$ID3v2ShortFrameNameLookup[3]['comment'] = 'COMM';
+			$ID3v2ShortFrameNameLookup[3]['commercial'] = 'COMR';
+			$ID3v2ShortFrameNameLookup[3]['encryption_method_registration'] = 'ENCR';
+			$ID3v2ShortFrameNameLookup[3]['event_timing_codes'] = 'ETCO';
+			$ID3v2ShortFrameNameLookup[3]['general_encapsulated_object'] = 'GEOB';
+			$ID3v2ShortFrameNameLookup[3]['group_identification_registration'] = 'GRID';
+			$ID3v2ShortFrameNameLookup[3]['linked_information'] = 'LINK';
+			$ID3v2ShortFrameNameLookup[3]['music_cd_identifier'] = 'MCDI';
+			$ID3v2ShortFrameNameLookup[3]['mpeg_location_lookup_table'] = 'MLLT';
+			$ID3v2ShortFrameNameLookup[3]['ownership'] = 'OWNE';
+			$ID3v2ShortFrameNameLookup[3]['play_counter'] = 'PCNT';
+			$ID3v2ShortFrameNameLookup[3]['popularimeter'] = 'POPM';
+			$ID3v2ShortFrameNameLookup[3]['position_synchronisation'] = 'POSS';
+			$ID3v2ShortFrameNameLookup[3]['private'] = 'PRIV';
+			$ID3v2ShortFrameNameLookup[3]['recommended_buffer_size'] = 'RBUF';
+			$ID3v2ShortFrameNameLookup[3]['reverb'] = 'RVRB';
+			$ID3v2ShortFrameNameLookup[3]['synchronised_lyrics'] = 'SYLT';
+			$ID3v2ShortFrameNameLookup[3]['synchronised_tempo_codes'] = 'SYTC';
+			$ID3v2ShortFrameNameLookup[3]['album'] = 'TALB';
+			$ID3v2ShortFrameNameLookup[3]['beats_per_minute'] = 'TBPM';
+			$ID3v2ShortFrameNameLookup[3]['itunescompilation'] = 'TCMP';
+			$ID3v2ShortFrameNameLookup[3]['composer'] = 'TCOM';
+			$ID3v2ShortFrameNameLookup[3]['genre'] = 'TCON';
+			$ID3v2ShortFrameNameLookup[3]['copyright'] = 'TCOP';
+			$ID3v2ShortFrameNameLookup[3]['playlist_delay'] = 'TDLY';
+			$ID3v2ShortFrameNameLookup[3]['encoded_by'] = 'TENC';
+			$ID3v2ShortFrameNameLookup[3]['lyricist'] = 'TEXT';
+			$ID3v2ShortFrameNameLookup[3]['file_type'] = 'TFLT';
+			$ID3v2ShortFrameNameLookup[3]['content_group_description'] = 'TIT1';
+			$ID3v2ShortFrameNameLookup[3]['title'] = 'TIT2';
+			$ID3v2ShortFrameNameLookup[3]['subtitle'] = 'TIT3';
+			$ID3v2ShortFrameNameLookup[3]['initial_key'] = 'TKEY';
+			$ID3v2ShortFrameNameLookup[3]['language'] = 'TLAN';
+			$ID3v2ShortFrameNameLookup[3]['length'] = 'TLEN';
+			$ID3v2ShortFrameNameLookup[3]['media_type'] = 'TMED';
+			$ID3v2ShortFrameNameLookup[3]['original_album_title'] = 'TOAL';
+			$ID3v2ShortFrameNameLookup[3]['original_filename'] = 'TOFN';
+			$ID3v2ShortFrameNameLookup[3]['original_lyricist'] = 'TOLY';
+			$ID3v2ShortFrameNameLookup[3]['original_artist'] = 'TOPE';
+			$ID3v2ShortFrameNameLookup[3]['file_owner'] = 'TOWN';
+			$ID3v2ShortFrameNameLookup[3]['artist'] = 'TPE1';
+			$ID3v2ShortFrameNameLookup[3]['band'] = 'TPE2';
+			$ID3v2ShortFrameNameLookup[3]['conductor'] = 'TPE3';
+			$ID3v2ShortFrameNameLookup[3]['remixer'] = 'TPE4';
+			$ID3v2ShortFrameNameLookup[3]['part_of_a_set'] = 'TPOS';
+			$ID3v2ShortFrameNameLookup[3]['publisher'] = 'TPUB';
+			$ID3v2ShortFrameNameLookup[3]['tracknumber'] = 'TRCK';
+			$ID3v2ShortFrameNameLookup[3]['track_number'] = 'TRCK';
+			$ID3v2ShortFrameNameLookup[3]['internet_radio_station_name'] = 'TRSN';
+			$ID3v2ShortFrameNameLookup[3]['internet_radio_station_owner'] = 'TRSO';
+			$ID3v2ShortFrameNameLookup[3]['isrc'] = 'TSRC';
+			$ID3v2ShortFrameNameLookup[3]['encoder_settings'] = 'TSSE';
+			$ID3v2ShortFrameNameLookup[3]['user_text'] = 'TXXX';
+			$ID3v2ShortFrameNameLookup[3]['unique_file_identifier'] = 'UFID';
+			$ID3v2ShortFrameNameLookup[3]['terms_of_use'] = 'USER';
+			$ID3v2ShortFrameNameLookup[3]['unsynchronised_lyrics'] = 'USLT';
+			$ID3v2ShortFrameNameLookup[3]['commercial'] = 'WCOM';
+			$ID3v2ShortFrameNameLookup[3]['copyright_information'] = 'WCOP';
+			$ID3v2ShortFrameNameLookup[3]['url_file'] = 'WOAF';
+			$ID3v2ShortFrameNameLookup[3]['url_artist'] = 'WOAR';
+			$ID3v2ShortFrameNameLookup[3]['url_source'] = 'WOAS';
+			$ID3v2ShortFrameNameLookup[3]['url_station'] = 'WORS';
+			$ID3v2ShortFrameNameLookup[3]['payment'] = 'WPAY';
+			$ID3v2ShortFrameNameLookup[3]['url_publisher'] = 'WPUB';
+			$ID3v2ShortFrameNameLookup[3]['url_user'] = 'WXXX';
 
 			// The above are common to ID3v2.3 and ID3v2.4
 			// so copy them to ID3v2.4 before adding specifics for 2.3 and 2.4
 			$ID3v2ShortFrameNameLookup[4] = $ID3v2ShortFrameNameLookup[3];
 
 			// The following are unique to ID3v2.3
-			$ID3v2ShortFrameNameLookup[3]['equalisation']                                     = 'EQUA';
-			$ID3v2ShortFrameNameLookup[3]['involved_people_list']                             = 'IPLS';
-			$ID3v2ShortFrameNameLookup[3]['relative_volume_adjustment']                       = 'RVAD';
-			$ID3v2ShortFrameNameLookup[3]['date']                                             = 'TDAT';
-			$ID3v2ShortFrameNameLookup[3]['time']                                             = 'TIME';
-			$ID3v2ShortFrameNameLookup[3]['original_release_year']                            = 'TORY';
-			$ID3v2ShortFrameNameLookup[3]['recording_dates']                                  = 'TRDA';
-			$ID3v2ShortFrameNameLookup[3]['size']                                             = 'TSIZ';
-			$ID3v2ShortFrameNameLookup[3]['year']                                             = 'TYER';
+			$ID3v2ShortFrameNameLookup[3]['equalisation'] = 'EQUA';
+			$ID3v2ShortFrameNameLookup[3]['involved_people_list'] = 'IPLS';
+			$ID3v2ShortFrameNameLookup[3]['relative_volume_adjustment'] = 'RVAD';
+			$ID3v2ShortFrameNameLookup[3]['date'] = 'TDAT';
+			$ID3v2ShortFrameNameLookup[3]['time'] = 'TIME';
+			$ID3v2ShortFrameNameLookup[3]['original_release_year'] = 'TORY';
+			$ID3v2ShortFrameNameLookup[3]['recording_dates'] = 'TRDA';
+			$ID3v2ShortFrameNameLookup[3]['size'] = 'TSIZ';
+			$ID3v2ShortFrameNameLookup[3]['year'] = 'TYER';
 
 
 			// The following are unique to ID3v2.4
-			$ID3v2ShortFrameNameLookup[4]['audio_seek_point_index']                           = 'ASPI';
-			$ID3v2ShortFrameNameLookup[4]['equalisation']                                     = 'EQU2';
-			$ID3v2ShortFrameNameLookup[4]['relative_volume_adjustment']                       = 'RVA2';
-			$ID3v2ShortFrameNameLookup[4]['seek']                                             = 'SEEK';
-			$ID3v2ShortFrameNameLookup[4]['signature']                                        = 'SIGN';
-			$ID3v2ShortFrameNameLookup[4]['encoding_time']                                    = 'TDEN';
-			$ID3v2ShortFrameNameLookup[4]['original_release_time']                            = 'TDOR';
-			$ID3v2ShortFrameNameLookup[4]['recording_time']                                   = 'TDRC';
-			$ID3v2ShortFrameNameLookup[4]['release_time']                                     = 'TDRL';
-			$ID3v2ShortFrameNameLookup[4]['tagging_time']                                     = 'TDTG';
-			$ID3v2ShortFrameNameLookup[4]['involved_people_list']                             = 'TIPL';
-			$ID3v2ShortFrameNameLookup[4]['musician_credits_list']                            = 'TMCL';
-			$ID3v2ShortFrameNameLookup[4]['mood']                                             = 'TMOO';
-			$ID3v2ShortFrameNameLookup[4]['produced_notice']                                  = 'TPRO';
-			$ID3v2ShortFrameNameLookup[4]['album_sort_order']                                 = 'TSOA';
-			$ID3v2ShortFrameNameLookup[4]['performer_sort_order']                             = 'TSOP';
-			$ID3v2ShortFrameNameLookup[4]['title_sort_order']                                 = 'TSOT';
-			$ID3v2ShortFrameNameLookup[4]['set_subtitle']                                     = 'TSST';
+			$ID3v2ShortFrameNameLookup[4]['audio_seek_point_index'] = 'ASPI';
+			$ID3v2ShortFrameNameLookup[4]['equalisation'] = 'EQU2';
+			$ID3v2ShortFrameNameLookup[4]['relative_volume_adjustment'] = 'RVA2';
+			$ID3v2ShortFrameNameLookup[4]['seek'] = 'SEEK';
+			$ID3v2ShortFrameNameLookup[4]['signature'] = 'SIGN';
+			$ID3v2ShortFrameNameLookup[4]['encoding_time'] = 'TDEN';
+			$ID3v2ShortFrameNameLookup[4]['original_release_time'] = 'TDOR';
+			$ID3v2ShortFrameNameLookup[4]['recording_time'] = 'TDRC';
+			$ID3v2ShortFrameNameLookup[4]['release_time'] = 'TDRL';
+			$ID3v2ShortFrameNameLookup[4]['tagging_time'] = 'TDTG';
+			$ID3v2ShortFrameNameLookup[4]['involved_people_list'] = 'TIPL';
+			$ID3v2ShortFrameNameLookup[4]['musician_credits_list'] = 'TMCL';
+			$ID3v2ShortFrameNameLookup[4]['mood'] = 'TMOO';
+			$ID3v2ShortFrameNameLookup[4]['produced_notice'] = 'TPRO';
+			$ID3v2ShortFrameNameLookup[4]['album_sort_order'] = 'TSOA';
+			$ID3v2ShortFrameNameLookup[4]['performer_sort_order'] = 'TSOP';
+			$ID3v2ShortFrameNameLookup[4]['title_sort_order'] = 'TSOT';
+			$ID3v2ShortFrameNameLookup[4]['set_subtitle'] = 'TSST';
 		}
 		return (isset($ID3v2ShortFrameNameLookup[$majorversion][strtolower($long_description)]) ? $ID3v2ShortFrameNameLookup[$majorversion][strtolower($long_description)] : '');
 

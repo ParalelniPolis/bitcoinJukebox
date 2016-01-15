@@ -18,61 +18,58 @@
 
 
 /**
-* This is a caching extension for getID3(). It works the exact same
-* way as the getID3 class, but return cached information very fast
-*
-* Example:  (see also demo.cache.mysql.php in /demo/)
-*
-*    Normal getID3 usage (example):
-*
-*       require_once 'getid3/getid3.php';
-*       $getID3 = new getID3;
-*       $getID3->encoding = 'UTF-8';
-*       $info1 = $getID3->analyze('file1.flac');
-*       $info2 = $getID3->analyze('file2.wv');
-*
-*    getID3_cached usage:
-*
-*       require_once 'getid3/getid3.php';
-*       require_once 'getid3/getid3/extension.cache.mysql.php';
-*       // 5th parameter (tablename) is optional, default is 'getid3_cache'
-*       $getID3 = new getID3_cached_mysql('localhost', 'database', 'username', 'password', 'tablename');
-*       $getID3->encoding = 'UTF-8';
-*       $info1 = $getID3->analyze('file1.flac');
-*       $info2 = $getID3->analyze('file2.wv');
-*
-*
-* Supported Cache Types    (this extension)
-*
-*   SQL Databases:
-*
-*   cache_type          cache_options
-*   -------------------------------------------------------------------
-*   mysql               host, database, username, password
-*
-*
-*   DBM-Style Databases:    (use extension.cache.dbm)
-*
-*   cache_type          cache_options
-*   -------------------------------------------------------------------
-*   gdbm                dbm_filename, lock_filename
-*   ndbm                dbm_filename, lock_filename
-*   db2                 dbm_filename, lock_filename
-*   db3                 dbm_filename, lock_filename
-*   db4                 dbm_filename, lock_filename  (PHP5 required)
-*
-*   PHP must have write access to both dbm_filename and lock_filename.
-*
-*
-* Recommended Cache Types
-*
-*   Infrequent updates, many reads      any DBM
-*   Frequent updates                    mysql
-*/
-
-
-class getID3_cached_mysql extends getID3
-{
+ * This is a caching extension for getID3(). It works the exact same
+ * way as the getID3 class, but return cached information very fast
+ *
+ * Example:  (see also demo.cache.mysql.php in /demo/)
+ *
+ *    Normal getID3 usage (example):
+ *
+ *       require_once 'getid3/getid3.php';
+ *       $getID3 = new getID3;
+ *       $getID3->encoding = 'UTF-8';
+ *       $info1 = $getID3->analyze('file1.flac');
+ *       $info2 = $getID3->analyze('file2.wv');
+ *
+ *    getID3_cached usage:
+ *
+ *       require_once 'getid3/getid3.php';
+ *       require_once 'getid3/getid3/extension.cache.mysql.php';
+ *       // 5th parameter (tablename) is optional, default is 'getid3_cache'
+ *       $getID3 = new getID3_cached_mysql('localhost', 'database', 'username', 'password', 'tablename');
+ *       $getID3->encoding = 'UTF-8';
+ *       $info1 = $getID3->analyze('file1.flac');
+ *       $info2 = $getID3->analyze('file2.wv');
+ *
+ *
+ * Supported Cache Types    (this extension)
+ *
+ *   SQL Databases:
+ *
+ *   cache_type          cache_options
+ *   -------------------------------------------------------------------
+ *   mysql               host, database, username, password
+ *
+ *
+ *   DBM-Style Databases:    (use extension.cache.dbm)
+ *
+ *   cache_type          cache_options
+ *   -------------------------------------------------------------------
+ *   gdbm                dbm_filename, lock_filename
+ *   ndbm                dbm_filename, lock_filename
+ *   db2                 dbm_filename, lock_filename
+ *   db3                 dbm_filename, lock_filename
+ *   db4                 dbm_filename, lock_filename  (PHP5 required)
+ *
+ *   PHP must have write access to both dbm_filename and lock_filename.
+ *
+ *
+ * Recommended Cache Types
+ *
+ *   Infrequent updates, many reads      any DBM
+ *   Frequent updates                    mysql
+ */
+class getID3_cached_mysql extends getID3 {
 
 	// private vars
 	private $cursor;
@@ -80,7 +77,7 @@ class getID3_cached_mysql extends getID3
 
 
 	// public: constructor - see top of this file for cache type and cache_options
-	public function getID3_cached_mysql($host, $database, $username, $password, $table='getid3_cache') {
+	public function getID3_cached_mysql($host, $database, $username, $password, $table = 'getid3_cache') {
 
 		// Check for mysql support
 		if (!function_exists('mysql_pconnect')) {
@@ -106,7 +103,7 @@ class getID3_cached_mysql extends getID3
 
 		// Check version number and clear cache if changed
 		$version = '';
-		$SQLquery  = 'SELECT `value`';
+		$SQLquery = 'SELECT `value`';
 		$SQLquery .= ' FROM `'.mysql_real_escape_string($this->table).'`';
 		$SQLquery .= ' WHERE (`filename` = \''.mysql_real_escape_string(getID3::VERSION).'\')';
 		$SQLquery .= ' AND (`filesize` = -1)';
@@ -123,7 +120,6 @@ class getID3_cached_mysql extends getID3
 	}
 
 
-
 	// public: clear cache
 	public function clear_cache() {
 
@@ -132,18 +128,17 @@ class getID3_cached_mysql extends getID3
 	}
 
 
-
 	// public: analyze file
-	public function analyze($filename, $filesize=null, $original_filename='') {
+	public function analyze($filename, $filesize = null, $original_filename = '') {
 
 		if (file_exists($filename)) {
 
 			// Short-hands
 			$filetime = filemtime($filename);
-			$filesize =  filesize($filename);
+			$filesize = filesize($filename);
 
 			// Lookup file
-			$SQLquery  = 'SELECT `value`';
+			$SQLquery = 'SELECT `value`';
 			$SQLquery .= ' FROM `'.mysql_real_escape_string($this->table).'`';
 			$SQLquery .= ' WHERE (`filename` = \''.mysql_real_escape_string($filename).'\')';
 			$SQLquery .= '   AND (`filesize` = \''.mysql_real_escape_string($filesize).'\')';
@@ -161,11 +156,11 @@ class getID3_cached_mysql extends getID3
 
 		// Save result
 		if (file_exists($filename)) {
-			$SQLquery  = 'INSERT INTO `'.mysql_real_escape_string($this->table).'` (`filename`, `filesize`, `filetime`, `analyzetime`, `value`) VALUES (';
-			$SQLquery .=   '\''.mysql_real_escape_string($filename).'\'';
+			$SQLquery = 'INSERT INTO `'.mysql_real_escape_string($this->table).'` (`filename`, `filesize`, `filetime`, `analyzetime`, `value`) VALUES (';
+			$SQLquery .= '\''.mysql_real_escape_string($filename).'\'';
 			$SQLquery .= ', \''.mysql_real_escape_string($filesize).'\'';
 			$SQLquery .= ', \''.mysql_real_escape_string($filetime).'\'';
-			$SQLquery .= ', \''.mysql_real_escape_string(time()   ).'\'';
+			$SQLquery .= ', \''.mysql_real_escape_string(time()).'\'';
 			$SQLquery .= ', \''.mysql_real_escape_string(base64_encode(serialize($analysis))).'\')';
 			$this->cursor = mysql_query($SQLquery, $this->connection);
 		}
@@ -173,12 +168,11 @@ class getID3_cached_mysql extends getID3
 	}
 
 
-
 	// private: (re)create sql table
-	private function create_table($drop=false) {
+	private function create_table($drop = false) {
 
-		$SQLquery  = 'CREATE TABLE IF NOT EXISTS `'.mysql_real_escape_string($this->table).'` (';
-		$SQLquery .=   '`filename` VARCHAR(500) NOT NULL DEFAULT \'\'';
+		$SQLquery = 'CREATE TABLE IF NOT EXISTS `'.mysql_real_escape_string($this->table).'` (';
+		$SQLquery .= '`filename` VARCHAR(500) NOT NULL DEFAULT \'\'';
 		$SQLquery .= ', `filesize` INT(11) NOT NULL DEFAULT \'0\'';
 		$SQLquery .= ', `filetime` INT(11) NOT NULL DEFAULT \'0\'';
 		$SQLquery .= ', `analyzetime` INT(11) NOT NULL DEFAULT \'0\'';
