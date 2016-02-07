@@ -120,7 +120,9 @@ audioElement.addEventListener('ended', function() {
 
 var ws = new WebSocket('wss://ws.blockchain.info/inv');
 ws.onopen = function() {
-    ws.send(JSON.stringify({'op':'addr_sub', 'addr':'15iuRwGSiUTknHJtoP4CJ3dHUr8T4vQuaE'}))
+    setInterval(function() {
+        ws.send(JSON.stringify({'op':'addr_sub', 'addr':'15iuRwGSiUTknHJtoP4CJ3dHUr8T4vQuaE'}))
+    }, 60000);
     ws.onmessage = function(event) {
         console.log(JSON.parse(event.data));
         handleSong(JSON.parse(event.data));
