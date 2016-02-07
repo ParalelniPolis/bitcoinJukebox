@@ -55,9 +55,11 @@ var playShuffle = function() {
     var rand = Math.floor(Math.random() * data.length);
 
     audioElement.src = data[rand].url;
-    setTimeout(function(){
-        audioElement.play()
-    }, 1000);
+    audioElement.oncanplay = function() {
+        setTimeout(function() {
+            audioElement.play()
+        }, 1000);
+    }
 }
 
 var playNext = function() {
