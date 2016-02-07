@@ -30,7 +30,7 @@ var addToQueue = function(song) {
     item.textContent = song.getAttribute('title');
 
     queueList.appendChild(item);
-    
+
     if(emptyList) {
         playNext();
     }
@@ -73,7 +73,7 @@ data.map(function(songData, index) {
     var qr = document.createElement('div');
     var meta = document.createElement('p');
 
-    songWrap.className = 'mdl-cell mdl-cell--4-col'
+    songWrap.className = 'mdl-cell mdl-cell--3-col'
     song.className = 'mdl-card mdl-shadow--2dp';
     header.className = 'mdl-card__title';
     title.className = 'mdl-card__title-text';
