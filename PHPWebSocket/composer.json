@@ -1,0 +1,13 @@
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Devristo/phpws"
+    }
+  ],
+    "require": {
+        "devristo/phpws": "dev-master",
+        "textalk/websocket": "^1.2",
+        "gabrielbull/websocket-client": "^0.3.1"
+    }
+}
