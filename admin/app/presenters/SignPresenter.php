@@ -4,13 +4,13 @@ namespace App\Presenters;
 
 use Nette;
 use App\Forms\SignFormFactory;
+use Nette\Application\UI\Form;
 
 
 class SignPresenter extends BasePresenter
 {
 	/** @var SignFormFactory @inject */
 	public $factory;
-
 
 	/**
 	 * Sign-in form factory.
@@ -19,8 +19,8 @@ class SignPresenter extends BasePresenter
 	protected function createComponentSignInForm()
 	{
 		$form = $this->factory->create();
-		$form->onSuccess[] = function ($form) {
-			$form->getPresenter()->redirect('Homepage:');
+		$form->onSuccess[] = function (Form $form) {
+			$form->getPresenter()->redirect('Dashboard:');
 		};
 		return $form;
 	}
@@ -29,6 +29,8 @@ class SignPresenter extends BasePresenter
 	public function actionOut()
 	{
 		$this->getUser()->logout();
+		$this->flashMessage('Byl jste odhlášen.', 'info');
+		$this->redirect('in');
 	}
 
 }

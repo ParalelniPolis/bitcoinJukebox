@@ -26,6 +26,9 @@
             		<li{ifCurrent Songs:*} class="active"{/ifCurrent}><a n:href="Songs:">Skladby</a></li>
             		<li{ifCurrent Genres:*} class="active"{/ifCurrent}><a n:href="Genres:">Žánry</a></li>
           		</ul>
+          		<ul class="nav navbar-nav navbar-right">
+            		<li n:if="$user->isLoggedIn()"><a n:href="Sign:out">Odhlásit se</a></li>
+          		</ul>
         	</div>
       	</div>
     </div>

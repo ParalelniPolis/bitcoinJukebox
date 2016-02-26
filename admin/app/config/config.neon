@@ -20,7 +20,6 @@ session:
 	autoStart: yes
 
 services:
-	- App\Model\UserManager
 	- App\Forms\FormFactory
 	- App\Forms\SignFormFactory
 	- App\Model\GenresManager(%songsDir%)
@@ -28,3 +27,6 @@ services:
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory
 	router: App\RouterFactory::createRouter
+	authenticator: Nette\Security\SimpleAuthenticator([
+		admin: mademyday_1234
+	])

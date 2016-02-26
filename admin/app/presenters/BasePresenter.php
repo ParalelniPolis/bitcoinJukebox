@@ -12,4 +12,11 @@ use App\Model;
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
 
+	public function startup()
+	{
+		parent::startup();
+		if (!$this->user->isLoggedIn() && !($this->presenter instanceof SignPresenter)){
+			$this->redirect('Sign:in');
+		}
+	}
 }
