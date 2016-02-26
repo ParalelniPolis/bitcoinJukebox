@@ -83,6 +83,7 @@ for ($i = 0; $i < 1000; $i++) {
 	$addresses[] = md5($i);
 }
 $addressCounter = 0;
+$fp = fopen('data.txt', 'w');
 
 $client->on("connect", function() use ($logger, $client){
 	$logger->notice("Connected to websocket.");
@@ -90,7 +91,7 @@ $client->on("connect", function() use ($logger, $client){
 //	$client->send("{\"op\":\"ping_tx\"}");
 	$client->send('{"op":"unconfirmed_sub"}');
 });
-$client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $message) use ($client, $logger, $addresses, &$addressCounter) {
+$client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $message) use ($client, $logger, $addresses, &$addressCounter, $fp) {
 //	$logger->notice("Got message: ". $message->getData());
 	$data = json_decode($message->getData(), true);
 	$output = $data['x']['out'];
@@ -104,8 +105,10 @@ $client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $mess
 		}
 
 		$addressCounter++;
-		if ($addressCounter % 50 == 0) {
+		if ($addressCounter % 100 == 0) {
 			echo $addressCounter . PHP_EOL;
+			$stats = date("Y-m-d H:i:s") . ', used memory: ' . memory_get_usage() . ', allocated memory: ' . memory_get_usage(true) . 'addresses read and compared: ' . $addressCounter;
+			fwrite($fp, $stats . PHP_EOL);
 		}
 	}
 //	echo implode(', ', $outAddresses) . PHP_EOL;
@@ -121,3 +124,4 @@ $client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $mess
 
 $client->open();
 $loop->run();
+fclose($fp);
