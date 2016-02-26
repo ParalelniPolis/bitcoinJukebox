@@ -64,6 +64,12 @@ require('vendor/autoload.php');
 //$loop->run();
 
 
+function human_filesize($bytes, $decimals = 2) {
+	$size = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+	$factor = floor((strlen($bytes) - 1) / 3);
+	return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
+}
+
 //https://github.com/Devristo/phpws/blob/master/examples/echo_client.php
 $loop = \React\EventLoop\Factory::create();
 $logger = new \Zend\Log\Logger();
@@ -83,7 +89,6 @@ for ($i = 0; $i < 1000; $i++) {
 	$addresses[] = md5($i);
 }
 $addressCounter = 0;
-$fp = fopen('data.txt', 'w');
 
 $client->on("connect", function() use ($logger, $client){
 	$logger->notice("Connected to websocket.");
@@ -91,12 +96,16 @@ $client->on("connect", function() use ($logger, $client){
 //	$client->send("{\"op\":\"ping_tx\"}");
 	$client->send('{"op":"unconfirmed_sub"}');
 });
-$client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $message) use ($client, $logger, $addresses, &$addressCounter, $fp) {
+$client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $message) use ($client, $logger, $addresses, &$addressCounter) {
 //	$logger->notice("Got message: ". $message->getData());
 	$data = json_decode($message->getData(), true);
 	$output = $data['x']['out'];
 	$outAddresses = [];
 	foreach ($output as $receiver) {
+		if (!isset($receiver['addr'])) { //some outputs does not have address, dafuq?
+			continue;
+		}
+
 		$address = $receiver['addr'];
 //		echo $address . PHP_EOL;
 //		$outAddresses[] = $address;
@@ -107,8 +116,8 @@ $client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $mess
 		$addressCounter++;
 		if ($addressCounter % 100 == 0) {
 			echo $addressCounter . PHP_EOL;
-			$stats = date("Y-m-d H:i:s") . ', used memory: ' . memory_get_usage() . ', allocated memory: ' . memory_get_usage(true) . 'addresses read and compared: ' . $addressCounter;
-			fwrite($fp, $stats . PHP_EOL);
+			$stats = date("Y-m-d H:i:s") . ', used memory: ' . human_filesize(memory_get_usage()) . ', allocated memory: ' . human_filesize(memory_get_usage(true)) . ', addresses read and compared: ' . $addressCounter . PHP_EOL;
+			file_put_contents('stats.txt', $stats, FILE_APPEND);
 		}
 	}
 //	echo implode(', ', $outAddresses) . PHP_EOL;
@@ -124,4 +133,3 @@ $client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $mess
 
 $client->open();
 $loop->run();
-fclose($fp);
