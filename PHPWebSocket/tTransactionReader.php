@@ -1,7 +1,5 @@
 <?php
 
-require('vendor/autoload.php');
-
 class TransactionReader {
 
 	/** @var \React\EventLoop\StreamSelectLoop */
@@ -16,7 +14,10 @@ class TransactionReader {
 	/** @var string[] */
 	private $addresses;
 
-	public function __construct()
+	/** @var PDO */
+	private $connection;
+
+	public function __construct(string $host, string $dbName, string $username, string $password)
 	{
 		$this->loop = \React\EventLoop\Factory::create();
 		$this->logger = new \Zend\Log\Logger();
@@ -32,7 +33,7 @@ class TransactionReader {
 
 		$this->addresses = [];
 		$this->initClient();
-		$this->connectToDatabase();
+		$this->connectToDatabase($host, $dbName, $username, $password);
 		$this->loadAddresses();
 	}
 
@@ -58,20 +59,15 @@ class TransactionReader {
 		});
 	}
 
-	private function connectToDatabase()
+	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
 	{
-		$host = 'localhost';
-		$dbName = 'jukebox';
-		$username = 'root';
-		$password = '';
-
 		$dsn = 'mysql:dbname=' . $dbName . ';host=' . $host . '';
 
 		try {
-			$pdo = new PDO($dsn, $username, $password);
-			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->connection = new PDO($dsn, $username, $password);
+			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $e) {
-			die('Connection failed: ' . $e->getMessage());
+			throw new Exception('Connection failed: ' . $e->getMessage());
 		}
 	}
 
@@ -82,10 +78,10 @@ class TransactionReader {
 
 	private function loadAddresses()
 	{
-		//TODO: implement
-		for ($i = 0; $i < 1000; $i++) {
-			$addresses[] = md5($i);
-		}
+		/** @var PDOStatement $stmt */
+		$stmt = $this->connection->prepare('SELECT address FROM addresses');
+		$stmt->execute();
+		$this->addresses = $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
 
 	public function run()
