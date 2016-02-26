@@ -1,0 +1,30 @@
+#
+# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# https://nette.org/security-warning
+#
+parameters:
+	songsDir: %wwwDir%/../../songs
+
+php:
+	date.timezone: Europe/Prague
+
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+	expiration: 14 days
+	autoStart: yes
+
+services:
+	- App\Model\UserManager
+	- App\Forms\FormFactory
+	- App\Forms\SignFormFactory
+	- App\Model\GenresManager(%songsDir%)
+	- App\Model\SongsManager(%songsDir%)
+	- App\Forms\AddSongFormFactory
+	- App\Forms\AddGenreFormFactory
+	router: App\RouterFactory::createRouter

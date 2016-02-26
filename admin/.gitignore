@@ -1,0 +1,8 @@
+log/*
+temp/*
+vendor/*
+node_modules/*
+!.gitignore
+!.htaccess
+!web.config
+app/config/config.local.neon

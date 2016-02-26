@@ -1,0 +1,62 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+ *}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>{ifset title}{include title|striptags} | {/ifset}Nette Sandbox</title>
+
+	<link rel="stylesheet" href="{$basePath}/css/main.min.css">
+	<meta name="viewport" content="width=device-width">
+	{block head}{/block}
+</head>
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+      	<div class="container">
+        	<div class="navbar-header">
+          		<a href="../" class="navbar-brand">Jukebox</a>
+          		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+          		  	<span class="icon-bar"></span>
+          		  	<span class="icon-bar"></span>
+          		  	<span class="icon-bar"></span>
+          		</button>
+        	</div>
+        	<div class="navbar-collapse collapse" id="navbar-main">
+          		<ul class="nav navbar-nav">
+           			<li{ifCurrent Dashboard:*} class="active"{/ifCurrent}><a n:href="Dashboard:">Přehled</a></li>
+            		<li{ifCurrent Songs:*} class="active"{/ifCurrent}><a n:href="Songs:">Skladby</a></li>
+            		<li{ifCurrent Genres:*} class="active"{/ifCurrent}><a n:href="Genres:">Žánry</a></li>
+          		</ul>
+        	</div>
+      	</div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+			<div n:foreach="$flashes as $flash">
+				<div class="alert alert-dismissible alert-{$flash->type}">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				{$flash->message}
+				</div>
+			</div>
+    	</div>
+        <div class="row">
+			{include content}
+    	</div>
+	</div>
+
+	{block scripts}
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script src="{$basePath}/js/main.js"></script>
+	{/block}
+</body>
+</html>
