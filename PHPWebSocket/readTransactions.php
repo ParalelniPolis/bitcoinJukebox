@@ -2,30 +2,21 @@
 
 require_once('vendor/autoload.php');
 require_once('TransactionReader.php');
+require_once('AddressProvider.php');
 
-use \BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
+$start = microtime(true);
 
 $host = 'localhost';
 $dbName = 'jukebox';
 $username = 'root';
 $password = '';
 
-$reader = new TransactionReader($host, $dbName, $username, $password);
+//$reader = new TransactionReader($host, $dbName, $username, $password);
 //$reader->run();
 
+$provider = new AddressProvider($host, $dbName, $username, $password);
+for ($i = 0; $i < 100; $i++) {
+	echo $provider->getFreeAddress() . PHP_EOL;
+}
 
-//temporarily here, generating addresses
-//$dsn = 'mysql:dbname=' . $dbName . ';host=' . $host . '';
-//try {
-//	$connection = new PDO($dsn, $username, $password);
-//	$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//} catch (PDOException $e) {
-//	throw new Exception('Connection failed: ' . $e->getMessage());
-//}
-//$stmt = $connection->prepare("INSERT INTO addresses (address, private_key) VALUES (:address, :private_key)");
-//
-//for ($i = 0; $i < 100; $i++) {
-//	$bitcoinECDSA = new BitcoinECDSA();
-//	$bitcoinECDSA->generateRandomPrivateKey(md5(rand(0, PHP_INT_MAX)));
-//	$stmt->execute([':address' => $bitcoinECDSA->getAddress(), ':private_key' => $bitcoinECDSA->getPrivateKey()]);
-//}
+echo "duration: " . (microtime(true) - $start)*1000 . 'miliseconds'. PHP_EOL;

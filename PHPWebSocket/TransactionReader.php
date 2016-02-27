@@ -1,11 +1,18 @@
 <?php
 
+use React\EventLoop\Factory;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream;
+use React\EventLoop\StreamSelectLoop;
+use Devristo\Phpws\Client\WebSocket;
+use Devristo\Phpws\Messaging\WebSocketMessage;
+
 class TransactionReader {
 
-	/** @var \React\EventLoop\StreamSelectLoop */
+	/** @var StreamSelectLoop */
 	private $loop;
 
-	/** @var \Devristo\Phpws\Client\WebSocket */
+	/** @var WebSocket */
 	private $client;
 
 	/** @var \Zend\Log\Logger */
@@ -19,17 +26,19 @@ class TransactionReader {
 
 	public function __construct(string $host, string $dbName, string $username, string $password)
 	{
-		$this->loop = \React\EventLoop\Factory::create();
-		$this->logger = new \Zend\Log\Logger();
-		$writer = new Zend\Log\Writer\Stream("php://output");
-		$this->logger->addWriter($writer);
+		$this->loop = Factory::create();
+		$this->logger = new Logger();
+		$fileWriter = new Stream("log.txt");
+		$this->logger->addWriter($fileWriter);
+		$consoleWriter = new Stream('php://output');
+		$this->logger->addWriter($consoleWriter);
 
 		$options = [];
 		$options['ssl']['local_cert'] = "democert.pem";
 		$options['ssl']['allow_self_signed'] = true;
 		$options['ssl']['verify_peer'] = false;
 
-		$this->client = new \Devristo\Phpws\Client\WebSocket("wss://ws.blockchain.info/inv", $this->loop, $this->logger, $options);
+		$this->client = new WebSocket("wss://ws.blockchain.info/inv", $this->loop, $this->logger, $options);
 
 		$this->addresses = [];
 		$this->initClient();
@@ -44,7 +53,7 @@ class TransactionReader {
 			$this->client->send('{"op":"unconfirmed_sub"}');
 		});
 
-		$this->client->on("message", function(\Devristo\Phpws\Messaging\WebSocketMessage $message) {
+		$this->client->on("message", function(WebSocketMessage $message) {
 			$data = json_decode($message->getData(), true);
 			$output = $data['x']['out'];
 			foreach ($output as $receiver) {
@@ -61,11 +70,12 @@ class TransactionReader {
 
 	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
 	{
-		$dsn = 'mysql:dbname=' . $dbName . ';host=' . $host . '';
+		$dsn = "mysql:dbname=$dbName;host=$host";
 
 		try {
 			$this->connection = new PDO($dsn, $username, $password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->logger->notice("Connected to database.");
 		} catch (PDOException $e) {
 			throw new Exception('Connection failed: ' . $e->getMessage());
 		}
@@ -73,7 +83,14 @@ class TransactionReader {
 
 	private function transactionReceived(string $address)
 	{
-		//TODO: implement
+		$this->logger->notice("Received transaction to address $address");
+		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
+		$stmt->execute([':address' => $address]);
+
+		// when address is sent to someone, time of usage will be stored. After transaction received to that address, null
+		// shall be set instead of time. So free adresses are without time of usage.
+		//TODO: set some expiration treshold, after which time will be reset, so address could be used by other people (10, 15 min?)
+		//TODO: implement all logic behind it
 	}
 
 	private function loadAddresses()
