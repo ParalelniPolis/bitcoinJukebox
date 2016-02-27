@@ -14,11 +14,14 @@ class AddressProvider
 	/** @var double */
 	private $increaseRatio;
 
+	/** @var string */
+	private $addressLockTime;
+
 	public function __construct(string $host, string $dbName, string $username, string $password)
 	{
 		$this->occupiedAddressesTreshold = 0.9;
 		$this->increaseRatio = 0.3;
-
+		$this->addressLockTime = "- 10 minutes";
 		$this->connectToDatabase($host, $dbName, $username, $password);
 	}
 
@@ -36,13 +39,14 @@ class AddressProvider
 
 	public function getFreeAddress()
 	{
-		$stmt = $this->connection->prepare('SELECT address FROM addresses WHERE last_used IS NULL LIMIT 1');
-		$stmt->execute();
+		$addressMaxAge = new DateTime("- 10 minutes");
+		$stmt = $this->connection->prepare('SELECT address FROM addresses WHERE NOT(last_used IS NOT NULL AND last_used > :time) LIMIT 1');
+		$stmt->execute([':time' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		$address = $stmt->fetch(PDO::FETCH_COLUMN);
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NOW() WHERE address = :address');
 		$stmt->execute([':address' => $address]);
-		$stmt = $this->connection->prepare('SELECT COUNT(last_used) AS occupied, COUNT(*) AS total FROM addresses');  //query returning ratio of used addresses
-		$stmt->execute();
+		$stmt = $this->connection->prepare('SELECT SUM(last_used IS NOT NULL AND last_used > :time) AS occupied, COUNT(*) AS total FROM addresses');  //query returning ratio of used addresses
+		$stmt->execute([':time' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		list($occupied, $total) = $stmt->fetch(PDO::FETCH_BOTH);
 		if (($occupied / $total) >= $this->occupiedAddressesTreshold) {
 			$this->generateNewAddresses(round($total * $this->increaseRatio));

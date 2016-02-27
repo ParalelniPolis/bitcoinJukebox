@@ -15,8 +15,8 @@ $password = '';
 //$reader->run();
 
 $provider = new AddressProvider($host, $dbName, $username, $password);
-for ($i = 0; $i < 100; $i++) {
+for ($i = 0; $i < 20; $i++) {
 	echo $provider->getFreeAddress() . PHP_EOL;
 }
 
-echo "duration: " . (microtime(true) - $start)*1000 . 'miliseconds'. PHP_EOL;
+echo "duration: " . (microtime(true) - $start)*1000 . ' miliseconds'. PHP_EOL;
