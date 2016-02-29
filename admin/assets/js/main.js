@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(function(){
     $("[rel='tooltip']").tooltip();
 
     $('.thumb').hover(
@@ -11,5 +11,5 @@ $( document ).ready(function() {
     );
 
     $(".file").fileinput({showUpload: false, showPreview: false, showUploadedThumbs: false});
-});
 
+});
