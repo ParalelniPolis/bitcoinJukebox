@@ -61,6 +61,7 @@ class TransactionReader {
 					continue;
 				}
 				$address = $receiver['addr'];
+//				$this->logger->notice($address);
 				if (in_array($address, $this->addresses)) {
 					$this->transactionReceived($address);
 				}

@@ -28,5 +28,5 @@ services:
 	- App\Forms\AddGenreFormFactory
 	router: App\RouterFactory::createRouter
 	authenticator: Nette\Security\SimpleAuthenticator([
-		admin: mademyday_1234
+		%username%: %password%
 	])

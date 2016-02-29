@@ -1,3 +1,52 @@
 {block content}
-{control addSongForm}
+<div class="row">
+	{if $genre == null}
+    <div class="col-lg-12">
+        <h1 class="page-header">Žánry</h1>
+    </div>
+    {foreach $genres as $genre}
+	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+       	<a class="thumbnail" n:href="this, genre => $genre">
+        	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
+        	{$genre}
+    	</a>
+    </div>
+    {/foreach}
+	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+       	<a class="thumbnail" n:href="Genres:">
+        	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
+        	Přidat žánr
+    	</a>
+    </div>
+    {else}
+    <div class="col-lg-12">
+        <a n:href="this, genre => null"><h1 class="page-header">Zpět na všechny žánry</h1></a>
+    </div>
+	{/if}
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Skladby</h1>
+    </div>
+	{foreach $songs as $song}
+	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+        <div class="caption">
+            <h4>Možnosti</h4>
+            {*<p>short thumbnail description</p>*}
+            <p><a n:href="Songs:delete, song => $song" class="label label-danger">Smazat</a>
+            <a n:href="Songs:download, song => $song" class="label label-default">Stahnout</a></p>
+        </div>
+       	{*<a class="thumbnail" href="#">*}
+        	<img class="img-responsive" src="{$basePath}/img/play-button_1.png" alt="">
+        	{$song}
+    	{*</a>*}
+    </div>
+    {/foreach}
+	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+       	<a class="thumbnail" n:href="AddSong:default, genre => $genre">
+        	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
+        	Přidat skladbu
+    	</a>
+    </div>
+</div>
 {/block}

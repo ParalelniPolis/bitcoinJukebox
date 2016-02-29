@@ -3,7 +3,9 @@
 namespace App\Presenters;
 
 use App\Forms\AddSongFormFactory;
+use App\Model\GenresManager;
 use App\Model\SongsManager;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
 use Tracy\Debugger;
@@ -11,33 +13,37 @@ use Tracy\Debugger;
 class SongsPresenter extends BasePresenter
 {
 
-	/** @var AddSongFormFactory @inject */
-	public $addSongFormFactory;
-
 	/** @var SongsManager @inject */
 	public $songsManager;
 
-	public function renderDefault()
+	/** @var GenresManager @inject */
+	public $genresManager;
+
+	/** @var string @persistent */
+	public $genre;
+
+	public function actionDefault($genre = null)
 	{
+		$this->genre = $genre;
 	}
 
-	public function createComponentAddSongForm()
+	public function renderDefault($genre = null)
 	{
-		$form = $this->addSongFormFactory->create();
-		$form->onSuccess[] = $this->addSong;
-		return $form;
+		$this->template->songs = $this->songsManager->getSongs($genre);
+		$this->template->genre = $genre;
+		$this->template->genres = $this->genresManager->getAllGenres();
 	}
 
-	public function addSong(Form $form, array $values)
+	public function actionDelete($song)
 	{
-		/** @var FileUpload $songFile */
-		$songFile = $values['song'];
-		$genre = $values['genre'];
-		if ($songFile->isOk()) {
-			$this->songsManager->addSong($songFile, $genre);
-		}
-		$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
-		$this->redirect('this');
+		$this->songsManager->deleteSong($song, $this->genre);
+		$this->flashMessage("Skladba $song byla úspěšně smazána.", "info");
+		$this->redirect("default");
 	}
 
+	public function actionDownload($song)
+	{
+		$path = $this->songsManager->getSongPath($song, $this->genre);
+		$this->presenter->sendResponse(new FileResponse($path, $song));
+	}
 }

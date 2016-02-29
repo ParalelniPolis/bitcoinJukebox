@@ -11,12 +11,12 @@ $dbName = 'jukebox';
 $username = 'root';
 $password = '';
 
-//$reader = new TransactionReader($host, $dbName, $username, $password);
-//$reader->run();
+$reader = new TransactionReader($host, $dbName, $username, $password);
+$reader->run();
 
-$provider = new AddressProvider($host, $dbName, $username, $password);
-for ($i = 0; $i < 20; $i++) {
-	echo $provider->getFreeAddress() . PHP_EOL;
-}
+//$provider = new AddressProvider($host, $dbName, $username, $password);
+//for ($i = 0; $i < 20; $i++) {
+//	echo $provider->getFreeAddress() . PHP_EOL;
+//}
 
 echo "duration: " . (microtime(true) - $start)*1000 . ' miliseconds'. PHP_EOL;

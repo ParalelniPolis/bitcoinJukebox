@@ -24,9 +24,10 @@ class AddSongFormFactory extends Object
 	}
 
 	/**
+	 * @param string $defaultGenre
 	 * @return Form
 	 */
-	public function create()
+	public function create(string $defaultGenre = null)
 	{
 		$form = $this->factory->create();
 		$maxSize = SizeParser::parse_size(ini_get("upload_max_filesize"));
@@ -35,7 +36,8 @@ class AddSongFormFactory extends Object
 
 		$genres = $this->genresManager->getAllGenres();
 		$form->addSelect('genre', 'Žánr: ', array_combine($genres, $genres))
-			->setPrompt('-');
+			->setPrompt('-')
+			->setDefaultValue($defaultGenre);
 
 		$form->addSubmit('send', 'Nahrát skladbu');
 

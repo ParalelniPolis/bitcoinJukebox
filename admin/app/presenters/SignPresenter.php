@@ -5,6 +5,7 @@ namespace App\Presenters;
 use Nette;
 use App\Forms\SignFormFactory;
 use Nette\Application\UI\Form;
+use Tracy\Debugger;
 
 
 class SignPresenter extends BasePresenter
@@ -19,12 +20,12 @@ class SignPresenter extends BasePresenter
 	protected function createComponentSignInForm()
 	{
 		$form = $this->factory->create();
+		$form->getElementPrototype()->addAttributes(['class' => 'ajax']);
 		$form->onSuccess[] = function (Form $form) {
-			$form->getPresenter()->redirect('Dashboard:');
+			$this->redirect('Dashboard:');
 		};
 		return $form;
 	}
-
 
 	public function actionOut()
 	{

@@ -22,6 +22,21 @@ class SongsManager extends Object
 		return Finder::findFiles('*')->from($this->songsDirectory)->count();
 	}
 
+	public function getSongs(string $genre = null) : array
+	{
+		$directory = $this->songsDirectory;
+		if ($genre) {
+			$directory .= "/$genre";
+		}
+		/** @var string[] $songs */
+		$songs = [];
+		/** @var \SplFileInfo $song */
+		foreach (Finder::findFiles('*')->from($directory) as $song) {
+			$songs[] = $song->getBasename();
+		}
+		return $songs;
+	}
+
 	public function addSong(FileUpload $file, string $genre = null)
 	{
 		$destination = $this->songsDirectory;
@@ -31,4 +46,23 @@ class SongsManager extends Object
 		$file->move($destination . "/" . $file->getName());
 	}
 
+	public function deleteSong($song, $genre = null)
+	{
+		$destination = $this->songsDirectory;
+		if ($genre != null) {
+			$destination .= "/$genre";
+		}
+		if (file_exists($destination . "/" . $song)) {
+			unlink($destination . "/" . $song);
+		}
+	}
+
+	public function getSongPath($song, $genre)
+	{
+		$destination = $this->songsDirectory;
+		if ($genre != null) {
+			$destination .= "/$genre";
+		}
+		return $destination . "/" . $song;
+	}
 }
