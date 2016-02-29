@@ -5,14 +5,14 @@
         <h1 class="page-header">Žánry</h1>
     </div>
     {foreach $genres as $genre}
-	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
        	<a class="thumbnail" n:href="this, genre => $genre">
         	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
         	{$genre}
     	</a>
     </div>
     {/foreach}
-	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
        	<a class="thumbnail" n:href="Genres:">
         	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
         	Přidat žánr
@@ -29,7 +29,7 @@
         <h1 class="page-header">Skladby</h1>
     </div>
 	{foreach $songs as $song}
-	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
         <div class="caption">
             <h4>Možnosti</h4>
             {*<p>short thumbnail description</p>*}
@@ -42,7 +42,7 @@
     	{*</a>*}
     </div>
     {/foreach}
-	<div class="col-lg-2 col-md-3 col-xs-6 thumb">
+	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
        	<a class="thumbnail" n:href="AddSong:default, genre => $genre">
         	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
         	Přidat skladbu

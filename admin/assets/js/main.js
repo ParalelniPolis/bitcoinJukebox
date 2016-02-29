@@ -9,4 +9,7 @@ $( document ).ready(function() {
             $(this).find('.caption').slideUp(250); //.fadeOut(205)
         }
     );
+
+    $(".file").fileinput({showUpload: false, showPreview: false, showUploadedThumbs: false});
 });
+
