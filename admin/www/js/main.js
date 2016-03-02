@@ -28,7 +28,7 @@
             confirmModal.find('#confirmModalCancel').html($(obj).data('confirm-cancel-text'));
         }
 
-        confirmModal.on('click', function () {
+        confirmModal.find('#confirmModalOk').on('click', function () {
             var tagName = $(obj).prop("tagName");
             if (tagName == 'INPUT') {
                 var form = $(obj).closest('form');

@@ -20,7 +20,6 @@ class SignPresenter extends BasePresenter
 	protected function createComponentSignInForm()
 	{
 		$form = $this->factory->create();
-		$form->getElementPrototype()->addAttributes(['class' => 'ajax']);
 		$form->onSuccess[] = function (Form $form) {
 			$this->redirect('Dashboard:');
 		};

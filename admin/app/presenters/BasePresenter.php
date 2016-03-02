@@ -21,3 +21,11 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	}
 
 }
+//fronta je prázdná => random písnička
+//složky
+//fulltext search
+//2 záložky - fronta a písničky
+//random žánr
+//dát možnost ticho
+//žánr se přehrává dokola, dokud není přeplacený někým jiným
+//checkboxy vprocho
