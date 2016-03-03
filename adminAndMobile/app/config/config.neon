@@ -4,6 +4,7 @@
 #
 parameters:
 	songsDir: %wwwDir%/../../songs
+	pricePerSong: 0.0001			# in bitcoins
 
 php:
 	date.timezone: Europe/Prague
@@ -31,3 +32,5 @@ services:
 	authenticator: Nette\Security\SimpleAuthenticator([
 		admin: %password%
 	])
+	- {class: App\FrontModule\Presenters\SongsPresenter, setup: {setPricePerSong(%pricePerSong%)}}
+	- App\Model\AddressProvider

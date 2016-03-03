@@ -4,13 +4,39 @@
 		<input n:name="text" placeholder="skladba">
 		<button n:name="search"><img src="{$basePath}/img/magnifying-glass.png"></button>
 	</form>
-	skladby
-</div>
+
+{* example searchbox *}
+{*<div class="box">*}
+  {*<div class="container-4">*}
+    {*<input type="search" id="search" placeholder="Search..." />*}
+    {*<button class="icon"><i class="fa fa-search"></i></button>*}
+  {*</div>*}
+{*</div>*}
+
+	<form n:name="orderForm">
+		{foreach $genres as $genre}
+			<div>
+				{$genre}
+				{foreach $songs[$genre] as $song}
+					<div>
+						- {$song}
+					</div>
+					{var $name = $allSongs[$genre . '_' . $song]}
+					<input n:name="$name">
+				{/foreach}
+			</div>
+		{/foreach}
+
+		{foreach $songsWithoutGenre as $song}
+			<div>
+				{$song}
+			</div>
+			{var $name = $allSongs[$song]}
+			<input n:name="$name">
+		{/foreach}
+		<input n:name="order">
+	</form>
 
 
-<div class="box">
-  <div class="container-4">
-    <input type="search" id="search" placeholder="Search..." />
-    <button class="icon"><i class="fa fa-search"></i></button>
-  </div>
+
 </div>

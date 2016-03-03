@@ -33,13 +33,13 @@ class AddressProvider
 			$this->connection = new PDO($dsn, $username, $password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $e) {
-			throw new Exception('Connection failed: ' . $e->getMessage());
+			throw new \Exception('Connection failed: ' . $e->getMessage());
 		}
 	}
 
 	public function getFreeAddress()
 	{
-		$addressMaxAge = new DateTime("- 10 minutes");
+		$addressMaxAge = new \DateTime("- 10 minutes");
 		$stmt = $this->connection->prepare('SELECT address FROM addresses WHERE NOT(last_used IS NOT NULL AND last_used > :time) LIMIT 1');
 		$stmt->execute([':time' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		$address = $stmt->fetch(PDO::FETCH_COLUMN);

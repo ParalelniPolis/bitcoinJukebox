@@ -2,7 +2,9 @@
 
 require_once('vendor/autoload.php');
 require_once('TransactionReader.php');
-require_once('AddressProvider.php');
+require_once('../adminAndMobile/app/model/AddressProvider.php');
+
+use App\Model;
 
 $start = microtime(true);
 
