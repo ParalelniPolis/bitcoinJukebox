@@ -5,6 +5,7 @@
 parameters:
 	songsDir: %wwwDir%/../../songs
 	pricePerSong: 0.0001			# in bitcoins
+	lastIndexFile: %appDir%/model/lastIndex.txt
 
 php:
 	date.timezone: Europe/Prague
@@ -26,6 +27,7 @@ services:
 	- App\Forms\SearchFormFactory
 	- App\Model\GenresManager(%songsDir%)
 	- App\Model\SongsManager(%songsDir%)
+	- App\Model\AddressProvider(masterKey: %masterKey%, lastIndexFile: %lastIndexFile%)
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory
 	router: App\RouterFactory::createRouter
@@ -33,4 +35,3 @@ services:
 		admin: %password%
 	])
 	- {class: App\FrontModule\Presenters\SongsPresenter, setup: {setPricePerSong(%pricePerSong%)}}
-	- App\Model\AddressProvider

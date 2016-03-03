@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use \BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
+use BitWasp\BitcoinLib\BIP32;
 use Nette\Database\Context;
 use Nette\Database\SqlLiteral;
 use PDO;
@@ -27,12 +28,20 @@ class AddressProvider
 	/** @var Context */
 	private $database;
 
-	public function __construct(Context $database)
+	/** @var string */
+	private $masterKey;
+
+	/** @var string */
+	private $lastIndexFile;
+
+	public function __construct(Context $database, $masterKey, $lastIndexFile)
 	{
 		$this->occupiedAddressesTreshold = 0.9;
 		$this->increaseRatio = 0.1;
 		$this->addressLockTime = "- 10 minutes";
 		$this->database = $database;
+		$this->masterKey = $masterKey;
+		$this->lastIndexFile = $lastIndexFile;
 	}
 
 	public function getFreeAddress()
@@ -45,22 +54,29 @@ class AddressProvider
 		$occupied = $res['occupied'];
 		$total = $res['total'];
 		if (($occupied / $total) >= $this->occupiedAddressesTreshold) {
-//			$this->generateNewAddresses(round($total * $this->increaseRatio));
+			$this->generateAndPersistNewAddresses(round($total * $this->increaseRatio));
 		}
 		return $address;
 	}
 
-	private function generateNewAddresses(int $count)
+	private function generateAndPersistNewAddresses(int $count)
 	{
-		//TODO: generate only addresses without private keys, using BIP32
-//		$stmt = $this->connection->prepare("INSERT INTO addresses (address, private_key) VALUES (:address, :private_key)");
-//
-//		for ($i = 0; $i < $count; $i++) {
-//			$address = new BitcoinECDSA();
-//			$address->generateRandomPrivateKey(md5(rand(0, PHP_INT_MAX)));
-//			$stmt->execute([':address' => $address->getAddress(), ':private_key' => $address->getPrivateKey()]);
-//		}
-
+		$return = $this->database->table('addresses')->select('MAX(bip32index) AS maxIndex')->fetch();
+		$index = $return['maxIndex'];
+		for ($i = 0; $i < $count; $i++) {
+			list($address, $index) = $this->generateNewAddress($index);
+			$this->database->getConnection()->query('INSERT INTO addresses', [
+				'address' => $address,
+				'bip32index' => $index
+			]);
+		}
 	}
 
+	private function generateNewAddress(int $lastIndex) : array
+	{
+		$lastIndex++;
+		$master = $this->masterKey;
+		$address = BIP32::build_address($master, $lastIndex)[0];
+		return [$address, $lastIndex];
+	}
 }

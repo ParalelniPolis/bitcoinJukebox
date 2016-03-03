@@ -7,7 +7,8 @@
     ],
     "require": {
         "devristo/phpws": "dev-master",
-        "bitcoin-php/bitcoin-ecdsa": "^1.2"
+        "bitcoin-php/bitcoin-ecdsa": "^1.2",
+        "bitwasp/bitcoin-lib": "1.0.*"
     },
     "require-dev": {
       "phploc/phploc": "*"
