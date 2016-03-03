@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Presenters;
+namespace App\AdminModule\Presenters;
 
 use App\Forms\AddSongFormFactory;
 use App\Model\GenresManager;

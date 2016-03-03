@@ -22,6 +22,7 @@ session:
 services:
 	- App\Forms\FormFactory
 	- App\Forms\SignFormFactory
+	- App\Forms\SearchFormFactory
 	- App\Model\GenresManager(%songsDir%)
 	- App\Model\SongsManager(%songsDir%)
 	- App\Forms\AddSongFormFactory

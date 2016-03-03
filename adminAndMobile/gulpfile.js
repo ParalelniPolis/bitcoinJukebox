@@ -10,7 +10,7 @@ var webp = require('gulp-webp');
 
 // Compile less to css
 gulp.task('styles:less', function(){
-	return gulp.src(['assets/less/layout.less'])
+	return gulp.src(['assets/less/*.less'])
 		.pipe($.less())
 		.on('error', console.error.bind(console))
 		.pipe(gulp.dest('www/css'))

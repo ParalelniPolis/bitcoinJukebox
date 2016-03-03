@@ -1,12 +1,3 @@
-/**
- * Confirm dialog plugin
- *
- * @copyright  Copyright (c) 2012 Jan Červený
- * @license    BSD
- * @link       confirmdialog.redsoft.cz
- * @version    1.0
- */
-
 (function ($, undefined) {
 
     $('[data-confirm]').click(function (event) {
