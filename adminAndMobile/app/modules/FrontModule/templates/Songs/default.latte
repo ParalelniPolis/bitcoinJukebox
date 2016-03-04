@@ -1,3 +1,8 @@
+{**
+ * @param Genre[]   $genres
+ * @param Song[][]	$songs
+ * @param Song[]	$songsWithoutGenre
+ *}
 {block content}
 <div class="tab-content">
 	<form n:name="searchForm" class="search">
@@ -16,23 +21,21 @@
 	<form n:name="orderForm">
 		{foreach $genres as $genre}
 			<div>
-				{$genre}
-				{foreach $songs[$genre] as $song}
+				{$genre->getName()}
+				{foreach $songs[$genre->getName()] as $song}
 					<div>
-						- {$song}
+						- {$song->getName()}
 					</div>
-					{var $name = $allSongs[$genre . '_' . $song]}
-					<input n:name="$name">
+					<input n:name="$song->getId()">
 				{/foreach}
 			</div>
 		{/foreach}
 
 		{foreach $songsWithoutGenre as $song}
 			<div>
-				{$song}
+				{$song->getName()}
 			</div>
-			{var $name = $allSongs[$song]}
-			<input n:name="$name">
+			<input n:name="$song->getId()">
 		{/foreach}
 		<input n:name="order">
 	</form>

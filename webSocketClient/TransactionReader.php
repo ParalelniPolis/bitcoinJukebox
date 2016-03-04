@@ -88,10 +88,10 @@ class TransactionReader {
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
 		$stmt->execute([':address' => $address]);
 
+		$stmt = $this->connection->prepare('SELECT song from queue SET paid = TRUE WHERE address = :address');
 		// when address is sent to someone, time of usage will be stored. After transaction received to that address, null
 		// shall be set instead of time. So free adresses are without time of usage.
-		//TODO: set some expiration treshold, after which time will be reset, so address could be used by other people (10, 15 min?)
-		//TODO: implement all logic behind it
+		//TODO: implement pushing songs to websocket
 	}
 
 	private function loadAddresses()

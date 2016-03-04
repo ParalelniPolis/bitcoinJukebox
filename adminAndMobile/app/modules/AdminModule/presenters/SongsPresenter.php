@@ -22,28 +22,28 @@ class SongsPresenter extends BasePresenter
 	/** @var string @persistent */
 	public $genre;
 
-	public function actionDefault($genre = null)
+	public function actionDefault(string $genre = null)
 	{
 		$this->genre = $genre;
 	}
 
-	public function renderDefault($genre = null)
+	public function renderDefault(string $genre = null)
 	{
 		$this->template->songs = $this->songsManager->getSongs($genre);
 		$this->template->currentGenre = $genre;
 		$this->template->genres = $this->genresManager->getAllGenres();
 	}
 
-	public function actionDelete($song)
+	public function actionDelete(string $songId)
 	{
-		$this->songsManager->deleteSong($song, $this->genre);
-		$this->flashMessage("Skladba $song byla úspěšně smazána.", "info");
+		$name = $this->songsManager->deleteSong($songId);
+		$this->flashMessage("Skladba $name byla úspěšně smazána.", "info");
 		$this->redirect("default");
 	}
 
-	public function actionDownload($song)
+	public function actionDownload($songId)
 	{
-		$path = $this->songsManager->getSongPath($song, $this->genre);
+		list($path, $song) = $this->songsManager->getSongPath($songId);
 		$this->presenter->sendResponse(new FileResponse($path, $song));
 	}
 }

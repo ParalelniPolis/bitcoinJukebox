@@ -35,7 +35,7 @@ class AddSongFormFactory extends Object
 			->addRule(Form::MAX_FILE_SIZE, 'Nemůžete nahrát vetší soubor než ' . Filters::bytes($maxSize) . '(nastaveno v php.ini)', $maxSize)
 			->getControlPrototype()->addAttributes(['class' => 'file']);
 
-		$genres = $this->genresManager->getAllGenres();
+		$genres = $this->genresManager->getAllGenreNames();
 		$form->addSelect('genre', 'Žánr: ', array_combine($genres, $genres))
 			->setPrompt('-')
 			->setDefaultValue($defaultGenre);

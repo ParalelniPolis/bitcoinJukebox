@@ -28,11 +28,17 @@
                 document.location = obj.href;
             }
         });
-        confirmModal.on('hidden', function () {
-            $('#confirmModal').remove();
-        });
         confirmModal.modal('show');
         return false;
     });
+
+    $('#confirmModal').on('hidden.bs.modal', function () {
+        var confirmModal = $('#confirmModal');
+        confirmModal.find('.modal-title').text('');
+        confirmModal.find('.modal-body').text('');
+        confirmModal.find('#confirmModalOk').attr('class', confirmModal.find('#confirmModalOk').data('class'));
+        confirmModal.find('#confirmModalCancel').attr('class', confirmModal.find('#confirmModalCancel').data('class'));
+        console.log('closing modal');
+    })
 
 })(jQuery);

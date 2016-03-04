@@ -6,9 +6,9 @@
     </div>
     {foreach $genres as $genre}
 	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
-       	<a class="thumbnail" n:href="this, genre => $genre">
+       	<a class="thumbnail" n:href="this, genre => $genre->getName()">
         	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
-        	{$genre}
+        	{$genre->getName()}
     	</a>
     </div>
     {/foreach}
@@ -36,19 +36,19 @@
 				<a
 				data-confirm
 				data-confirm-title="Potvrzení akce"
-				data-confirm-text="Opravdu chcete smazat skladbu {$song}?"
+				data-confirm-text="Opravdu chcete smazat skladbu {$song->getName()}?"
 				data-confirm-ok-class="btn-danger"
 				data-confirm-ok-text="Smazat"
 				data-confirm-cancel-class="btn-success"
 				data-confirm-cancel-text="Zrušit"
 				class="label label-danger"
-				n:href="Songs:delete, song => $song">Smazat</a>
-            	<a n:href="Songs:download, song => $song" class="label label-default">Stahnout</a>
+				n:href="Songs:delete, songId => $song->getId()">Smazat</a>
+            	<a n:href="Songs:download, songId => $song->getId()" class="label label-default">Stahnout</a>
             </p>
         </div>
        	{*<a class="thumbnail" href="#">*}
         	<img class="img-responsive" src="{$basePath}/img/play-button_1.png" alt="">
-        	{$song}
+        	{$song->getName()}
     	{*</a>*}
     </div>
     {/foreach}

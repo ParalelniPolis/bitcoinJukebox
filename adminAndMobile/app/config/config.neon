@@ -25,13 +25,20 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\SignFormFactory
 	- App\Forms\SearchFormFactory
-	- App\Model\GenresManager(%songsDir%)
-	- App\Model\SongsManager(%songsDir%)
+	- App\Model\GenresManager(songsDirectory: %songsDir%)
+	- App\Model\SongsManager(songsDirectory: %songsDir%)
+	- App\Model\QueueManager
 	- App\Model\AddressProvider(masterKey: %masterKey%, lastIndexFile: %lastIndexFile%)
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory
 	router: App\RouterFactory::createRouter
 	authenticator: Nette\Security\SimpleAuthenticator([
-		admin: %password%
+		admin: %adminPassword%
 	])
 	- {class: App\FrontModule\Presenters\SongsPresenter, setup: {setPricePerSong(%pricePerSong%)}}
+
+extensions:
+	console: Kdyby\Console\DI\ConsoleExtension
+	events: Kdyby\Events\DI\EventsExtension
+	annotations: Kdyby\Annotations\DI\AnnotationsExtension
+	doctrine: Kdyby\Doctrine\DI\OrmExtension

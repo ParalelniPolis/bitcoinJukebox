@@ -2,8 +2,12 @@
 
 namespace App\Model;
 
+use App\Model\Entity\Address;
 use \BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
 use BitWasp\BitcoinLib\BIP32;
+use Doctrine\ORM\AbstractQuery;
+use Kdyby\Doctrine\EntityManager;
+use Kdyby\Doctrine\EntityRepository;
 use Nette\Database\Context;
 use Nette\Database\SqlLiteral;
 use PDO;
@@ -12,9 +16,6 @@ use Tracy\Debugger;
 
 class AddressProvider
 {
-
-	/** @var PDO */
-	private $connection;
 
 	/** @var double */
 	private $occupiedAddressesTreshold;
@@ -25,51 +26,75 @@ class AddressProvider
 	/** @var string */
 	private $addressLockTime;
 
-	/** @var Context */
-	private $database;
-
 	/** @var string */
 	private $masterKey;
 
 	/** @var string */
 	private $lastIndexFile;
 
-	public function __construct(Context $database, $masterKey, $lastIndexFile)
+	/** @var EntityManager */
+	private $entityManager;
+
+	/** @var EntityRepository */
+	private $addressRepository;
+
+	public function __construct(EntityManager $entityManager, $masterKey, $lastIndexFile)
 	{
 		$this->occupiedAddressesTreshold = 0.9;
 		$this->increaseRatio = 0.1;
 		$this->addressLockTime = "- 10 minutes";
-		$this->database = $database;
 		$this->masterKey = $masterKey;
 		$this->lastIndexFile = $lastIndexFile;
+		$this->entityManager = $entityManager;
+		$this->addressRepository = $entityManager->getRepository(Address::getClassName());
 	}
 
-	public function getFreeAddress()
+	public function getFreeAddress() : Address
 	{
+		$this->entityManager->beginTransaction();
+
 		$addressMaxAge = new \DateTime("- 10 minutes");
-		$address = $this->database->table('addresses')->where('NOT(last_used IS NOT NULL AND last_used > ?)', $addressMaxAge->format("Y-m-d H:i:s"))->limit(1)->fetchField('address');
-		Debugger::barDump($address, 'address');
-		$this->database->table('addresses')->where('address = ?', $address)->update(['last_used' => new SqlLiteral('NOW()')]);
-		$res = $this->database->table('addresses')->select(new SqlLiteral('SUM(last_used IS NOT NULL AND last_used > ?) AS occupied, COUNT(*) AS total'), $addressMaxAge->format("Y-m-d H:i:s"))->fetch();
-		$occupied = $res['occupied'];
-		$total = $res['total'];
+
+		$qb = $this->addressRepository->createQueryBuilder('address');
+		$qb->addSelect('count(address) as free')
+			->where('address.lastUsed IS NULL')
+			->orWhere('address.lastUsed < :maxAge')
+			->setParameter('maxAge', $addressMaxAge)
+			->setMaxResults(1);
+
+		/** @var Address $address */
+		$result = $qb->getQuery()->getSingleResult();
+		$address = $result[0];
+		$free = $result['free'];
+		$address->useAddress();
+		$this->entityManager->flush($address);
+
+		$qb = $this->entityManager->createQueryBuilder();
+		$qb->select('COUNT(address) AS total')
+			->from(Address::getClassName(), 'address');
+
+		$total = $qb->getQuery()->getSingleScalarResult();
+		$occupied = $total - $free;
 		if (($occupied / $total) >= $this->occupiedAddressesTreshold) {
 			$this->generateAndPersistNewAddresses(round($total * $this->increaseRatio));
 		}
+
+		$this->entityManager->commit();
 		return $address;
 	}
 
 	private function generateAndPersistNewAddresses(int $count)
 	{
-		$return = $this->database->table('addresses')->select('MAX(bip32index) AS maxIndex')->fetch();
-		$index = $return['maxIndex'];
+		$qb = $this->entityManager->createQueryBuilder();
+		$qb->select('MAX(address.bip32index)')
+			->from(Address::getClassName(), 'address');
+		$index = (int) $qb->getQuery()->getSingleScalarResult();
 		for ($i = 0; $i < $count; $i++) {
 			list($address, $index) = $this->generateNewAddress($index);
-			$this->database->getConnection()->query('INSERT INTO addresses', [
-				'address' => $address,
-				'bip32index' => $index
-			]);
+			$addressEntity = new Address($address, $index);
+			$this->entityManager->persist($addressEntity);
 		}
+		$this->entityManager->flush();
 	}
 
 	private function generateNewAddress(int $lastIndex) : array

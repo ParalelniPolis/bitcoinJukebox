@@ -2,6 +2,10 @@
 
 namespace App\Model;
 
+use App\Model\Entity\Genre;
+use App\Model\Entity\Song;
+use Kdyby\Doctrine\EntityManager;
+use Kdyby\Doctrine\EntityRepository;
 use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\Finder;
@@ -12,57 +16,89 @@ class SongsManager extends Object
 	/** @var string */
 	private $songsDirectory;
 
-	public function __construct(string $songsDirectory)
+	/** @var EntityManager */
+	private $entityManager;
+
+	/** @var EntityRepository */
+	private $songRepository;
+
+	/** @var EntityRepository */
+	private $genresRepository;
+
+	public function __construct(EntityManager $entityManager, string $songsDirectory)
 	{
+		$this->entityManager = $entityManager;
 		$this->songsDirectory = $songsDirectory;
+		$this->songRepository = $entityManager->getRepository(Song::getClassName());
+		$this->genresRepository = $entityManager->getRepository(Genre::getClassName());
 	}
 
 	public function countAllSongs() : int
 	{
-		return Finder::findFiles('*')->from($this->songsDirectory)->count();
+		return $this->songRepository->countBy([]);
 	}
 
+	/**
+	 * @param string|null $genre
+	 * @return Song[]
+	 */
 	public function getSongs(string $genre = null) : array
 	{
-		$directory = $this->songsDirectory;
-		if ($genre) {
-			$directory .= "/$genre";
-		}
-		/** @var string[] $songs */
-		$songs = [];
-		/** @var \SplFileInfo $song */
-		foreach (Finder::findFiles('*')->from($directory) as $song) {
-			$songs[] = $song->getBasename();
-		}
-		return $songs;
+		return $this->songRepository->findBy(['genre' => $genre]);
 	}
 
-	public function addSong(FileUpload $file, string $genre = null)
+	/**
+	 * @return Song[]
+	 */
+	public function getAllSongs() : array
 	{
-		$destination = $this->songsDirectory;
-		if ($genre != null) {
-			$destination .= "/$genre";
-		}
-		$file->move($destination . "/" . $file->getName());
+		return $this->songRepository->findAll();
 	}
 
-	public function deleteSong($song, $genre = null)
+	/**
+	 * @return int[]
+	 */
+	public function getSongIds() : array
 	{
-		$destination = $this->songsDirectory;
-		if ($genre != null) {
-			$destination .= "/$genre";
-		}
-		if (file_exists($destination . "/" . $song)) {
-			unlink($destination . "/" . $song);
-		}
+		$qb = $this->entityManager->createQueryBuilder();
+		$qb->select('s.id')->from(Song::getClassName(), 's');
+		return array_column($qb->getQuery()->getScalarResult(), 'id');
 	}
 
-	public function getSongPath($song, $genre)
+	public function addSong(FileUpload $file, string $genreName = null)
 	{
-		$destination = $this->songsDirectory;
-		if ($genre != null) {
-			$destination .= "/$genre";
+		if ($genreName) {
+			$genre = $this->genresRepository->find($genreName);
+		} else {
+			$genre = null;
 		}
-		return $destination . "/" . $song;
+		$song = new Song($file->getName(), $genre);
+		$this->entityManager->persist($song);
+		$this->entityManager->flush($song);
+		$file->move($this->songsDirectory . "/" . $song->getHash());
+	}
+
+	public function deleteSong(string $songId) : string
+	{
+		/** @var Song $song */
+		$song = $this->songRepository->find($songId);
+		if (file_exists($this->songsDirectory . '/' . $song->getHash())) {
+			unlink($this->songsDirectory . '/' . $song->getHash());
+		}
+		$this->entityManager->remove($song);
+		$this->entityManager->flush($song);
+		return $song->getName();
+	}
+
+	/**
+	 * @param string $songId
+	 * @return string[]
+	 */
+	public function getSongPath(string $songId) : array
+	{
+		/** @var Song $song */
+		$song = $this->songRepository->find($songId);
+		$destination = $this->songsDirectory;
+		return [$destination . "/" . $song->getHash(), $song->getName()];
 	}
 }

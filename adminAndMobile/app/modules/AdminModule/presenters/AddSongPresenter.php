@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Forms\AddSongFormFactory;
+use App\Model\GenresManager;
 use App\Model\SongsManager;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
@@ -16,6 +17,9 @@ class AddSongPresenter extends BasePresenter
 
 	/** @var SongsManager @inject */
 	public $songsManager;
+
+	/** @var GenresManager @inject */
+	public $genresManager;
 
 	/** @var string */
 	private $genre;
@@ -40,11 +44,13 @@ class AddSongPresenter extends BasePresenter
 	{
 		/** @var FileUpload $songFile */
 		$songFile = $values['song'];
-		$genre = $values['genre'];
+		$genreName = $values['genre'];
 		if ($songFile->isOk()) {
-			$this->songsManager->addSong($songFile, $genre);
+			$this->songsManager->addSong($songFile, $genreName);
+			$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
+		} else {
+			$this->flashMessage('Skladbu se nepodařilo přidat.', 'error');
 		}
-		$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
 		$this->redirect('this');
 	}
 

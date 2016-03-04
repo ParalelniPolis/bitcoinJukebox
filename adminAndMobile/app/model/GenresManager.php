@@ -2,9 +2,13 @@
 
 namespace App\Model;
 
+use App\Model\Entity\Genre;
+use Kdyby\Doctrine\EntityManager;
+use Kdyby\Doctrine\EntityRepository;
 use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Tracy\Debugger;
 
 class GenresManager extends Object
 {
@@ -12,32 +16,51 @@ class GenresManager extends Object
 	/** @var string */
 	private $songsDirectory;
 
-	public function __construct(string $songsDirectory)
+	/** @var EntityManager */
+	private $entityManager;
+
+	/** @var EntityRepository */
+	private $genreRepository;
+
+	public function __construct(EntityManager $entityManager, string $songsDirectory)
 	{
+		$this->entityManager = $entityManager;
 		$this->songsDirectory = $songsDirectory;
+		$this->genreRepository = $entityManager->getRepository(Genre::getClassName());
 	}
 
 	public function countAllGenres() : int
 	{
-		return Finder::findDirectories('*')->from($this->songsDirectory)->count();
+		return $this->genreRepository->countBy([]);
+	}
+
+	/**
+	 * @return Genre[]
+	 */
+	public function getAllGenres() : array
+	{
+		return $this->genreRepository->findAll();
 	}
 
 	/**
 	 * @return string[]
 	 */
-	public function getAllGenres() : array
+	public function getAllGenreNames() : array
 	{
-		$genres = [];
-		/** @var \SplFileInfo $directory */
-		foreach (Finder::findDirectories('*')->from($this->songsDirectory) as $directory) {
-			$genres[] = $directory->getBasename();
-		}
-		return $genres;
+		$qb = $this->entityManager->createQueryBuilder();
+		$qb->select('g.name')->from(Genre::getClassName(), 'g');
+		return array_column($qb->getQuery()->getScalarResult(), 'name');
 	}
 
 	public function addGenre(string $name)
 	{
-		FileSystem::createDir($this->songsDirectory . "/$name");
+		$genre = new Genre($name);
+		$this->entityManager->persist($genre);
+		$this->entityManager->flush($genre);
 	}
 
+	public function getGenre(string $name) : Genre
+	{
+		return $this->genreRepository->find($name);
+	}
 }

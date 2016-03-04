@@ -4,7 +4,10 @@ namespace App\FrontModule\Presenters;
 
 use App\Forms\SearchFormFactory;
 use App\Model\AddressProvider;
+use App\Model\Entity\Address;
+use App\Model\Entity\Genre;
 use App\Model\GenresManager;
+use App\Model\QueueManager;
 use App\Model\SongsManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\Strings;
@@ -25,38 +28,34 @@ class SongsPresenter extends BasePresenter
 	public $addressProvider;
 
 	/** @var string[] */
-	private $allSongs;
+	private $songIds;
 
-	/** @var string[] */
+	/** @var Genre[] */
 	private $genres;
 
 	/** @var double */
 	private $pricePerSong;
 
+	/** @var QueueManager @inject */
+	public $queueManager;
+
+	/** @var Address */
+	private $address;
+
 	public function actionDefault()
 	{
 		$this->genres = $this->genresManager->getAllGenres();
-		$this->allSongs = [];
-		foreach ($this->songsManager->getSongs() as $song) {
-			$this->allSongs[$song] = $this->modify($song);
-		}
-		foreach ($this->genres as $genre) {
-			foreach ($this->songsManager->getSongs($genre) as $song) {
-				$name = $genre . '_' . $song;
-				$this->allSongs[$name] = $this->modify($name);
-			}
-		}
+		$this->songIds = $this->songsManager->getSongIds();
 	}
 
 	public function renderDefault()
 	{
-		$this->template->allSongs = $this->allSongs;
 		$this->template->genres = $this->genres;
 		$this->template->songsWithoutGenre = $this->songsManager->getSongs();
-		/** string[] */
+		/** Song[][] */
 		$songs = [];
 		foreach ($this->genres as $genre) {
-			$songs[$genre] = $this->songsManager->getSongs($genre);
+			$songs[$genre->getName()] = $this->songsManager->getSongs($genre->getName());
 		}
 		$this->template->songs = $songs;
 	}
@@ -70,7 +69,7 @@ class SongsPresenter extends BasePresenter
 	public function createComponentOrderForm()
 	{
 		$form = new Form();
-		foreach ($this->allSongs as $song) {
+		foreach ($this->songIds as $song) {
 			$form->addCheckbox($song);
 		}
 		$form->addSubmit('order', 'Objednat');
@@ -90,11 +89,18 @@ class SongsPresenter extends BasePresenter
 		$this->redirect('order', ['songs' => implode(', ', $songs)]);
 	}
 
+	public function actionOrder(string $songs)
+	{
+		$songsArray = Strings::split($songs, '~, ~');
+		$this->address = $this->addressProvider->getFreeAddress();
+		$this->queueManager->addSongs($songsArray, $this->address);
+	}
+
 	public function renderOrder(string $songs)
 	{
 		$songsArray = Strings::split($songs, '~, ~');
 		$this->template->amount = $this->pricePerSong * count($songsArray);
-		$this->template->address = $this->addressProvider->getFreeAddress();
+		$this->template->address = $this->address->getAddress();
 	}
 
 	private function modify(string $string) : string
