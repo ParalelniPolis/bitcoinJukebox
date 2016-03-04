@@ -13,16 +13,21 @@ class QueueManager extends Nette\Object
 	/** @var EntityManager */
 	private $entityManager;
 
-	public function __construct(EntityManager $entityManager)
+	/** @var SongsManager */
+	private $songsManager;
+
+	public function __construct(EntityManager $entityManager, SongsManager $songsManager)
 	{
 		$this->entityManager = $entityManager;
+		$this->songsManager = $songsManager;
 	}
 
-	public function addSongs(array $songs, Address $address)
+	public function addSongs(array $songIds, Address $address)
 	{
 		$songEntities = [];
-		foreach ($songs as $song) {
-			$songEntity = new QueueSong($song, $address);
+		$songs = $this->songsManager->getSongsWithIds($songIds);
+		foreach ($songIds as $songId) {
+			$songEntity = new QueueSong($songs[$songId], $address);
 			$this->entityManager->persist($songEntity);
 			$songEntities[] = $songEntity;
 		}

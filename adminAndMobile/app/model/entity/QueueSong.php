@@ -22,8 +22,9 @@ class QueueSong extends Entities\BaseEntity
 	private $id;
 
 	/**
-	 * @ORM\Column(type="string")
-	 * @var string
+	 * @ORM\ManyToOne(targetEntity="Song")
+	 * @ORM\JoinColumn(name="song")
+	 * @var Song
 	 */
 	private $song;
 
@@ -46,7 +47,7 @@ class QueueSong extends Entities\BaseEntity
 	 */
 	private $ordered;
 
-    public function __construct(string $song, Address $address)
+    public function __construct(Song $song, Address $address)
     {
     	$this->song = $song;
 		$this->paid = false;

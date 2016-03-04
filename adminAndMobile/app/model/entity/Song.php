@@ -4,6 +4,8 @@ namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities;
+use Nette\Utils\Strings;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
@@ -11,7 +13,13 @@ use Kdyby\Doctrine\Entities;
 class Song extends Entities\BaseEntity
 {
 
-    use Entities\Attributes\Identifier;
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="uuid")
+	 * @ORM\GeneratedValue(strategy="NONE")
+	 * @var \Ramsey\Uuid\Uuid
+	 */
+	protected $id;
 
 	/**
 	 * @ORM\Column(type="string", nullable=false)
@@ -26,20 +34,22 @@ class Song extends Entities\BaseEntity
 	 */
 	private $genre;
 
-	/**
-	 * @ORM\Column(type="string")
-	 * @var string;
-	 */
-	private $hash;
-
     public function __construct($name, Genre $genre = null)
     {
+	    $this->id = Uuid::uuid4();
     	$this->name = $name;
 	    $this->genre = $genre;
-	    $toBeHashed = $name;
-	    $toBeHashed .= $genre ? $genre->getName() : '';
-	    $this->hash = hash('sha512', $toBeHashed);
     }
+
+	public function getId() : string
+	{
+		return $this->id->toString();
+	}
+
+	public function getAlphaNumericId() : string
+	{
+		return Strings::replace($this->getId(), '~-~', '_');
+	}
 
 	public function getName() : string
 	{
@@ -49,11 +59,6 @@ class Song extends Entities\BaseEntity
 	public function getGenre() : Genre
 	{
 		return $this->genre;
-	}
-
-	public function getHash() : string
-	{
-		return $this->hash;
 	}
     
 }

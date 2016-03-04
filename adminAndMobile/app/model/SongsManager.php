@@ -9,6 +9,8 @@ use Kdyby\Doctrine\EntityRepository;
 use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\Finder;
+use Nette\Utils\Strings;
+use Tracy\Debugger;
 
 class SongsManager extends Object
 {
@@ -48,6 +50,15 @@ class SongsManager extends Object
 	}
 
 	/**
+	 * @param string[] $songIds
+	 * @return Song[]
+	 */
+	public function getSongsWithIds(array $songIds) : array
+	{
+		return $this->songRepository->findAssoc(['id' => $songIds], 'id');
+	}
+
+	/**
 	 * @return Song[]
 	 */
 	public function getAllSongs() : array
@@ -56,13 +67,21 @@ class SongsManager extends Object
 	}
 
 	/**
-	 * @return int[]
+	 * @return string[]
 	 */
 	public function getSongIds() : array
 	{
 		$qb = $this->entityManager->createQueryBuilder();
 		$qb->select('s.id')->from(Song::getClassName(), 's');
 		return array_column($qb->getQuery()->getScalarResult(), 'id');
+	}
+
+	/**
+	 * @return string[]
+	 */
+	public function getSongAlphaNumericIds() : array
+	{
+		return array_map(function($id) {return Strings::replace($id, '~-~', '_');}, $this->getSongIds());
 	}
 
 	public function addSong(FileUpload $file, string $genreName = null)
@@ -75,15 +94,15 @@ class SongsManager extends Object
 		$song = new Song($file->getName(), $genre);
 		$this->entityManager->persist($song);
 		$this->entityManager->flush($song);
-		$file->move($this->songsDirectory . "/" . $song->getHash());
+		$file->move($this->songsDirectory . "/" . $song->getId());
 	}
 
 	public function deleteSong(string $songId) : string
 	{
 		/** @var Song $song */
 		$song = $this->songRepository->find($songId);
-		if (file_exists($this->songsDirectory . '/' . $song->getHash())) {
-			unlink($this->songsDirectory . '/' . $song->getHash());
+		if (file_exists($this->songsDirectory . '/' . $song->getId())) {
+			unlink($this->songsDirectory . '/' . $song->getId());
 		}
 		$this->entityManager->remove($song);
 		$this->entityManager->flush($song);
@@ -99,6 +118,6 @@ class SongsManager extends Object
 		/** @var Song $song */
 		$song = $this->songRepository->find($songId);
 		$destination = $this->songsDirectory;
-		return [$destination . "/" . $song->getHash(), $song->getName()];
+		return [$destination . "/" . $song->getId(), $song->getName()];
 	}
 }

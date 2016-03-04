@@ -11,6 +11,7 @@ use App\Model\QueueManager;
 use App\Model\SongsManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\Strings;
+use Tracy\Debugger;
 
 class SongsPresenter extends BasePresenter
 {
@@ -27,9 +28,6 @@ class SongsPresenter extends BasePresenter
 	/** @var AddressProvider @inject */
 	public $addressProvider;
 
-	/** @var string[] */
-	private $songIds;
-
 	/** @var Genre[] */
 	private $genres;
 
@@ -45,7 +43,6 @@ class SongsPresenter extends BasePresenter
 	public function actionDefault()
 	{
 		$this->genres = $this->genresManager->getAllGenres();
-		$this->songIds = $this->songsManager->getSongIds();
 	}
 
 	public function renderDefault()
@@ -69,7 +66,7 @@ class SongsPresenter extends BasePresenter
 	public function createComponentOrderForm()
 	{
 		$form = new Form();
-		foreach ($this->songIds as $song) {
+		foreach ($this->songsManager->getSongAlphaNumericIds() as $song) {
 			$form->addCheckbox($song);
 		}
 		$form->addSubmit('order', 'Objednat');
@@ -83,22 +80,22 @@ class SongsPresenter extends BasePresenter
 		$songs = [];
 		foreach ($songsArray as $song => $selected) {
 			if ($selected) {
-				$songs[] = $song;
+				$songs[] = Strings::replace($song, '~_~', '-');
 			}
 		}
-		$this->redirect('order', ['songs' => implode(', ', $songs)]);
+		$this->redirect('order', ['songIds' => implode(', ', $songs)]);
 	}
 
-	public function actionOrder(string $songs)
+	public function actionOrder(string $songIds)
 	{
-		$songsArray = Strings::split($songs, '~, ~');
+		$songIdsArray = Strings::split($songIds, '~, ~');
 		$this->address = $this->addressProvider->getFreeAddress();
-		$this->queueManager->addSongs($songsArray, $this->address);
+		$this->queueManager->addSongs($songIdsArray, $this->address);
 	}
 
-	public function renderOrder(string $songs)
+	public function renderOrder(string $songIds)
 	{
-		$songsArray = Strings::split($songs, '~, ~');
+		$songsArray = Strings::split($songIds, '~, ~');
 		$this->template->amount = $this->pricePerSong * count($songsArray);
 		$this->template->address = $this->address->getAddress();
 	}

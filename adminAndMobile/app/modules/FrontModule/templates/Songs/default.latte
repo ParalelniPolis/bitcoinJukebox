@@ -26,7 +26,7 @@
 					<div>
 						- {$song->getName()}
 					</div>
-					<input n:name="$song->getId()">
+					<input n:name="$song->getAlphaNumericId()">
 				{/foreach}
 			</div>
 		{/foreach}
@@ -35,7 +35,7 @@
 			<div>
 				{$song->getName()}
 			</div>
-			<input n:name="$song->getId()">
+			<input n:name="$song->getAlphaNumericId()">
 		{/foreach}
 		<input n:name="order">
 	</form>
