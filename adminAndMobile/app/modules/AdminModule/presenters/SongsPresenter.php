@@ -3,8 +3,10 @@
 namespace App\AdminModule\Presenters;
 
 use App\Forms\AddSongFormFactory;
+use App\Model\CantDeleteException;
 use App\Model\GenresManager;
 use App\Model\SongsManager;
+use Doctrine\DBAL\DBALException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
@@ -36,8 +38,14 @@ class SongsPresenter extends BasePresenter
 
 	public function actionDelete(string $songId)
 	{
-		$name = $this->songsManager->deleteSong($songId);
-		$this->flashMessage("Skladba $name byla úspěšně smazána.", "info");
+		try {
+			$name = $this->songsManager->deleteSong($songId);
+			$this->flashMessage("Skladba $name byla úspěšně smazána.", 'info');
+		} catch(CantDeleteException $e) {
+			$this->flashMessage("Skladba není nalezena", 'warning');
+		} catch(DBALException $e) {
+			$this->flashMessage("Skladba je ve frontě", 'warning');
+		}
 		$this->redirect("default");
 	}
 

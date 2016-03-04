@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Model\Entity\Genre;
 use App\Model\Entity\Song;
+use Doctrine\DBAL\DBALException;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
 use Nette\Http\FileUpload;
@@ -97,21 +98,30 @@ class SongsManager extends Object
 		$file->move($this->songsDirectory . "/" . $song->getId());
 	}
 
+	/**
+	 * @param string $songId
+	 * @return string
+	 * @throws CantDeleteException
+	 * @throws DBALException
+	 */
 	public function deleteSong(string $songId) : string
 	{
 		/** @var Song $song */
 		$song = $this->songRepository->find($songId);
-		if (file_exists($this->songsDirectory . '/' . $song->getId())) {
-			unlink($this->songsDirectory . '/' . $song->getId());
+		if ($song === null) {
+			throw new CantDeleteException('file does not exist');
 		}
 		$this->entityManager->remove($song);
 		$this->entityManager->flush($song);
+		if (file_exists($this->songsDirectory . '/' . $song->getId())) {    //deleting of file is after database delete due to exceptions
+			unlink($this->songsDirectory . '/' . $song->getId());
+		}
 		return $song->getName();
 	}
 
 	/**
 	 * @param string $songId
-	 * @return string[]
+	 * @return \string[]
 	 */
 	public function getSongPath(string $songId) : array
 	{
@@ -121,3 +131,5 @@ class SongsManager extends Object
 		return [$destination . "/" . $song->getId(), $song->getName()];
 	}
 }
+
+class CantDeleteException extends \Exception {}
