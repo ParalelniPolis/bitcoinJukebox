@@ -14,7 +14,7 @@ $username = 'root';
 $password = '';
 
 $reader = new TransactionReader($host, $dbName, $username, $password);
-$reader->run();
-
+//$reader->run();
+$reader->transactionReceived('13ngDv9EgzAug92hheRgT3GGduZonXRqpW');
 
 echo "duration: " . (microtime(true) - $start)*1000 . ' miliseconds'. PHP_EOL;
