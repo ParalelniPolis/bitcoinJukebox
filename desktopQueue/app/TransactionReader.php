@@ -27,9 +27,13 @@ class TransactionReader {
 	/** @var string */
 	private $addressLockTime;
 
+	/** @var callable */
+	public $onTransactionObtained;
+
 	public function __construct(string $host, string $dbName, string $username, string $password)
 	{
-		$this->addressLockTime = "- 10 minutes";
+//		$this->addressLockTime = "- 10 minutes";
+		$this->addressLockTime = "- 10 days";            //for testing purposes
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
 		$fileWriter = new Stream("log.txt");
@@ -111,6 +115,9 @@ class TransactionReader {
 		// when address is sent to someone, time of usage will be stored. After transaction received to that address, null
 		// shall be set instead of time. So free adresses are without time of usage.
 		//TODO: implement pushing songs to websocket, send songs by websocket
+		foreach ($songs as $song) {
+			call_user_func($this->onTransactionObtained, [$song['name'], $song['id']]);
+		}
 	}
 
 	private function loadAddresses()

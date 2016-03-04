@@ -12,13 +12,10 @@ var filterAddr = function(obj) {
     }
 }
 
-var handleSong = function(blockChainData) {
-    var dataArray = blockChainData.x.out.filter(filterAddr);
-    var value = dataArray[0].value;
-    var id = value.toString().slice(-3);
-
-    var songElement = document.querySelector('[data-song-id="' + id +'"]');
-    addToQueue(songElement);
+var handleSong = function(songs) {
+    for (i = 0; i < songs.length; i++) {
+        addToQueue(songs[i]);
+    }
 }
 
 var addToQueue = function(song) {
@@ -26,8 +23,10 @@ var addToQueue = function(song) {
     var item = document.createElement('a');
     item.className = 'mdl-navigation__link';
 
-    item.setAttribute('data-url', song.getAttribute('data-song-url'));
-    item.textContent = song.getAttribute('title');
+    console.log(song.location);
+    console.log(song.name);
+    item.setAttribute('data-url', song.location);
+    item.textContent = song.name;
 
     queueList.appendChild(item);
 
@@ -118,13 +117,23 @@ audioElement.addEventListener('ended', function() {
     playNextOrShuffle();
 }, false);
 
-var ws = new WebSocket('wss://ws.blockchain.info/inv');
-ws.onopen = function() {
-    setInterval(function() {
-        ws.send(JSON.stringify({'op':'addr_sub', 'addr':'15iuRwGSiUTknHJtoP4CJ3dHUr8T4vQuaE'}))
-    }, 60000);
-    ws.onmessage = function(event) {
-        console.log(JSON.parse(event.data));
-        handleSong(JSON.parse(event.data));
-    }
-}
+//var ws = new WebSocket('wss://ws.blockchain.info/inv');
+//ws.onopen = function() {
+//    setInterval(function() {
+//        ws.send(JSON.stringify({'op':'addr_sub', 'addr':'15iuRwGSiUTknHJtoP4CJ3dHUr8T4vQuaE'}))
+//    }, 60000);
+//    ws.onmessage = function(event) {
+//        console.log(JSON.parse(event.data));
+//        handleSong(JSON.parse(event.data));
+//    }
+//}
+
+var conn = new WebSocket('ws://localhost:8080');
+conn.onopen = function(e) {
+    console.log("Connection established!");
+};
+
+conn.onmessage = function(e) {
+        console.log(JSON.parse(e.data));
+        handleSong(JSON.parse(e.data));
+};

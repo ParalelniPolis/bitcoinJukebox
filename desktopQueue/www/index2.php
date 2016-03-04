@@ -5,8 +5,8 @@
  * Date: 18. 12. 2015
  * Time: 18:32
  */
-require_once('SongParser.php');
-require_once('getID3-1.9.10/getid3/getid3.php');
+require_once('../SongParser.php');
+require_once('../getID3-1.9.10/getid3/getid3.php');
 
 define('SONGS_PATH', 'songs');
 define('QR_PATH', 'qr');
