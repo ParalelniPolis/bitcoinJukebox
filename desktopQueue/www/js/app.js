@@ -117,24 +117,16 @@ audioElement.addEventListener('ended', function() {
     playNextOrShuffle();
 }, false);
 
-//var ws = new WebSocket('wss://ws.blockchain.info/inv');
-//ws.onopen = function() {
-//    setInterval(function() {
-//        ws.send(JSON.stringify({'op':'addr_sub', 'addr':'15iuRwGSiUTknHJtoP4CJ3dHUr8T4vQuaE'}))
-//    }, 60000);
-//    ws.onmessage = function(event) {
-//        console.log(JSON.parse(event.data));
-//        handleSong(JSON.parse(event.data));
-//    }
-//}
-
 var conn = new WebSocket('ws://localhost:8080');
-conn.onopen = function(e) {
-    console.log("Connection established!");
-};
 
-conn.onmessage = function(e) {
-    console.log(e.data);
-    console.log(JSON.parse(e.data));
-    handleSong(JSON.parse(e.data));
-};
+conn.onopen = function() {
+    console.log("Connection established!");
+    setInterval(function() {
+        conn.send('hi')   //je jedno, co pošlu, server odpovídá na cokoli
+    }, 6000);
+    conn.onmessage = function(event) {
+        console.log(event.data);
+        console.log(JSON.parse(event.data));
+        handleSong(JSON.parse(event.data));
+    }
+}
