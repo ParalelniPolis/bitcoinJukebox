@@ -24,18 +24,22 @@
 				{$genre->getName()}
 				{foreach $songs[$genre->getName()] as $song}
 					<div>
-						- {$song->getName()}
+						<label n:name="$song->getAlphaNumericId()">
+							- {$song->getName()}
+							<input n:name="$song->getAlphaNumericId()">
+						</label>
 					</div>
-					<input n:name="$song->getAlphaNumericId()">
 				{/foreach}
 			</div>
 		{/foreach}
 
 		{foreach $songsWithoutGenre as $song}
 			<div>
-				{$song->getName()}
+				<label n:name="$song->getAlphaNumericId()">
+					{$song->getName()}
+					<input n:name="$song->getAlphaNumericId()">
+				</label>
 			</div>
-			<input n:name="$song->getAlphaNumericId()">
 		{/foreach}
 		<input n:name="order">
 	</form>
