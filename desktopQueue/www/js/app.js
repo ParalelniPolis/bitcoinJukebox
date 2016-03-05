@@ -134,6 +134,7 @@ conn.onopen = function(e) {
 };
 
 conn.onmessage = function(e) {
-        console.log(JSON.parse(e.data));
-        handleSong(JSON.parse(e.data));
+    console.log(e.data);
+    console.log(JSON.parse(e.data));
+    handleSong(JSON.parse(e.data));
 };

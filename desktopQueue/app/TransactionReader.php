@@ -29,7 +29,7 @@ class TransactionReader {
 
 	public function __construct(string $host, string $dbName, string $username, string $password)
 	{
-		$this->addressLockTime = "- 10 minutes";
+		$this->addressLockTime = "- 20 minutes";
 //		$this->addressLockTime = "- 10 days";            //for testing purposes
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
@@ -96,14 +96,16 @@ class TransactionReader {
 		//TODO: dohodnout se, zda tu má být taky 10 minut
 		$addressMaxAge = new \DateTime($this->addressLockTime);
 
-		//TODO: dohodnout se, zda zde má být kontrola zaplacení správné částky a co se stane, pokud je částka menší
-		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge');
-		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
-
-		$stmt = $this->connection->prepare('SELECT id FROM orders WHERE address = :address AND ordered > :maxAge');
+		$stmt = $this->connection->prepare('SELECT id FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		$orderId = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
 
+		//TODO: dohodnout se, zda zde má být kontrola zaplacení správné částky a co se stane, pokud je částka menší
+		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
+		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
+
+
+		echo $orderId . PHP_EOL;
 		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');
 		$stmt->execute([':id' => $orderId]);
 	}

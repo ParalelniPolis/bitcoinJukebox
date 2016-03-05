@@ -46,7 +46,8 @@ class QueueProducer implements MessageComponentInterface {
 			, $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
 		$songData = $this->readNonProcessedSongs();
-		$data = json_encode($songData);
+		$data = \Nette\Utils\Json::encode($songData);
+		echo $data . PHP_EOL;
 		$from->send($data);
 	}
 
@@ -77,7 +78,7 @@ class QueueProducer implements MessageComponentInterface {
 		$data = [];
 		foreach ($result as $songData) {
 			$song = new \stdClass();
-			$song->name = $songData['name'];
+			$song->name = \Nette\Utils\Strings::fixEncoding($songData['name']);
 			$song->location = $songsDir. '/' . $songData['id'];
 			$data[] = $song;
 		}

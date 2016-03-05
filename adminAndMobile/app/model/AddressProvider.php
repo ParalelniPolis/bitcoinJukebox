@@ -29,8 +29,6 @@ class AddressProvider
 	/** @var string */
 	private $masterKey;
 
-	/** @var string */
-	private $lastIndexFile;
 
 	/** @var EntityManager */
 	private $entityManager;
@@ -38,13 +36,12 @@ class AddressProvider
 	/** @var EntityRepository */
 	private $addressRepository;
 
-	public function __construct(EntityManager $entityManager, $masterKey, $lastIndexFile)
+	public function __construct(EntityManager $entityManager, $masterKey, $addressLockTime)
 	{
 		$this->occupiedAddressesTreshold = 0.9;
 		$this->increaseRatio = 0.1;
-		$this->addressLockTime = "- 10 minutes";
+		$this->addressLockTime = $addressLockTime;
 		$this->masterKey = $masterKey;
-		$this->lastIndexFile = $lastIndexFile;
 		$this->entityManager = $entityManager;
 		$this->addressRepository = $entityManager->getRepository(Address::getClassName());
 	}

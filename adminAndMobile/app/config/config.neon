@@ -5,7 +5,7 @@
 parameters:
 	songsDir: %wwwDir%/../../songs
 	pricePerSong: 0.0001			# in bitcoins
-	lastIndexFile: %appDir%/model/lastIndex.txt
+	addressLockTime: '- 20 minutes'
 
 php:
 	date.timezone: Europe/Prague
@@ -28,7 +28,7 @@ services:
 	- App\Model\GenresManager(songsDirectory: %songsDir%)
 	- App\Model\SongsManager(songsDirectory: %songsDir%)
 	- App\Model\QueueManager
-	- App\Model\AddressProvider(masterKey: %masterKey%, lastIndexFile: %lastIndexFile%)
+	- App\Model\AddressProvider(masterKey: %masterKey%, addressLockTime: %addressLockTime%)
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory
 	router: App\RouterFactory::createRouter
