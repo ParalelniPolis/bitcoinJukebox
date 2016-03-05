@@ -41,11 +41,20 @@ class QueueSong extends Entities\BaseEntity
 	 */
 	private $order;
 
+	/**
+	 * Database cache, so order table does not have to be joined during selecting songs in websocket.
+	 * Should be same as paid column in related order.
+	 * @ORM\Column(type="boolean")
+	 * @var bool
+	 */
+	private $paid;
+
     public function __construct(Song $song, Order $order)
     {
     	$this->song = $song;
 		$this->proceeded = false;
 	    $this->order = $order;
+	    $this->paid = false;
     }
 
 }

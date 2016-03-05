@@ -5,11 +5,31 @@ use Ratchet\ConnectionInterface;
 
 class QueueProducer implements MessageComponentInterface {
 
+	/**
+	 * @var SplObjectStorage|ConnectionInterface[]
+	 */
 	protected $clients;
 
-	public function __construct() {
+	/** @var PDO */
+	private $connection;
+
+	public function __construct(string $host, string $dbName, string $username, string $password) {
+		$this->connectToDatabase($host, $dbName, $username, $password);
 		$this->clients = new \SplObjectStorage;
 		echo "created\n";
+	}
+
+	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
+	{
+		$dsn = "mysql:dbname=$dbName;host=$host";
+
+		try {
+			$this->connection = new PDO($dsn, $username, $password);
+			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			echo "Connected to database." . PHP_EOL;
+		} catch (PDOException $e) {
+			throw new Exception('Connection failed: ' . $e->getMessage());
+		}
 	}
 
 	public function onOpen(ConnectionInterface $conn) {
@@ -18,20 +38,6 @@ class QueueProducer implements MessageComponentInterface {
 
 		var_dump($conn);
 		echo "New connection! ({$conn->resourceId})\n";
-
-		$songsDir = '/bitcoinJukebox/songs';
-		$song1 = new \stdClass();
-		$song1->name = '11_blutengel-lucifer.mp3';
-		$song1->location = $songsDir. '/' . '13b6f480-4703-4380-9dfe-81f968f6a0ca';
-		$song2 = new \stdClass();
-		$song2->name = '01_blutengel-no_eternity-fwyh.mp3';
-		$song2->location = $songsDir. '/' . '73a55de1-5602-4f49-9446-5eb795612efd';
-		$songData = [$song1, $song2];
-		foreach ($this->clients as $client) {
-			$data = json_encode($songData);
-			$client->send($data);
-			echo "sending: " . $data . PHP_EOL;
-		}
 	}
 
 	public function onMessage(ConnectionInterface $from, $msg) {
@@ -39,15 +45,9 @@ class QueueProducer implements MessageComponentInterface {
 		echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
 			, $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
-		$from->send($msg);
-		$i = 0;
-		while (true) {
-			$from->send($i++);
-			$from->close();
-			echo $i . PHP_EOL;
-			sleep(1);
-		}
-
+		$songData = $this->readNonProcessedSongs();
+		$data = json_encode($songData);
+		$from->send($data);
 	}
 
 	public function onClose(ConnectionInterface $conn) {
@@ -61,5 +61,36 @@ class QueueProducer implements MessageComponentInterface {
 		echo "An error has occurred: {$e->getMessage()}\n";
 
 		$conn->close();
+	}
+
+	private function readNonProcessedSongs() : array
+	{
+		$songsDir = '/bitcoinJukebox/songs';
+
+		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id AS queueId FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
+		$stmt->execute();
+		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		var_dump($result);
+
+		$queueIds = array_column($result, 'queueId');
+
+		$data = [];
+		foreach ($result as $songData) {
+			$song = new \stdClass();
+			$song->name = $songData['name'];
+			$song->location = $songsDir. '/' . $songData['id'];
+			$data[] = $song;
+		}
+
+		var_dump($data);
+
+		if (count($queueIds) > 0) {
+			$quotedIds = array_map(function($id) {return $this->connection->quote($id);}, $queueIds);
+			$stmt = $this->connection->prepare('UPDATE queue SET proceeded = TRUE WHERE id IN ('. implode(',', $quotedIds) . ')');
+			echo $stmt->queryString . PHP_EOL;
+			$stmt->execute();
+		}
+
+		return $data;
 	}
 }

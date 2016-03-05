@@ -27,13 +27,10 @@ class TransactionReader {
 	/** @var string */
 	private $addressLockTime;
 
-	/** @var callable */
-	public $onTransactionObtained;
-
 	public function __construct(string $host, string $dbName, string $username, string $password)
 	{
-//		$this->addressLockTime = "- 10 minutes";
-		$this->addressLockTime = "- 10 days";            //for testing purposes
+		$this->addressLockTime = "- 10 minutes";
+//		$this->addressLockTime = "- 10 days";            //for testing purposes
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
 		$fileWriter = new Stream("log.txt");
@@ -97,31 +94,23 @@ class TransactionReader {
 		$stmt->execute([':address' => $address]);
 
 		//TODO: dohodnout se, zda tu má být taky 10 minut
-		$addressMaxAge = new \DateTime("- 10 minutes");
+		$addressMaxAge = new \DateTime($this->addressLockTime);
 
-		$stmt = $this->connection->prepare('SELECT id, song FROM queue WHERE address = :address AND ordered > :maxAge');
+		//TODO: dohodnout se, zda zde má být kontrola zaplacení správné částky a co se stane, pokud je částka menší
+		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
-		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		$ids = array_column($result, 'id');
-		$songIds = array_column($result, 'song');
-		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE id IN('. implode(',', $ids) . ')');
-		$stmt->execute();       //na IN nějak nefunguje vkládání parametrů
 
-		$quotedIds = array_map(function($id) {return $this->connection->quote($id);}, $songIds);
-		$stmt = $this->connection->prepare('SELECT id, name FROM song WHERE id IN ('. implode(',', $quotedIds) . ')');
-		$stmt->execute();
+		$stmt = $this->connection->prepare('SELECT id FROM orders WHERE address = :address AND ordered > :maxAge');
+		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
+		$orderId = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
 
-		$songs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		// when address is sent to someone, time of usage will be stored. After transaction received to that address, null
-		// shall be set instead of time. So free adresses are without time of usage.
-		//TODO: implement pushing songs to websocket, send songs by websocket
-		foreach ($songs as $song) {
-			call_user_func($this->onTransactionObtained, [$song['name'], $song['id']]);
-		}
+		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');
+		$stmt->execute([':id' => $orderId]);
 	}
 
 	private function loadAddresses()
 	{
+		//TODO: dohodnout se, zda načítat jen rezervované platby nebo všechny
 		/** @var PDOStatement $stmt */
 		$stmt = $this->connection->prepare('SELECT address FROM addresses');
 		$stmt->execute();
