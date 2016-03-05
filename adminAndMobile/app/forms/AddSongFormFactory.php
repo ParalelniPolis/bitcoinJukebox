@@ -31,7 +31,7 @@ class AddSongFormFactory extends Object
 	{
 		$form = $this->factory->create();
 		$maxSize = SizeParser::parse_size(ini_get("upload_max_filesize"));
-		$form->addUpload('song', 'Nová skladba: ')
+		$form->addUpload('song', 'Nová skladba: ', true)
 			->addRule(Form::MAX_FILE_SIZE, 'Nemůžete nahrát vetší soubor než ' . Filters::bytes($maxSize) . '(nastaveno v php.ini)', $maxSize)
 			->getControlPrototype()->addAttributes(['class' => 'file']);
 

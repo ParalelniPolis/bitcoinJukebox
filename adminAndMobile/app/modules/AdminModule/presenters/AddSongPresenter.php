@@ -43,13 +43,29 @@ class AddSongPresenter extends BasePresenter
 	public function addSong(Form $form, array $values)
 	{
 		/** @var FileUpload $songFile */
-		$songFile = $values['song'];
+		$songFiles = $values['song'];
 		$genreName = $values['genre'];
-		if ($songFile->isOk()) {
-			$this->songsManager->addSong($songFile, $genreName);
-			$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
+		$onlyOneSong = count($songFiles) == 1;
+		$uploadOk = true;
+		foreach ($songFiles as $songFile) {
+			if ($songFile->isOk()) {
+				$this->songsManager->addSong($songFile, $genreName);
+			} else {
+				$uploadOk = false;
+			}
+		}
+		if ($uploadOk) {
+			if ($onlyOneSong) {
+				$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
+			} else {
+				$this->flashMessage('Skladby byly úspěšně přidány.', 'success');
+			}
 		} else {
-			$this->flashMessage('Skladbu se nepodařilo přidat.', 'error');
+			if ($onlyOneSong) {
+				$this->flashMessage('Skladbu se nepodařilo přidat.', 'error');
+			} else {
+				$this->flashMessage('Skladby se nepodařilo přidat.', 'error');
+			}
 		}
 		$this->redirect('this');
 	}
