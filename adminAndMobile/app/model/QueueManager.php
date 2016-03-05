@@ -3,6 +3,7 @@
 namespace App\Model;
  
 use App\Model\Entity\Address;
+use App\Model\Entity\Order;
 use App\Model\Entity\QueueSong;
 use Kdyby\Doctrine\EntityManager;
 use Nette;
@@ -22,12 +23,15 @@ class QueueManager extends Nette\Object
 		$this->songsManager = $songsManager;
 	}
 
-	public function addSongs(array $songIds, Address $address)
+	public function orderSongs(array $songIds, float $price, Address $address)
 	{
 		$songEntities = [];
+		$order = new Order($price, $address);
+		$songEntities[] = $order;
+		$this->entityManager->persist($order);
 		$songs = $this->songsManager->getSongsWithIds($songIds);
 		foreach ($songIds as $songId) {
-			$songEntity = new QueueSong($songs[$songId], $address);
+			$songEntity = new QueueSong($songs[$songId], $order);
 			$this->entityManager->persist($songEntity);
 			$songEntities[] = $songEntity;
 		}

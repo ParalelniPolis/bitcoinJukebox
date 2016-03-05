@@ -7,7 +7,7 @@ class QueueProducer implements MessageComponentInterface {
 
 	protected $clients;
 
-	public function __construct(TransactionReader $transactionReader) {
+	public function __construct() {
 		$this->clients = new \SplObjectStorage;
 		echo "created\n";
 	}
@@ -39,9 +39,15 @@ class QueueProducer implements MessageComponentInterface {
 		echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
 			, $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
-		foreach ($this->clients as $client) {
-			$client->send($msg);
+		$from->send($msg);
+		$i = 0;
+		while (true) {
+			$from->send($i++);
+			$from->close();
+			echo $i . PHP_EOL;
+			sleep(1);
 		}
+
 	}
 
 	public function onClose(ConnectionInterface $conn) {

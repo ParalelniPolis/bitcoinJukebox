@@ -14,14 +14,14 @@ $dbName = 'jukebox';
 $username = 'root';
 $password = '';
 
-$reader = new TransactionReader($host, $dbName, $username, $password);
-$reader->run();
+//$reader = new TransactionReader($host, $dbName, $username, $password);
+//$reader->run();
 
 
 $server = IoServer::factory(
 	new HttpServer(
 		new WsServer(
-			new QueueProducer($reader)
+			new QueueProducer()
 		)
 	),
 	8080

@@ -89,14 +89,15 @@ class SongsPresenter extends BasePresenter
 	public function actionOrder(string $songIds)
 	{
 		$songIdsArray = Strings::split($songIds, '~, ~');
+		$amount = $this->pricePerSong * count($songIdsArray);
 		$this->address = $this->addressProvider->getFreeAddress();
-		$this->queueManager->addSongs($songIdsArray, $this->address);
+		$this->queueManager->orderSongs($songIdsArray, $amount, $this->address);
 	}
 
 	public function renderOrder(string $songIds)
 	{
-		$songsArray = Strings::split($songIds, '~, ~');
-		$this->template->amount = $this->pricePerSong * count($songsArray);
+		$songIdsArray = Strings::split($songIds, '~, ~');
+		$this->template->amount = $this->pricePerSong * count($songIdsArray);
 		$this->template->address = $this->address->getAddress();
 	}
 

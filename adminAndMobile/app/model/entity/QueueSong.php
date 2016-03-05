@@ -29,30 +29,23 @@ class QueueSong extends Entities\BaseEntity
 	private $song;
 
 	/**
+	 * is true when song is sent to frontend to queue
 	 * @ORM\Column(type="boolean")
 	 * @var bool
 	 */
-	private $paid;
+	private $proceeded;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="Address")
-	 * @ORM\JoinColumn(name="address", referencedColumnName="address")
-	 * @var Address
+	 * @ORM\ManyToOne(targetEntity="Order")
+	 * @var Order
 	 */
-	private $address;
+	private $order;
 
-	/**
-	 * @ORM\Column(type="datetime")
-	 * @var \DateTime
-	 */
-	private $ordered;
-
-    public function __construct(Song $song, Address $address)
+    public function __construct(Song $song, Order $order)
     {
     	$this->song = $song;
-		$this->paid = false;
-	    $this->address = $address;
-	    $this->ordered = new \DateTime();
+		$this->proceeded = false;
+	    $this->order = $order;
     }
 
 }
