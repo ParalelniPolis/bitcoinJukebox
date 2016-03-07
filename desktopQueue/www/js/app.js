@@ -4,36 +4,23 @@ var audioElement = document.getElementById('player');
 var queueList = document.getElementById('queue-list');
 
 var conn = new WebSocket('ws://localhost:8080');
-var state = 'songs';    //state is songs or genre. If state is genre, random songs from chosen genre are played. Genre state is cancelled, when new songs arrive
-
-conn.onopen = function() {
-    console.log("Connection established!");
-    setInterval(function() {
-        conn.send('getSongs');
-        //if(state == 'songs') {
-        //} else if (state == 'genre') {
-        //    //nothing
-        //} else {
-        //    console.log('fuck, I am in invalid state.');
-        //}
-    }, 6000);
-    conn.onmessage = function(event) {
-        handleSongs(JSON.parse(event.data));
-    }
-};
-
+var state = 'genre';    //state is songs or genre. If state is genre, random songs from chosen genre are played. Genre state is cancelled, when new songs arrive
+//default state, on page load, is genre. When some songs arrive, it is changed to songs.
+var emptyQueue = true;
 
 var handleSongs = function(songs) {
+    console.log("getting " + songs.length + " songs");
     if (songs.length > 0) {
         state = 'songs';
     }
     for (var i = 0; i < songs.length; i++) {
+        emptyQueue = false;
         addToQueue(songs[i]);
     }
 };
 
 var addToQueue = function(song) {
-    var emptyList = queueList.children.length == 0;
+    emptyQueue = queueList.children.length == 0;
     var item = document.createElement('a');
     item.className = 'mdl-navigation__link';
 
@@ -44,23 +31,31 @@ var addToQueue = function(song) {
 
     queueList.appendChild(item);
 
-    if(emptyList) {
+    if(emptyQueue) {
         playNext();
     }
 };
 
 var removePlayed = function() {
+    console.log("removing played song");
     if (queueList.children.length !== 0) {
         queueList.removeChild(queueList.children[0]);
+    }
+    if(queueList.children.length == 0) {
+        emptyQueue = true;
+        console.log("queue is now empty");
     }
 };
 
 var playNextOrLastGenre = function() {
     if (queueList.children.length == 0) {   //queue is empty
+        emptyQueue = true;
         state = 'genre';
         conn.send('emptyQueue');
+    } else {
+        emptyQueue = false;
+        playNext();
     }
-    playNext();
 };
 
 
@@ -113,9 +108,28 @@ data.map(function(songData, index) {
     songsWrapper.appendChild(songWrap);
 });
 
-playNextOrLastGenre();
 
 audioElement.addEventListener('ended', function() {
     removePlayed();
     playNextOrLastGenre();
 }, false);
+
+conn.onopen = function() {
+    console.log("Connection established!");
+    playNextOrLastGenre();
+    setInterval(function() {
+        if(emptyQueue) {
+            console.log("asking for songs in empty queue");
+            conn.send('emptyQueue');
+        } else {
+            console.log("asking for songs");
+            conn.send('getSongs');
+        }
+    }, 6000);
+    conn.onmessage = function(event) {
+        handleSongs(JSON.parse(event.data));
+    }
+};
+
+console.log('everyting loaded ok');
+
