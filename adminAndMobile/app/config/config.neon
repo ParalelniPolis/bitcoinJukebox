@@ -7,6 +7,7 @@ parameters:
 	pricePerSong: 0.0001			# in bitcoins
 	pricePerGenre: 0.0001			# in bitcoins
 	addressLockTime: '- 20 minutes'
+	currentGenreFile: %appDir%/model/currentGenre.txt
 
 php:
 	date.timezone: Europe/Prague
@@ -28,7 +29,7 @@ services:
 	- App\Forms\SearchFormFactory
 	- App\Model\GenresManager(songsDirectory: %songsDir%)
 	- App\Model\SongsManager(songsDirectory: %songsDir%)
-	- App\Model\QueueManager
+	- App\Model\QueueManager(currentGenreFile: %currentGenreFile%)
 	- App\Model\AddressProvider(masterKey: %masterKey%, addressLockTime: %addressLockTime%)
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory

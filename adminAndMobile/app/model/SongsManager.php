@@ -34,6 +34,13 @@ class SongsManager extends Object
 		$this->songsDirectory = $songsDirectory;
 		$this->songRepository = $entityManager->getRepository(Song::getClassName());
 		$this->genresRepository = $entityManager->getRepository(Genre::getClassName());
+		$this->addFunctions();
+	}
+
+	private function addFunctions()
+	{
+		$emConfig = $this->entityManager->getConfiguration();
+		$emConfig->addCustomNumericFunction('RAND', 'DoctrineExtensions\Query\Mysql\Rand');
 	}
 
 	public function countAllSongs() : int
@@ -129,6 +136,18 @@ class SongsManager extends Object
 		$song = $this->songRepository->find($songId);
 		$destination = $this->songsDirectory;
 		return [$destination . "/" . $song->getId(), $song->getName()];
+	}
+
+	public function getRandomSong(Genre $genre) : Song
+	{
+		$qb = $this->entityManager->createQueryBuilder();
+		$qb->select('song')
+			->from(Song::getClassName(), 'song')
+			->where('song.genre = :genre')
+			->orderBy('RAND()')
+			->setMaxResults(1)
+			->setParameters(['genre' => $genre]);
+		return $qb->getQuery()->getSingleResult();
 	}
 }
 
