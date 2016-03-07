@@ -38,4 +38,20 @@ class QueueManager extends Nette\Object
 		$this->entityManager->flush($songEntities);
 	}
 
+	public function orderGenre(string $genreId, float $price, Address $address)
+	{
+		//TODO: implementovat objednávku žánru
+//		$songEntities = [];
+//		$order = new Order($price, $address);
+//		$songEntities[] = $order;
+//		$this->entityManager->persist($order);
+//		$songs = $this->songsManager->getSongsWithIds($songIds);
+//		foreach ($songIds as $songId) {
+//			$songEntity = new QueueSong($songs[$songId], $order);
+//			$this->entityManager->persist($songEntity);
+//			$songEntities[] = $songEntity;
+//		}
+//		$this->entityManager->flush($songEntities);
+	}
+
 }

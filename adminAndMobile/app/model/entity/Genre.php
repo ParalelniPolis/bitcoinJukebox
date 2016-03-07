@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities;
+use Nette\Utils\Strings;
 
 /**
  * @ORM\Entity
@@ -11,9 +12,17 @@ use Kdyby\Doctrine\Entities;
 class Genre extends Entities\BaseEntity
 {
 
+
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue
+	 * @var integer
+	 */
+	private $id;
+
+	/**
+	 * @ORM\Column(type="string", unique=true, nullable=false)
 	 * @var string
 	 */
 	private $name;
@@ -28,6 +37,11 @@ class Genre extends Entities\BaseEntity
     {
     	$this->name = $name;
     }
+
+	public function getId() : int
+	{
+		return $this->id;
+	}
 
 	public function getName() : string
 	{

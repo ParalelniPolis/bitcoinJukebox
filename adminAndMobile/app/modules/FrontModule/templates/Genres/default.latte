@@ -4,6 +4,19 @@
 		<input n:name="text" placeholder="žánr">
 		<button n:name="search"><img src="{$basePath}/img/magnifying-glass.png"></button>
 	</form>
-	žánry
+
+	<form n:name="orderForm">
+		{foreach $form[genre]->items as $key => $label}
+			<div>
+				<label n:name="genre:$key">
+					{$label}
+					<input n:name="genre:$key">
+				</label>
+			</div>
+		{/foreach}
+
+		<input n:name="order">
+	</form>
+
 </div>
 {/block}

@@ -28,7 +28,11 @@
     <div class="col-lg-12">
         <h1 class="page-header">Skladby</h1>
     </div>
+</div>
+{*TODO: opravit různé výšky sloupců u textů, které přetékají na více řádek *}
+<div class="row">
 	{foreach $songs as $song}
+    {for $i = 0; $i < 2; $i++}
 	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
         <div class="caption">
             <h4>Možnosti</h4>
@@ -46,11 +50,10 @@
             	<a n:href="Songs:download, songId => $song->getId()" class="label label-default">Stahnout</a>
             </p>
         </div>
-       	{*<a class="thumbnail" href="#">*}
-        	<img class="img-responsive" src="{$basePath}/img/play-button_1.png" alt="">
-        	{$song->getName()}
-    	{*</a>*}
+       	<img class="img-responsive" src="{$basePath}/img/play-button_1.png" alt="">
+       	{$song->getName()}
     </div>
+    {/for}
     {/foreach}
 	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
        	<a class="thumbnail" n:href="AddSong:default, genre => $currentGenre">
@@ -58,4 +61,12 @@
         	Přidat skladbu
     	</a>
     </div>
+    {for $i = 0; $i < 30; $i++}
+	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
+       	<a class="thumbnail" n:href="AddSong:default, genre => $currentGenre">
+        	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
+        	Přidat skladbu
+    	</a>
+    </div>
+    {/for}
 </div>

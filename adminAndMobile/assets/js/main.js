@@ -12,4 +12,5 @@ $(function(){
 
     $(".file").fileinput({showUpload: false, showPreview: false, showUploadedThumbs: false});
 
+    $('.thumb').responsiveEqualHeightGrid();
 });

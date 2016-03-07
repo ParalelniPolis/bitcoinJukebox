@@ -29,7 +29,7 @@ class Song extends Entities\BaseEntity
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="Genre", inversedBy="songs")
-	 * @ORM\JoinColumn(referencedColumnName="name")
+	 * @ORM\JoinColumn(referencedColumnName="id")
 	 * @var Genre
 	 */
 	private $genre;

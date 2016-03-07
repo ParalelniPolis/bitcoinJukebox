@@ -5,6 +5,7 @@
 parameters:
 	songsDir: %wwwDir%/../../songs
 	pricePerSong: 0.0001			# in bitcoins
+	pricePerGenre: 0.0001			# in bitcoins
 	addressLockTime: '- 20 minutes'
 
 php:
@@ -36,6 +37,7 @@ services:
 		admin: %adminPassword%
 	])
 	- {class: App\FrontModule\Presenters\SongsPresenter, setup: {setPricePerSong(%pricePerSong%)}}
+	- {class: App\FrontModule\Presenters\GenresPresenter, setup: {setPricePerGenre(%pricePerGenre%)}}
 
 extensions:
 	console: Kdyby\Console\DI\ConsoleExtension

@@ -59,8 +59,8 @@ class GenresManager extends Object
 		$this->entityManager->flush($genre);
 	}
 
-	public function getGenre(string $name) : Genre
+	public function getGenre(int $id) : Genre
 	{
-		return $this->genreRepository->find($name);
+		return $this->genreRepository->find($id);
 	}
 }
