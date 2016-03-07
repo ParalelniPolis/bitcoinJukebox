@@ -3,20 +3,34 @@ var songsWrapper  = document.getElementById('songs-wrapper');
 var audioElement = document.getElementById('player');
 var queueList = document.getElementById('queue-list');
 
-var filterAddr = function(obj) {
-    if(obj.addr == '15iuRwGSiUTknHJtoP4CJ3dHUr8T4vQuaE') {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+var conn = new WebSocket('ws://localhost:8080');
+var state = 'songs';    //state is songs or genre. If state is genre, random songs from chosen genre are played. Genre state is cancelled, when new songs arrive
 
-var handleSong = function(songs) {
-    for (i = 0; i < songs.length; i++) {
+conn.onopen = function() {
+    console.log("Connection established!");
+    setInterval(function() {
+        conn.send('getSongs');
+        //if(state == 'songs') {
+        //} else if (state == 'genre') {
+        //    //nothing
+        //} else {
+        //    console.log('fuck, I am in invalid state.');
+        //}
+    }, 6000);
+    conn.onmessage = function(event) {
+        handleSongs(JSON.parse(event.data));
+    }
+};
+
+
+var handleSongs = function(songs) {
+    if (songs.length > 0) {
+        state = 'songs';
+    }
+    for (var i = 0; i < songs.length; i++) {
         addToQueue(songs[i]);
     }
-}
+};
 
 var addToQueue = function(song) {
     var emptyList = queueList.children.length == 0;
@@ -33,38 +47,27 @@ var addToQueue = function(song) {
     if(emptyList) {
         playNext();
     }
-}
+};
 
 var removePlayed = function() {
     if (queueList.children.length !== 0) {
         queueList.removeChild(queueList.children[0]);
     }
-}
+};
 
-var playNextOrShuffle = function() {
-    if (queueList.children.length == 0) {
-        playShuffle();
+var playNextOrLastGenre = function() {
+    if (queueList.children.length == 0) {   //queue is empty
+        state = 'genre';
+        conn.send('emptyQueue');
     }
-    else {
-        playNext();
-    }
-}
+    playNext();
+};
 
-var playShuffle = function() {
-    var rand = Math.floor(Math.random() * data.length);
-
-    audioElement.src = data[rand].url;
-    audioElement.oncanplay = function() {
-        setTimeout(function() {
-            audioElement.play()
-        }, 1000);
-    }
-}
 
 var playNext = function() {
     audioElement.src = queueList.children[0].getAttribute('data-url');
     audioElement.play();
-}
+};
 
 data.map(function(songData, index) {
     var songWrap = document.createElement('div')
@@ -110,23 +113,9 @@ data.map(function(songData, index) {
     songsWrapper.appendChild(songWrap);
 });
 
-playNextOrShuffle();
+playNextOrLastGenre();
 
 audioElement.addEventListener('ended', function() {
     removePlayed();
-    playNextOrShuffle();
+    playNextOrLastGenre();
 }, false);
-
-var conn = new WebSocket('ws://localhost:8080');
-
-conn.onopen = function() {
-    console.log("Connection established!");
-    setInterval(function() {
-        conn.send('hi')   //je jedno, co pošlu, server odpovídá na cokoli
-    }, 6000);
-    conn.onmessage = function(event) {
-        console.log(event.data);
-        console.log(JSON.parse(event.data));
-        handleSong(JSON.parse(event.data));
-    }
-}

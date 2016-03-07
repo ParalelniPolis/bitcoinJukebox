@@ -13,9 +13,17 @@ class QueueProducer implements MessageComponentInterface {
 	/** @var PDO */
 	private $connection;
 
+	/** @var string */
+	private $currentGenreFile;
+
+	/** @var string */
+	private $songsDir;
+
 	public function __construct(string $host, string $dbName, string $username, string $password) {
 		$this->connectToDatabase($host, $dbName, $username, $password);
 		$this->clients = new \SplObjectStorage;
+		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
+		$this->songsDir = '/bitcoinJukebox/songs';
 		echo "created\n";
 	}
 
@@ -41,11 +49,17 @@ class QueueProducer implements MessageComponentInterface {
 	}
 
 	public function onMessage(ConnectionInterface $from, $msg) {
-		$numRecv = count($this->clients) - 1;
-		echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
-			, $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
-
-		$songData = $this->readNonProcessedSongs();
+		/** @var \stdClass[] $songData */
+		$songData = [];
+		if ($msg == 'getSongs') {
+			$songData = $this->readNonProcessedSongs();
+			echo "Sending songs data: " . PHP_EOL;
+		} else if ($msg == 'emptyQueue') {
+			$currentGenreId = file_get_contents($this->currentGenreFile);
+			$songData = [$this->getRandomSong($currentGenreId)];    //abych měl jednoprvkové pole
+			echo "Sending random song: " . PHP_EOL;
+			//logic for random song picking
+		}
 		$data = \Nette\Utils\Json::encode($songData);
 		echo $data . PHP_EOL;
 		$from->send($data);
@@ -66,8 +80,6 @@ class QueueProducer implements MessageComponentInterface {
 
 	private function readNonProcessedSongs() : array
 	{
-		$songsDir = '/bitcoinJukebox/songs';
-
 		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id AS queueId FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -79,7 +91,7 @@ class QueueProducer implements MessageComponentInterface {
 		foreach ($result as $songData) {
 			$song = new \stdClass();
 			$song->name = \Nette\Utils\Strings::fixEncoding($songData['name']);
-			$song->location = $songsDir. '/' . $songData['id'];
+			$song->location = $this->songsDir. '/' . $songData['id'];
 			$data[] = $song;
 		}
 
@@ -94,4 +106,16 @@ class QueueProducer implements MessageComponentInterface {
 
 		return $data;
 	}
+
+	private function getRandomSong(int $genreId) : \stdClass
+	{
+		$stmt = $this->connection->prepare('SELECT song.id, song.name FROM song WHERE genre_id = :genreId ORDER BY RAND() LIMIT 1');
+		$stmt->execute(['genreId' => $genreId]);
+		$songData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$song = new \stdClass();
+		$song->name = \Nette\Utils\Strings::fixEncoding($songData['name']);
+		$song->location = $this->songsDir. '/' . $songData['id'];
+		return $song;
+	}
+
 }
