@@ -12,5 +12,6 @@ $(function(){
 
     $(".file").fileinput({showUpload: false, showPreview: false, showUploadedThumbs: false});
 
-    $('.thumb').responsiveEqualHeightGrid();
+    $('.genres .same-height').responsiveEqualHeightGrid();
+    $('.songs .same-height').responsiveEqualHeightGrid();
 });

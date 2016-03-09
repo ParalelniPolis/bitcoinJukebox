@@ -1,27 +1,27 @@
 {block content}
-<div class="row">
+<div class="row genres">
 	{if $currentGenre == null}
-    <div class="col-lg-12">
-        <h1 class="page-header">Žánry</h1>
-    </div>
-    {foreach $genres as $genre}
-	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
-       	<a class="thumbnail" n:href="this, genre => $genre->getName()">
-        	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
-        	{$genre->getName()}
-    	</a>
-    </div>
-    {/foreach}
-	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
-       	<a class="thumbnail" n:href="Genres:">
-        	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
-        	Přidat žánr
-    	</a>
-    </div>
+    	<div class="col-lg-12">
+    	    <h1 class="page-header">Žánry</h1>
+    	</div>
+    	{foreach $genres as $genre}
+		<div class="col-lg-2 col-md-2 col-xs-6 thumb">
+    	   	<a class="thumbnail" n:href="this, genre => $genre->getName()">
+    	    	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
+    	    	{$genre->getName()}
+    		</a>
+    	</div>
+    	{/foreach}
+		<div class="col-lg-2 col-md-2 col-xs-6">
+    	   	<a class="thumbnail" n:href="Genres:">
+    	    	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
+    	    	Přidat žánr
+    		</a>
+    	</div>
     {else}
-    <div class="col-lg-12">
-        <a n:href="this, genre => null"><h1 class="page-header">Zpět na všechny žánry</h1></a>
-    </div>
+    	<div class="col-lg-12">
+        	<a n:href="this, genre => null"><h1 class="page-header">Zpět na všechny žánry</h1></a>
+    	</div>
 	{/if}
 </div>
 <div class="row">
@@ -30,10 +30,9 @@
     </div>
 </div>
 {*TODO: opravit různé výšky sloupců u textů, které přetékají na více řádek *}
-<div class="row">
+<div class="row songs">
 	{foreach $songs as $song}
-    {for $i = 0; $i < 2; $i++}
-	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
+	<div class="col-lg-2 col-md-2 col-xs-6 thumb same-height">
         <div class="caption">
             <h4>Možnosti</h4>
             <p>
@@ -53,20 +52,11 @@
        	<img class="img-responsive" src="{$basePath}/img/play-button_1.png" alt="">
        	{$song->getName()}
     </div>
-    {/for}
     {/foreach}
-	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
+	<div class="col-lg-2 col-md-2 col-xs-6 same-height">
        	<a class="thumbnail" n:href="AddSong:default, genre => $currentGenre">
         	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
         	Přidat skladbu
     	</a>
     </div>
-    {for $i = 0; $i < 30; $i++}
-	<div class="col-lg-2 col-md-2 col-xs-6 thumb">
-       	<a class="thumbnail" n:href="AddSong:default, genre => $currentGenre">
-        	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
-        	Přidat skladbu
-    	</a>
-    </div>
-    {/for}
 </div>
