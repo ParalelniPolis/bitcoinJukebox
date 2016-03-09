@@ -5,14 +5,14 @@
     	    <h1 class="page-header">Žánry</h1>
     	</div>
     	{foreach $genres as $genre}
-		<div class="col-lg-2 col-md-2 col-xs-6 thumb">
+		<div class="col-lg-2 col-md-2 col-xs-3 thumb">
     	   	<a class="thumbnail" n:href="this, genre => $genre->getName()">
     	    	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
     	    	{$genre->getName()}
     		</a>
     	</div>
     	{/foreach}
-		<div class="col-lg-2 col-md-2 col-xs-6">
+		<div class="col-lg-2 col-md-2 col-xs-3">
     	   	<a class="thumbnail" n:href="Genres:">
     	    	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
     	    	Přidat žánr
@@ -32,7 +32,7 @@
 {*TODO: opravit různé výšky sloupců u textů, které přetékají na více řádek *}
 <div class="row songs">
 	{foreach $songs as $song}
-	<div class="col-lg-2 col-md-2 col-xs-6 thumb same-height">
+	<div class="col-lg-2 col-md-2 col-xs-3 thumb same-height">
         <div class="caption">
             <h4>Možnosti</h4>
             <p>
@@ -53,7 +53,7 @@
        	{$song->getName()}
     </div>
     {/foreach}
-	<div class="col-lg-2 col-md-2 col-xs-6 same-height">
+	<div class="col-lg-2 col-md-2 col-xs-3 same-height">
        	<a class="thumbnail" n:href="AddSong:default, genre => $currentGenre">
         	<img class="img-responsive" src="{$basePath}/img/add-button.png" alt="">
         	Přidat skladbu

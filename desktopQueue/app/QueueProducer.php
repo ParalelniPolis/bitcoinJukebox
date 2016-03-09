@@ -52,14 +52,15 @@ class QueueProducer implements MessageComponentInterface {
 		/** @var \stdClass[] $songData */
 		$songData = [];
 		if ($msg == 'getSongs') {
-			$songData = $this->readNonProcessedSongs();
+			$songData['songs'] = $this->readNonProcessedSongs();
 			echo "Sending songs data: " . PHP_EOL;
 		} else if ($msg == 'emptyQueue') {
 			$currentGenreId = file_get_contents($this->currentGenreFile);   //TODO: vymyslet, jak kontrolovat zaplacení u souboru. Asi zapisovat objednané žánry do db a do souboru házet jen ty zaplacené.
-			$songData = [$this->getRandomSong($currentGenreId)];    //abych měl jednoprvkové pole
+			$songData['songs'] = [$this->getRandomSong($currentGenreId)];    //abych měl jednoprvkové pole
 			echo "Sending random song: " . PHP_EOL;
 			//logic for random song picking
 		}
+		$songData['request'] = $msg;
 		$data = \Nette\Utils\Json::encode($songData);
 		echo $data . PHP_EOL;
 		$from->send($data);

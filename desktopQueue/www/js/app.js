@@ -9,8 +9,19 @@ var state = 'genre';    //state is songs or genre. If state is genre, random son
 var emptyQueue = true;
 
 var handleSongs = function(songs) {
+    var request = songs['request'];     //same string which was sent to server, used to determine, whether new songs arrived or random song from last genre was picked
+    console.log(request);
+    songs = songs['songs'];
+    console.log(songs);
     console.log("getting " + songs.length + " songs");
-    if (songs.length > 0) {
+    if (songs.length > 0 && request == 'getSongs') {
+        //if new songs arrived and genre is played, playing of genre has to be immediately stopped
+        if(state == 'genre') {
+            console.log('removing genre songs from queue');
+            while (queueList.children.length > 0) {
+                removePlayed();
+            }
+        }
         state = 'songs';
     }
     for (var i = 0; i < songs.length; i++) {
@@ -72,7 +83,7 @@ data.map(function(songData, index) {
     var qr = document.createElement('div');
     var meta = document.createElement('p');
 
-    songWrap.className = 'mdl-cell mdl-cell--3-col'
+    songWrap.className = 'mdl-cell mdl-cell--3-col';
     song.className = 'mdl-card mdl-shadow--2dp';
     header.className = 'mdl-card__title';
     title.className = 'mdl-card__title-text';
