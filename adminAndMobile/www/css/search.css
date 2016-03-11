@@ -1,29 +1,8 @@
 .search {
-  width: 297px;
-  height: 42px;
-}
-.search button {
-  display: inline-block;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  width: 42px;
-  height: 42px;
-  margin-left: -42px;
-  padding-top: 12px;
-  border: none;
+  width: 300px;
 }
 .search button img,
 .search button svg {
   width: 14px;
   height: 14px;
-  margin-top: -11px;
-}
-.search input[type="text"],
-.search input[type="search"] {
-  padding: 0 45px 0 12px;
-  width: 255px;
-  height: 42px;
-  font-size: 15px;
-  vertical-align: super;
 }
