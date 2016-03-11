@@ -40,6 +40,9 @@ class SongsPresenter extends BasePresenter
 	/** @var Address */
 	private $address;
 
+	/** @var string @persistent */
+	public $search;
+
 	public function actionDefault()
 	{
 		$this->genres = $this->genresManager->getAllGenres();

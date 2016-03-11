@@ -13,3 +13,5 @@ $reader = new TransactionReader($host, $dbName, $username, $password);
 $reader->transactionReceived('12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ');
 
 //TODO: přidat k Orderu boolean isGenre, abych do souboru zapsal jen po potvrzení objednávky a id do souboru zapsat z Order entity
+//TODO: širší sloupec s frontou
+//TODO: místo qr kódů mít obrázky

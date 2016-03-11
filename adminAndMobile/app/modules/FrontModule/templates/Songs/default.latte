@@ -6,17 +6,10 @@
 {block content}
 <div class="tab-content">
 	<form n:name="searchForm" class="search">
-		<input n:name="text" placeholder="skladba">
+		<input n:name="text" placeholder="Najít skladby...">
 		<button n:name="search"><img src="{$basePath}/img/magnifying-glass.png"></button>
 	</form>
 
-{* example searchbox *}
-{*<div class="box">*}
-  {*<div class="container-4">*}
-    {*<input type="search" id="search" placeholder="Search..." />*}
-    {*<button class="icon"><i class="fa fa-search"></i></button>*}
-  {*</div>*}
-{*</div>*}
 
 	<form n:name="orderForm">
 		{foreach $genres as $genre}

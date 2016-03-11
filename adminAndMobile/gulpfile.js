@@ -90,10 +90,10 @@ gulp.task('images', function(cb){
 })
 
 // Watch Files For Changes & Reload
-gulp.task('serve', function (){
-	gulp.watch(['assets/less/**/*.less'], ['styles']);
-	gulp.watch(['assets/css/**/*.css'], ['styles']);
-	gulp.watch(['assets/js/*.js', 'www/asset/js/**/*.js'], ['scripts']);
+gulp.task('watch', function (){
+	gulp.watch('assets/less/**/*.less', ['styles']);
+	gulp.watch('assets/css/**/*.css', ['styles']);
+	gulp.watch('assets/js/*.js', ['scripts']);
 });
 
 gulp.task('default', ['scripts', 'styles', 'images']);

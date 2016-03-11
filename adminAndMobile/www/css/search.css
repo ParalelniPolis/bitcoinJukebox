@@ -10,11 +10,14 @@
   width: 42px;
   height: 42px;
   margin-left: -42px;
+  padding-top: 12px;
+  border: none;
 }
 .search button img,
 .search button svg {
   width: 14px;
   height: 14px;
+  margin-top: -11px;
 }
 .search input[type="text"],
 .search input[type="search"] {
