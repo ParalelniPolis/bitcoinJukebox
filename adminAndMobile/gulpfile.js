@@ -87,12 +87,11 @@ gulp.task('styles', function(cb){
 gulp.task('images', function(cb){
     //runSequence('svg2png', 'images:minify', 'webp', cb);
     runSequence('svg2png', 'images:minify', cb);
-})
+});
 
 // Watch Files For Changes & Reload
 gulp.task('watch', function (){
 	gulp.watch('assets/less/**/*.less', ['styles']);
-	gulp.watch('assets/css/**/*.css', ['styles']);
 	gulp.watch('assets/js/*.js', ['scripts']);
 });
 

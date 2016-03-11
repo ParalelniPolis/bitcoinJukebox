@@ -14,33 +14,36 @@
         </div>
 	</form>
 
+	<div class="list-group">
+		<form n:name="orderForm">
+			{foreach $genres as $genre}
+				<div class="list-group-item">
+					{$genre->getName()}
+					{foreach $songs[$genre->getName()] as $song}
+						<div class="song">
+							<label n:name="$song->getAlphaNumericId()">
+								- {$song->getName()}
+								<span class="badge">
+									<input n:name="$song->getAlphaNumericId()">
+								</span>
+							</label>
+						</div>
+					{/foreach}
+				</div>
+			{/foreach}
 
-	<form n:name="orderForm">
-		{foreach $genres as $genre}
-			<div>
-				{$genre->getName()}
-				{foreach $songs[$genre->getName()] as $song}
-					<div>
-						<label n:name="$song->getAlphaNumericId()">
-							- {$song->getName()}
+			{foreach $songsWithoutGenre as $song}
+				<div class="list-group-item song">
+					<label n:name="$song->getAlphaNumericId()">
+						{$song->getName()}
+						<span class="badge">
 							<input n:name="$song->getAlphaNumericId()">
-						</label>
-					</div>
-				{/foreach}
-			</div>
-		{/foreach}
-
-		{foreach $songsWithoutGenre as $song}
-			<div>
-				<label n:name="$song->getAlphaNumericId()">
-					{$song->getName()}
-					<input n:name="$song->getAlphaNumericId()">
-				</label>
-			</div>
-		{/foreach}
-		<input n:name="order">
-	</form>
-
-
+						</span>
+					</label>
+				</div>
+			{/foreach}
+			<input n:name="order">
+		</form>
+	</div>
 
 </div>

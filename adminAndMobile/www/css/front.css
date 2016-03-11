@@ -1,0 +1,7 @@
+.song label {
+  width: 100%;
+}
+.song .badge {
+  float: right;
+  background-color: transparent;
+}

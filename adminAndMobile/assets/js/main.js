@@ -14,4 +14,13 @@ $(function(){
 
     $('.genres .same-height').responsiveEqualHeightGrid();
     $('.songs .same-height').responsiveEqualHeightGrid();
+
+    $('.song').find(':checkbox').change(function(event) {
+        var row = $(this).parent().parent().parent();
+        if(this.checked) {
+            row.addClass('active');
+        } else {
+            row.removeClass('active');
+        }
+    });
 });
