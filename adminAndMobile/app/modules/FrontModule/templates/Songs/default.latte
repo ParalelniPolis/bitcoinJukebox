@@ -20,7 +20,7 @@
 				<div class="list-group-item">
 					{$genre->getName()}
 					{foreach $songs[$genre->getName()] as $song}
-						<div class="song">
+						<div class="order-list">
 							<label n:name="$song->getAlphaNumericId()">
 								- {$song->getName()}
 								<span class="badge">
@@ -33,7 +33,7 @@
 			{/foreach}
 
 			{foreach $songsWithoutGenre as $song}
-				<div class="list-group-item song">
+				<div class="list-group-item order-list">
 					<label n:name="$song->getAlphaNumericId()">
 						{$song->getName()}
 						<span class="badge">
@@ -42,7 +42,7 @@
 					</label>
 				</div>
 			{/foreach}
-			<input n:name="order">
+			<input n:name="order" class="btn btn-primary">
 		</form>
 	</div>
 

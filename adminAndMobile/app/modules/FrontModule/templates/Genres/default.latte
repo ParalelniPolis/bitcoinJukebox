@@ -1,22 +1,30 @@
 {block content}
 <div class="tab-content">
 	<form n:name="searchForm" class="search">
-		<input n:name="text" placeholder="žánr">
-		<button n:name="search"><img src="{$basePath}/img/magnifying-glass.png"></button>
+		<div class="input-group">
+        	<input n:name="text" placeholder="Najít skladby..." class="form-control">
+            <span class="input-group-btn">
+            	<button n:name="search" class="btn btn-default"><img src="{$basePath}/img/magnifying-glass.png"></button>
+            </span>
+        </div>
 	</form>
 
-	<form n:name="orderForm">
-		{foreach $form[genre]->items as $key => $label}
-			<div>
-				<label n:name="genre:$key">
-					{$label}
-					<input n:name="genre:$key">
-				</label>
-			</div>
-		{/foreach}
+	<div class="list-group">
+		<form n:name="orderForm">
+			{foreach $form[genre]->items as $key => $label}
+				<div class="list-group-item order-list">
+					<label n:name="genre:$key">
+						{$label}
+						<span class="badge">
+							<input n:name="genre:$key">
+						</span>
+					</label>
+				</div>
+			{/foreach}
 
-		<input n:name="order">
-	</form>
+			<input n:name="order" class="btn btn-primary">
+		</form>
+	</div>
 
 </div>
 {/block}

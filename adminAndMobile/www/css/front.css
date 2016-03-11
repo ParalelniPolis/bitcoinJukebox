@@ -1,7 +1,7 @@
-.song label {
+.order-list label {
   width: 100%;
 }
-.song .badge {
+.order-list .badge {
   float: right;
   background-color: transparent;
 }
