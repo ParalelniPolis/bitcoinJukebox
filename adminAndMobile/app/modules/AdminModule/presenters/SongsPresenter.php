@@ -31,7 +31,7 @@ class SongsPresenter extends BasePresenter
 
 	public function renderDefault(string $genre = null)
 	{
-		$this->template->songs = $this->songsManager->getSongs($genre);
+		$this->template->songs = $this->songsManager->getSongsByGenreId($genre);
 		$this->template->currentGenre = $genre;
 		$this->template->genres = $this->genresManager->getAllGenres();
 	}

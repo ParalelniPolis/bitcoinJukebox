@@ -6,7 +6,7 @@
     	</div>
     	{foreach $genres as $genre}
 		<div class="col-lg-2 col-md-2 col-xs-3 thumb">
-    	   	<a class="thumbnail" n:href="this, genre => $genre->getName()">
+    	   	<a class="thumbnail" n:href="this, genre => $genre->getId()">
     	    	<img class="img-responsive gallery-icon" src="{$basePath}/img/folders.png" alt="">
     	    	{$genre->getName()}
     		</a>

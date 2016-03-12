@@ -2914,6 +2914,22 @@ $(function(){
             row.removeClass('active');
         }
     });
+
+    $('.genre').click(function() {
+        var genreId = $(this).data('genre');
+        var opened = $(this).data('opened');
+        console.log(opened);
+        //$(this).data('opened', !opened);
+        if(opened) {
+            $('.child[data-genre="' +  genreId + '"]').hide('slow');
+            $(this).find('.glyphicon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        } else {
+            $('.child[data-genre="' +  genreId + '"]').show('slow');
+            $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            //$(this).data('opened', "true");
+        }
+        $(this).data('opened', !opened);
+    });
 });
 
 (function ($) {

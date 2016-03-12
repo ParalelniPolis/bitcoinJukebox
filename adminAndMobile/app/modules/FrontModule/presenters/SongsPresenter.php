@@ -51,11 +51,11 @@ class SongsPresenter extends BasePresenter
 	public function renderDefault()
 	{
 		$this->template->genres = $this->genres;
-		$this->template->songsWithoutGenre = $this->songsManager->getSongs();
+		$this->template->songsWithoutGenre = $this->songsManager->getSongsWithoutGenre();
 		/** Song[][] */
 		$songs = [];
 		foreach ($this->genres as $genre) {
-			$songs[$genre->getName()] = $this->songsManager->getSongs($genre->getName());
+			$songs[$genre->getId()] = $this->songsManager->getSongsByGenreId($genre->getId());
 		}
 		$this->template->songs = $songs;
 	}

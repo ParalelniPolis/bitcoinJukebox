@@ -49,12 +49,20 @@ class SongsManager extends Object
 	}
 
 	/**
-	 * @param string|null $genre
 	 * @return Song[]
 	 */
-	public function getSongs(string $genre = null) : array
+	public function getSongsWithoutGenre() : array
 	{
-		return $this->songRepository->findBy(['genre' => $genre]);
+		return $this->songRepository->findBy(['genre' => null]);
+	}
+
+	/**
+	 * @param int $genreId
+	 * @return Entity\Song[]|array
+	 */
+	public function getSongsByGenreId(int $genreId = null) : array
+	{
+		return $this->songRepository->findBy(['genre' => $genreId]);
 	}
 
 	/**
@@ -95,7 +103,7 @@ class SongsManager extends Object
 	public function addSong(FileUpload $file, string $genreName = null)
 	{
 		if ($genreName) {
-			$genre = $this->genresRepository->find($genreName);
+			$genre = $this->genresRepository->findOneBy(['name' => $genreName]);
 		} else {
 			$genre = null;
 		}

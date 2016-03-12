@@ -17,19 +17,23 @@
 	<div class="list-group">
 		<form n:name="orderForm">
 			{foreach $genres as $genre}
-				<div class="list-group-item">
+				<div class="list-group-item genre" data-genre="{$genre->getId()}" data-opened="true">
 					{$genre->getName()}
-					{foreach $songs[$genre->getName()] as $song}
-						<div class="order-list">
-							<label n:name="$song->getAlphaNumericId()">
-								- {$song->getName()}
-								<span class="badge">
-									<input n:name="$song->getAlphaNumericId()">
-								</span>
-							</label>
-						</div>
-					{/foreach}
+					<span class="badge">
+						{*<i class="icon-chevron-up"></i>*}
+						<span class="glyphicon glyphicon-chevron-up"></span>
+					</span>
 				</div>
+				{foreach $songs[$genre->getId()] as $song}
+					<div class="list-group-item order-list child" data-genre="{$genre->getId()}">
+						<label n:name="$song->getAlphaNumericId()">
+							{$song->getName()}
+							<span class="badge">
+								<input n:name="$song->getAlphaNumericId()">
+							</span>
+						</label>
+					</div>
+				{/foreach}
 			{/foreach}
 
 			{foreach $songsWithoutGenre as $song}
