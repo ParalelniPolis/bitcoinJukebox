@@ -20,4 +20,6 @@ require_once 'vendor/autoload.php';
 //}
 
 
-echo implode(', ' . PHP_EOL, hash_algos());
+//echo implode(', ' . PHP_EOL, hash_algos());
+echo $_SERVER['SERVER_ADDR'];
+echo getHostByName(getHostName());
