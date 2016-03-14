@@ -1,4 +1,3 @@
-var songsWrapper  = document.getElementById('songs-wrapper');
 var audioElement = document.getElementById('player');
 var queueList = document.getElementById('queue-list');
 
