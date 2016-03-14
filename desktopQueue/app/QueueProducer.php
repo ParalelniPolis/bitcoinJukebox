@@ -46,6 +46,7 @@ class QueueProducer implements MessageComponentInterface {
 		}
 		$songData['request'] = $msg;
 		$data = \Nette\Utils\Json::encode($songData);
+		echo 'data: ' . PHP_EOL;
 		echo $data . PHP_EOL;
 		$from->send($data);
 	}

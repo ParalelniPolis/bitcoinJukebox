@@ -52,6 +52,14 @@ class GenresManager extends Object
 		return array_column($qb->getQuery()->getScalarResult(), 'name');
 	}
 
+	/**
+	 * @return string[]
+	 */
+	public function getAllGenreIdsAndNames() : array
+	{
+		return $this->genreRepository->findPairs([], 'name');
+	}
+
 	public function addGenre(string $name)
 	{
 		$genre = new Genre($name);

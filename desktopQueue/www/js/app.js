@@ -30,13 +30,21 @@ var handleSongs = function(songs) {
 
 var addToQueue = function(song) {
     emptyQueue = queueList.children.length == 0;
+    var wrapper = document.createElement('div');
     var item = document.createElement('a');
-    item.className = 'mdl-navigation__link';
+    var title = document.createElement('p');
+    var author = document.createElement('p');
+    var duration = document.createElement('p');
 
-    console.log(song.location);
-    console.log(song.name);
+    title.textContent = "Title: " + song.title;
+    author.textContent = "Author: " + song.author;
+    duration.textContent = "Duration: " + song.duration;
+    item.appendChild(title);
+    item.appendChild(author);
+    item.appendChild(duration);
+    wrapper.appendChild(item);
+
     item.setAttribute('data-url', song.location);
-    item.textContent = song.name;
 
     queueList.appendChild(item);
 

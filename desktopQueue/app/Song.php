@@ -6,7 +6,7 @@
  * Date: 14. 3. 2016
  * Time: 15:46
  */
-class Song
+class Song implements JsonSerializable
 {
 	/** @var string */
 	private $name;
@@ -87,4 +87,20 @@ class Song
 	}
 
 
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	function jsonSerialize()
+	{
+		return [
+			'location' => $this->location,
+			'title' => $this->title,
+			'author' => $this->author,
+			'duration' => $this->duration
+		];
+	}
 }

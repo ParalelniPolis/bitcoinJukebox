@@ -35,9 +35,48 @@ require_once '../vendor/autoload.php';
 	<div id="sidebar-wrapper">
 		<audio id="player" controls></audio>
 		<div id="queue-list">
-			<a class="mdl-navigation__link" data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">20 - Elder Tale no Waltz.mp3</a><a class="mdl-navigation__link" data-url="/bitcoinJukebox/songs/2ab1c32f-57de-4200-a5aa-90df210f431f">01 - 'Log Horizon' Main Theme.mp3</a>
-			<a class="mdl-navigation__link" data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">20 - Elder Tale no Waltz.mp3</a><a class="mdl-navigation__link" data-url="/bitcoinJukebox/songs/2ab1c32f-57de-4200-a5aa-90df210f431f">01 - 'Log Horizon' Main Theme.mp3</a>
-			<a class="mdl-navigation__link" data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">20 - Elder Tale no Waltz.mp3</a><a class="mdl-navigation__link" data-url="/bitcoinJukebox/songs/2ab1c32f-57de-4200-a5aa-90df210f431f">01 - 'Log Horizon' Main Theme.mp3</a>
+<!--			<div>-->
+<!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--					<p>Title: "Log Horizon" Main Theme</p>-->
+<!--					<p>Author: Takanashi Yasuharu</p>-->
+<!--					<p>Length: 5:23</p>-->
+<!--				</a>-->
+<!--			</div>-->
+<!--			<div>-->
+<!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--					<p>Title: "Log Horizon" Main Theme</p>-->
+<!--					<p>Author: Takanashi Yasuharu</p>-->
+<!--					<p>Length: 5:23</p>-->
+<!--				</a>-->
+<!--			</div>-->
+<!--			<div>-->
+<!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--					<p>Title: "Log Horizon" Main Theme</p>-->
+<!--					<p>Author: Takanashi Yasuharu</p>-->
+<!--					<p>Length: 5:23</p>-->
+<!--				</a>-->
+<!--			</div>-->
+<!--			<div>-->
+<!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--					<p>Title: "Log Horizon" Main Theme</p>-->
+<!--					<p>Author: Takanashi Yasuharu</p>-->
+<!--					<p>Length: 5:23</p>-->
+<!--				</a>-->
+<!--			</div>-->
+<!--			<div>-->
+<!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--					<p>Title: "Log Horizon" Main Theme</p>-->
+<!--					<p>Author: Takanashi Yasuharu</p>-->
+<!--					<p>Length: 5:23</p>-->
+<!--				</a>-->
+<!--			</div>-->
+<!--			<div>-->
+<!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--					<p>Title: "Log Horizon" Main Theme</p>-->
+<!--					<p>Author: Takanashi Yasuharu</p>-->
+<!--					<p>Length: 5:23</p>-->
+<!--				</a>-->
+<!--			</div>-->
 		</div>
 		<div style="bottom: 0px; position: absolute">
 			Objednej si skladbu z mobilu:

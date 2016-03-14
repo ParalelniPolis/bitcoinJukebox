@@ -13,16 +13,16 @@ $dbName = 'jukebox';
 $username = 'root';
 $password = '';
 
-//$server = IoServer::factory(
-//	new HttpServer(
-//		new WsServer(
-//			new QueueProducer($host, $dbName, $username, $password)
-//		)
-//	),
-//	8080
-//);
-//
-//$server->run();
+$server = IoServer::factory(
+	new HttpServer(
+		new WsServer(
+			new QueueProducer($host, $dbName, $username, $password)
+		)
+	),
+	8080
+);
 
-$producer = new QueueProducer($host, $dbName, $username, $password);
-$producer->songProvider->getRandomSong(1);
+$server->run();
+
+//$producer = new QueueProducer($host, $dbName, $username, $password);
+//$producer->songProvider->getRandomSong(1);
