@@ -44,12 +44,12 @@ class AddSongPresenter extends BasePresenter
 	{
 		/** @var FileUpload $songFile */
 		$songFiles = $values['song'];
-		$genreName = $values['genre'];
+		$genreId = $values['genre'];
 		$onlyOneSong = count($songFiles) == 1;
 		$uploadOk = true;
 		foreach ($songFiles as $songFile) {
 			if ($songFile->isOk()) {
-				$this->songsManager->addSong($songFile, $genreName);
+				$this->songsManager->addSong($songFile, $genreId);
 			} else {
 				$uploadOk = false;
 			}

@@ -29,14 +29,13 @@ class AddressProvider
 	/** @var string */
 	private $masterKey;
 
-
 	/** @var EntityManager */
 	private $entityManager;
 
 	/** @var EntityRepository */
 	private $addressRepository;
 
-	public function __construct(EntityManager $entityManager, $masterKey, $addressLockTime)
+	public function __construct(EntityManager $entityManager, string $masterKey, string $addressLockTime)
 	{
 		$this->occupiedAddressesTreshold = 0.9;
 		$this->increaseRatio = 0.1;
@@ -50,7 +49,7 @@ class AddressProvider
 	{
 		$this->entityManager->beginTransaction();
 
-		$addressMaxAge = new \DateTime("- 10 minutes");
+		$addressMaxAge = new \DateTime($this->addressLockTime);
 
 		$qb = $this->addressRepository->createQueryBuilder('address');
 		$qb->addSelect('count(address) as free')
@@ -98,7 +97,7 @@ class AddressProvider
 	{
 		$lastIndex++;
 		$master = $this->masterKey;
-		$address = BIP32::build_address($master, $lastIndex)[0];
+		$address = BIP32::build_address($master, "$lastIndex'")[0];
 		return [$address, $lastIndex];
 	}
 }

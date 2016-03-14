@@ -100,10 +100,10 @@ class SongsManager extends Object
 		return array_map(function($id) {return Strings::replace($id, '~-~', '_');}, $this->getSongIds());
 	}
 
-	public function addSong(FileUpload $file, string $genreName = null)
+	public function addSong(FileUpload $file, string $genreId = null)
 	{
-		if ($genreName) {
-			$genre = $this->genresRepository->findOneBy(['name' => $genreName]);
+		if ($genreId) {
+			$genre = $this->genresRepository->find($genreId);
 		} else {
 			$genre = null;
 		}

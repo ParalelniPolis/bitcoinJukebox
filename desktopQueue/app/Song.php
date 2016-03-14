@@ -37,15 +37,13 @@ class Song implements JsonSerializable
 
 	private function loadInfo(string $path)
 	{
-		$getID3 = new getID3;
-//		var_dump($path);
+		$getID3 = new getID3();
 		$info = $getID3->analyze($path);
-//		var_dump($info);
 		$this->author = $info['tags']['id3v1']['artist'][0];
 		$this->title = $info['tags']['id3v1']['title'][0];
-		$this->duration = $info['playtime_seconds'];
-		var_dump($this);
+		$this->duration = $info['playtime_string'];
 	}
+
 	/**
 	 * @return string
 	 */
