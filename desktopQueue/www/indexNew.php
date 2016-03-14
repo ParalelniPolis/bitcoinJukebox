@@ -30,11 +30,37 @@ require_once '../vendor/autoload.php';
 <body>
 
 <div id="wrapper">
+	<!-- Provide container for rendered template output: -->
+	<div id="result"></div>
+
+	<!-- Declare a JsRender template, in a script block: -->
+	<script id="myTmpl" type="text/x-jsrender">{{:name}}</script>
+
+	<script id="songTemplate" type="text/x-jsrender">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a data-url="{{:location}}">
+					<p>Title: {{:title}}</p>
+					<p>Author: {{:author}}</p>
+					<p>Length: {{:duration}}</p>
+				</a>
+			</div>
+		</div>
+	</script>
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
 		<audio id="player" controls></audio>
 		<div id="queue-list">
+<!--			<div class="panel panel-default">-->
+<!--				<div class="panel-body">-->
+<!--					<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--						<p>Title: "Log Horizon" Main Theme</p>-->
+<!--						<p>Author: Takanashi Yasuharu</p>-->
+<!--						<p>Length: 5:23</p>-->
+<!--					</a>-->
+<!--				</div>-->
+<!--			</div>-->
 <!--			<div>-->
 <!--				<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
 <!--					<p>Title: "Log Horizon" Main Theme</p>-->
@@ -111,6 +137,7 @@ require_once '../vendor/autoload.php';
 
 <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>
 
 <script src="/bitcoinJukebox/desktopQueue/www/js/qrcode.min.js"></script>
 <script src="/bitcoinJukebox/desktopQueue/www/js/app.js"></script>
