@@ -24,7 +24,7 @@ $(function(){
         }
     });
 
-    $('.genre').click(function() {
+    $('.genre').on('click', function() {
         var genreId = $(this).data('genre');
         var opened = $(this).data('opened');
         console.log(opened);

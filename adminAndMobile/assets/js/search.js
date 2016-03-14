@@ -1,6 +1,6 @@
 (function ($) {
 
-    $('#frm-searchForm').submit(function (event) {
+    $('#frm-searchForm').on('submit', function (event) {
         event.preventDefault();
         event.stopImmediatePropagation();
 

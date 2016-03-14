@@ -1,6 +1,6 @@
 (function ($, undefined) {
 
-    $('[data-confirm]').click(function (event) {
+    $('[data-confirm]').on('click', function (event) {
         var obj = this;
         event.preventDefault();
         event.stopImmediatePropagation();

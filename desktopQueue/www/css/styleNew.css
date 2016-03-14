@@ -73,19 +73,11 @@
 
 @media(min-width:768px) {
     #wrapper {
-        padding-left: 350px;
-    }
-
-    #wrapper.toggled {
-        padding-left: 0;
+        padding-left: 400px;
     }
 
     #sidebar-wrapper {
-        width: 350px;
-    }
-
-    #wrapper.toggled #sidebar-wrapper {
-        width: 0;
+        width: 400px;
     }
 
     #page-content-wrapper {
@@ -97,4 +89,15 @@
         position: relative;
         margin-right: 0;
     }
+}
+
+.album-icon-wrapper {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.album-icon {
+    height: 100%;
+    width: 100%;
+    margin-left: -36px;
 }
