@@ -101,3 +101,36 @@
     width: 100%;
     margin-left: -36px;
 }
+
+audio#player {
+    height: 1px;
+}
+#controls {
+    position: relative;
+    border: 2px solid #4c4c4c;
+    background-color: #666666;
+    width: 464px;
+    height: 30px;
+    line-height: 30px;
+}
+input {
+    border: 2px solid #666666; /* masked against background until input has focus*/
+    position: absolute;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+input:focus, input:hover, input:active {
+    border-color: #ffff00 !important; /* yellow */
+}
+#seekBar {
+    top: 0px;
+    left: 40px;
+    width: 200px;
+    height: 26px;
+}
+span#timer { /* contains both span#currentTime and span#duration */
+    position: absolute;
+    left: 250px;
+    width: 100px;
+    color: #ffffff;
+}

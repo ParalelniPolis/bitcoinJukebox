@@ -81,4 +81,5 @@ class AddSongFormFactory extends Object
 		return true;
 	}
 
+	//TODO: dodělat hlášení, který tag chybí, dodělat načítání alba
 }

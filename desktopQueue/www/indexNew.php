@@ -45,46 +45,35 @@ require_once '../vendor/autoload.php';
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-		<audio id="player" controls></audio>
+		<audio id="player"></audio>
+		<div id="controls">
+			<input type="range" id="seekBar" value="0" step="any" ondurationchange="setupSeekBar()" onchange="seekAudio(this)" min="0" max="232">
+			<span id="timer">
+				<span id="currentTime">1:58</span>
+				<span id="duration"> / 3:52</span>
+			</span>
+		</div>
 		<div id="queue-list">
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-md-9">
-							<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">
-								<p>Title: "Log Horizon" Main Theme</p>
-								<p>Author: Takanashi Yasuharu</p>
-								<p>Length: 5:23</p>
-							</a>
-						</div>
-						<div class="col-md-3 album-icon-wrapper">
-							<img class="album-icon" src="https://upload.wikimedia.org/wikipedia/en/8/8f/DragonForce-SonicFirestorm-AlbumCover.jpg">
-						</div>
+			<?php for ($i = 0; $i < 3; $i++) { ?>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-9 col-sm-9">
+								<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">
+									<p>Title: "Log Horizon" Main Theme</p>
+									<p>Author: Takanashi Yasuharu</p>
+									<p>Length: 5:23</p>
+								</a>
+							</div>
+							<div class="col-md-3 col-sm-3 album-icon-wrapper">
+								<img class="album-icon" src="https://upload.wikimedia.org/wikipedia/en/8/8f/DragonForce-SonicFirestorm-AlbumCover.jpg">
+							</div>
 
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">
-						<p>Title: "Log Horizon" Main Theme</p>
-						<p>Author: Takanashi Yasuharu</p>
-						<p>Length: 5:23</p>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div style="bottom: 0px; position: absolute">
-			Objednej si skladbu z mobilu:
-			<img src="data:image/png;
-			<?php
-			$renderer = new \BaconQrCode\Renderer\Image\Png();
-			$renderer->setHeight(256);
-			$renderer->setWidth(256);
-			$writer = new \BaconQrCode\Writer($renderer);
-			echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
-			?>
-			" class="qr-image">
+
+			<?php } ?>
 		</div>
 	</div>
 	<!-- /#sidebar-wrapper -->
@@ -97,7 +86,21 @@ require_once '../vendor/autoload.php';
 					<h1>Bitcoin Jukebox</h1>
 
 				</div>
+
 			</div>
+			<div /*style="bottom: 0px; position: absolute"*/>
+				Objednej si skladbu z mobilu:
+				<img src="data:image/png;
+			<?php
+				$renderer = new \BaconQrCode\Renderer\Image\Png();
+				$renderer->setHeight(256);
+				$renderer->setWidth(256);
+				$writer = new \BaconQrCode\Writer($renderer);
+				echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
+				?>
+			" class="qr-image">
+			</div>
+
 		</div>
 	</div>
 	<!-- /#page-content-wrapper -->

@@ -64,7 +64,7 @@ var playNextOrLastGenre = function() {
 
 
 var playNext = function() {
-    audioElement.src = queueList.children()[0].find('[data-url]').attr('data-url');
+    audioElement.src = $(queueList.children()[0]).find('[data-url]').attr('data-url');
     audioElement.play();
 };
 
