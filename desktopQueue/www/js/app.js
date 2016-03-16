@@ -65,11 +65,12 @@ var playNextOrLastGenre = function() {
 
 
 var playNext = function() {
-    var firstInQueue = $(queueList.children()[0]).find('[data-url]');
-    audioElement.src = firstInQueue.attr('data-url');
+    var firstInQueue = $(queueList.children()[0]);
+    audioElement.src = firstInQueue.find('[data-url]').attr('data-url');
     var audioContainer = $('#audio-container');
-    audioContainer.find('.mejs-duration').text(firstInQueue.attr('data-duration'));
+    audioContainer.find('.mejs-duration').text(firstInQueue.find('[data-duration]').attr('data-duration'));
     audioElement.play();
+    firstInQueue.addClass('active');
 };
 
 

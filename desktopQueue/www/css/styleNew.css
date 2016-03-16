@@ -15,7 +15,6 @@
 }
 
 #sidebar-wrapper {
-    margin-top: 30px;
     z-index: 1000;
     position: fixed;
     left: 250px;
@@ -33,7 +32,6 @@
 #page-content-wrapper {
     width: 100%;
     position: absolute;
-    padding: 15px;
 }
 
 #wrapper.toggled #page-content-wrapper {
@@ -81,7 +79,6 @@
     }
 
     #page-content-wrapper {
-        padding: 20px;
         position: relative;
     }
 
@@ -100,4 +97,10 @@
     height: 100%;
     width: 100%;
     margin-left: -36px;
+}
+
+.panel.active {
+    font-weight: bold;
+    border: 2px solid black;
+    background: lightgray;
 }

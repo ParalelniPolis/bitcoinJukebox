@@ -45,6 +45,7 @@ require_once '../vendor/autoload.php';
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
+		<h1>Current playlist</h1>
 		<div class="panel panel-default" style="margin-bottom: 0">
 			<div class="panel-body" style="padding: 0; text-indent: 5px">
 				<div id="audio-container">
@@ -73,26 +74,6 @@ require_once '../vendor/autoload.php';
 			</div>
 		</div>
 		<div id="queue-list">
-
-<!--			--><?php //for ($i = 0; $i < 3; $i++) { ?>
-<!--				<div class="panel panel-default">-->
-<!--					<div class="panel-body">-->
-<!--						<div class="row">-->
-<!--							<div class="col-md-9 col-sm-9">-->
-<!--								<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
-<!--									<p>Title: "Log Horizon" Main Theme</p>-->
-<!--									<p>Author: Takanashi Yasuharu</p>-->
-<!--									<p>Length: 5:23</p>-->
-<!--								</a>-->
-<!--							</div>-->
-<!--							<div class="col-md-3 col-sm-3 album-icon-wrapper">-->
-<!--								<img class="album-icon" src="https://upload.wikimedia.org/wikipedia/en/8/8f/DragonForce-SonicFirestorm-AlbumCover.jpg">-->
-<!--							</div>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--				</div>-->
-<!---->
-<!--			--><?php //} ?>
 		</div>
 	</div>
 	<!-- /#sidebar-wrapper -->
@@ -100,26 +81,22 @@ require_once '../vendor/autoload.php';
 	<!-- Page Content -->
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-12">
-					<h1>Bitcoin Jukebox</h1>
-
-				</div>
-
-			</div>
+			<h1>Bitcoin Jukebox</h1>
+			<h3>Step 1: Read QR code with your mobile phone.</h3>
+			<h3>Step 2: Order songs you like.</h3>
+			<h3>Step 3: Pay them with bitcoin.</h3>
 			<div /*style="bottom: 0px; position: absolute"*/>
-				Objednej si skladbu z mobilu:
 				<img src="data:image/png;
-			<?php
-				$renderer = new \BaconQrCode\Renderer\Image\Png();
-				$renderer->setHeight(256);
-				$renderer->setWidth(256);
-				$writer = new \BaconQrCode\Writer($renderer);
-				echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
+				<?php
+					$renderer = new \BaconQrCode\Renderer\Image\Png();
+					$renderer->setHeight(250);
+					$renderer->setWidth(250);
+					$renderer->setMargin(0);
+					$writer = new \BaconQrCode\Writer($renderer);
+					echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
 				?>
 			" class="qr-image">
 			</div>
-
 		</div>
 	</div>
 	<!-- /#page-content-wrapper -->
