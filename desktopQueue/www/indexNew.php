@@ -19,6 +19,7 @@ require_once '../vendor/autoload.php';
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/styleNew.css">
+	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/mediaelementplayer.css">
 
 	<!--[if lt IE 9]>
 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -34,10 +35,9 @@ require_once '../vendor/autoload.php';
 	<script id="songTemplate" type="text/x-jsrender">
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<a data-url="{{:location}}">
+				<a data-url="{{:location}}" data-duration="{{:duration}}">
 					<p>Title: {{:title}}</p>
 					<p>Author: {{:author}}</p>
-					<p>Length: {{:duration}}</p>
 				</a>
 			</div>
 		</div>
@@ -45,35 +45,54 @@ require_once '../vendor/autoload.php';
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-		<audio id="player"></audio>
-		<div id="controls">
-			<input type="range" id="seekBar" value="0" step="any" ondurationchange="setupSeekBar()" onchange="seekAudio(this)" min="0" max="232">
-			<span id="timer">
-				<span id="currentTime">1:58</span>
-				<span id="duration"> / 3:52</span>
-			</span>
-		</div>
-		<div id="queue-list">
-			<?php for ($i = 0; $i < 3; $i++) { ?>
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-md-9 col-sm-9">
-								<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">
-									<p>Title: "Log Horizon" Main Theme</p>
-									<p>Author: Takanashi Yasuharu</p>
-									<p>Length: 5:23</p>
-								</a>
+		<div class="panel panel-default" style="margin-bottom: 0">
+			<div class="panel-body" style="padding: 0; text-indent: 5px">
+				<div id="audio-container">
+					<div id="mep_0" class="mejs-container mejs-audio" style="width: 100%; height: 30px;">
+						<div class="mejs-inner">
+							<div class="mejs-mediaelement">
+								<audio id="player" preload="none"
+								       src=""></audio>
 							</div>
-							<div class="col-md-3 col-sm-3 album-icon-wrapper">
-								<img class="album-icon" src="https://upload.wikimedia.org/wikipedia/en/8/8f/DragonForce-SonicFirestorm-AlbumCover.jpg">
+							<div class="mejs-controls">
+								<div class="mejs-time-rail" style="width: 258px;">
+									<span class="mejs-time-total" style="width: 240px;">
+										<span class="mejs-time-loaded" style="width: 238px;"></span>
+										<span class="mejs-time-current" style="width: 0px;"></span>
+									</span>
+								</div>
+								<div class="mejs-time">
+									<span class="mejs-currenttime">00:56</span>
+									<span> / </span>
+									<span class="mejs-duration">01:35</span></div>
 							</div>
-
+							<div class="mejs-clear"></div>
 						</div>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div id="queue-list">
 
-			<?php } ?>
+<!--			--><?php //for ($i = 0; $i < 3; $i++) { ?>
+<!--				<div class="panel panel-default">-->
+<!--					<div class="panel-body">-->
+<!--						<div class="row">-->
+<!--							<div class="col-md-9 col-sm-9">-->
+<!--								<a data-url="/bitcoinJukebox/songs/c36aac46-e37e-4ab3-987f-9f31d65ffca1">-->
+<!--									<p>Title: "Log Horizon" Main Theme</p>-->
+<!--									<p>Author: Takanashi Yasuharu</p>-->
+<!--									<p>Length: 5:23</p>-->
+<!--								</a>-->
+<!--							</div>-->
+<!--							<div class="col-md-3 col-sm-3 album-icon-wrapper">-->
+<!--								<img class="album-icon" src="https://upload.wikimedia.org/wikipedia/en/8/8f/DragonForce-SonicFirestorm-AlbumCover.jpg">-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!---->
+<!--			--><?php //} ?>
 		</div>
 	</div>
 	<!-- /#sidebar-wrapper -->
@@ -112,7 +131,6 @@ require_once '../vendor/autoload.php';
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>
 
-<script src="/bitcoinJukebox/desktopQueue/www/js/qrcode.min.js"></script>
 <script src="/bitcoinJukebox/desktopQueue/www/js/app.js"></script>
 
 

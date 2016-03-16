@@ -1,3 +1,4 @@
+/** @type HTMLMediaElement */
 var audioElement = document.getElementById('player');
 var queueList = $('#queue-list');
 
@@ -64,7 +65,10 @@ var playNextOrLastGenre = function() {
 
 
 var playNext = function() {
-    audioElement.src = $(queueList.children()[0]).find('[data-url]').attr('data-url');
+    var firstInQueue = $(queueList.children()[0]).find('[data-url]');
+    audioElement.src = firstInQueue.attr('data-url');
+    var audioContainer = $('#audio-container');
+    audioContainer.find('.mejs-duration').text(firstInQueue.attr('data-duration'));
     audioElement.play();
 };
 
@@ -91,5 +95,34 @@ conn.onopen = function() {
     }
 };
 
+toMMSS = function (sec_num) {
+    //var sec_num = parseInt(this, 10); // don't forget the second param
+    var minutes = Math.floor(sec_num / 60);
+    var seconds = Math.floor(sec_num - (minutes * 60));
+
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    return minutes + ':' + seconds;
+};
+
+fromMMSS = function (string) {
+    var time = string.split(':');
+    //var sec_num = parseInt(this, 10); // don't forget the second param
+    var minutes = time[0];
+    var seconds = time[1];
+
+    return parseInt(minutes) * 60 + parseInt(seconds);
+};
+
 console.log('everything loaded ok');
 
+//audioplayer animation
+setInterval(function() {
+    var audioContainer = $('#audio-container');
+    var currentTime = Math.floor(audioElement.currentTime);
+    var totalTime = fromMMSS(audioContainer.find('.mejs-duration').text());
+    audioContainer.find('.mejs-currenttime').text(toMMSS(currentTime));
+    var playedRatio = currentTime / totalTime;
+    var totalWidth = audioContainer.find('.mejs-time-loaded').width();
+    audioContainer.find('.mejs-time-current').width(playedRatio * totalWidth);
+}, 250);
