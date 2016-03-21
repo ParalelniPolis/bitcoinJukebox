@@ -2,57 +2,113 @@
 require_once '../vendor/autoload.php';
 ?>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Bitcoin Jukebox by Paralelní Polis">
+	<title>Bitcoin Jukebox</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="">
 
 	<title>Bitcoin Jukebox</title>
 
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.blue_grey-teal.min.css" />
-	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/style.css">
 
-	<script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/style.css">
+	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/mediaelementplayer.css">
+
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
 
 </head>
+
 <body>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
-	<header class="mdl-layout__header">
-		<div class="mdl-layout__header-row">
-			<audio id="player" controls></audio>
+<div id="wrapper">
+
+	<script id="songTemplate" type="text/x-jsrender">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a data-url="{{:location}}" data-duration="{{:duration}}">
+					<p>Title: {{:title}}</p>
+					<p>Author: {{:author}}</p>
+				</a>
+			</div>
 		</div>
-	</header>
-	<div class="mdl-layout__drawer">
-		<span class="mdl-layout-title">Bitcoin Jukebox</span>
-		<nav class="mdl-navigation" id="queue-list">
-		</nav>
-		<div style="bottom: 0px; position: absolute">
-			Objednej si skladbu z mobilu:
+	</script>
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper">
+		<h1>Current playlist</h1>
+		<div class="panel panel-default" style="margin-bottom: 0">
+			<div class="panel-body" style="padding: 0; text-indent: 5px">
+				<div id="audio-container">
+					<div id="mep_0" class="mejs-container mejs-audio" style="width: 100%; height: 30px;">
+						<div class="mejs-inner">
+							<div class="mejs-mediaelement">
+								<audio id="player" preload="none" src=""></audio>
+							</div>
+							<div class="mejs-controls">
+								<div class="mejs-time-rail" style="width: 258px;">
+									<span class="mejs-time-total" style="width: 240px;">
+										<span class="mejs-time-loaded" style="width: 238px;"></span>
+										<span class="mejs-time-current" style="width: 0px;"></span>
+									</span>
+								</div>
+								<div class="mejs-time">
+									<span class="mejs-currenttime">00:00</span>
+									<span> / </span>
+									<span class="mejs-duration">00:00</span>
+								</div>
+							</div>
+							<div class="mejs-clear"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="queue-list">
+		</div>
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper">
+		<div class="container-fluid">
+			<h1>Bitcoin Jukebox</h1>
+			<h3>Step 1: Read QR code with your mobile phone.</h3>
+			<h3>Step 2: Order songs you like.</h3>
+			<h3>Step 3: Pay them with bitcoin.</h3>
 			<img src="data:image/png;
 			<?php
-			$renderer = new \BaconQrCode\Renderer\Image\Png();
-			$renderer->setHeight(256);
-			$renderer->setWidth(256);
-			$writer = new \BaconQrCode\Writer($renderer);
-			echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
+				$renderer = new \BaconQrCode\Renderer\Image\Png();
+				$renderer->setHeight(250);
+				$renderer->setWidth(250);
+				$renderer->setMargin(0);
+				$writer = new \BaconQrCode\Writer($renderer);
+				echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
 			?>
 			" class="qr-image">
 		</div>
 	</div>
-	<main class="mdl-layout__content">
-		<div class="page-content">
-			<div class="mdl-grid" id="songs-wrapper">
-				<!-- DATA INSERT HERE -->
-			</div>
-		</div>
-	</main>
-</div>
+	<!-- /#page-content-wrapper -->
 
-<script src="/bitcoinJukebox/desktopQueue/www/js/qrcode.min.js"></script>
+</div>
+<!-- /#wrapper -->
+
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>
+
 <script src="/bitcoinJukebox/desktopQueue/www/js/app.js"></script>
+
+
 </body>
+
 </html>

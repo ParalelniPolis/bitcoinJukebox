@@ -1,16 +1,106 @@
-.mdl-card {
-    width: auto;
-}
-.mdl-card__media {
-    text-align: center;
-}
-.mdl-card__media img {
-    margin: auto;
-    width: 100%;
-    height: auto;
+/*!
+ * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+/* Toggle Styles */
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
 
-#songs-wrapper .mdl-cell {
-    display: flex;
-    align-items: flex-end;
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: rgb(250, 250, 250);
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#sidebar-wrapper {
+    text-indent: 20px;
+}
+
+.panel {
+    margin-right: 30px;
+    margin-left: 20px;
+}
+
+.panel-body {
+    padding: 8px 0 0;
+}
+
+.sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 400px;
+    }
+
+    #sidebar-wrapper {
+        width: 400px;
+    }
+
+    #page-content-wrapper {
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
+
+.album-icon-wrapper {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.album-icon {
+    height: 100%;
+    width: 100%;
+    margin-left: -36px;
+}
+
+.panel.active {
+    font-weight: bold;
+    border: 2px solid black;
+    background: lightgray;
 }
