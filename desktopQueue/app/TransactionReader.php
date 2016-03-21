@@ -27,10 +27,9 @@ class TransactionReader {
 	/** @var string */
 	private $addressLockTime;
 
-	public function __construct(string $host, string $dbName, string $username, string $password)
+	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime)
 	{
-		$this->addressLockTime = "- 20 minutes";
-//		$this->addressLockTime = "- 10 days";            //for testing purposes
+		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
 		$fileWriter = new Stream("log.txt");
@@ -93,7 +92,6 @@ class TransactionReader {
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
 		$stmt->execute([':address' => $address]);
 
-		//TODO: dohodnout se, zda tu má být taky 10 minut
 		$addressMaxAge = new \DateTime($this->addressLockTime);
 
 		$stmt = $this->connection->prepare('SELECT id FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');

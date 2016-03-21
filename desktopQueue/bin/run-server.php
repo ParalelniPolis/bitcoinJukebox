@@ -8,10 +8,14 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../app/QueueProducer.php';
 require __DIR__ . '/../app/TransactionReader.php';
 
-$host = 'localhost';
-$dbName = 'jukebox';
-$username = 'root';
-$password = '';
+$config1 = \Nette\Neon\Neon::decode(file_get_contents(__DIR__ . '/../../adminAndMobile/app/config/config.neon'));
+$config2 = \Nette\Neon\Neon::decode(file_get_contents(__DIR__ . '/../../adminAndMobile/app/config/config.local.neon'));
+$config = \Nette\Utils\Arrays::mergeTree($config1, $config2);
+
+$host = $config['parameters']['host'];
+$dbName = $config['parameters']['dbname'];
+$username = $config['parameters']['user'];
+$password = $config['parameters']['password'] ?? '';
 
 $server = IoServer::factory(
 	new HttpServer(

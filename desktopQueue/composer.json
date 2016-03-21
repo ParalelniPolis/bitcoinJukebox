@@ -12,7 +12,8 @@
         "cboden/ratchet": "^0.3.4",
         "nette/utils": "^2.3",
         "bacon/bacon-qr-code": "^1.0",
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "^1.9",
+        "nette/neon": "^2.3"
     },
     "require-dev": {
       "phploc/phploc": "*"
