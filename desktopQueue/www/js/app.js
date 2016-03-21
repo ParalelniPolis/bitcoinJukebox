@@ -35,6 +35,7 @@ var addToQueue = function(song) {
     var template = $.templates("#songTemplate"); // Get compiled template
     var html = template.render(song);      // Render template using data - as HTML string
     queueList.append(html);
+    queueList.find('.album-icon-wrapper img[src=\'\']').hide();
 
     if(emptyQueue) {
         playNext();

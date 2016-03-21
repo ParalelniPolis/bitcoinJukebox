@@ -33,6 +33,7 @@ services:
 	- App\Model\AddressProvider(masterKey: %masterKey%, addressLockTime: %addressLockTime%)
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory
+	- App\Model\AlbumCoverProvider
 	router: App\RouterFactory::createRouter
 	authenticator: Nette\Security\SimpleAuthenticator([
 		admin: %adminPassword%

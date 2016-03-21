@@ -28,10 +28,14 @@ class SongsManager extends Object
 	/** @var EntityRepository */
 	private $genresRepository;
 
-	public function __construct(EntityManager $entityManager, string $songsDirectory)
+	/** @var AlbumCoverProvider */
+	private $albumCoverProvider;
+
+	public function __construct(EntityManager $entityManager, AlbumCoverProvider $albumCoverProvider, string $songsDirectory)
 	{
 		$this->entityManager = $entityManager;
 		$this->songsDirectory = $songsDirectory;
+		$this->albumCoverProvider = $albumCoverProvider;
 		$this->songRepository = $entityManager->getRepository(Song::getClassName());
 		$this->genresRepository = $entityManager->getRepository(Genre::getClassName());
 		$this->addFunctions();
@@ -102,12 +106,13 @@ class SongsManager extends Object
 
 	public function addSong(FileUpload $file, string $genreId = null)
 	{
+		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getTemporaryFile());
 		if ($genreId) {
 			$genre = $this->genresRepository->find($genreId);
 		} else {
 			$genre = null;
 		}
-		$song = new Song($file->getName(), $genre);
+		$song = new Song($file->getName(), $albumURL, $genre);
 		$this->entityManager->persist($song);
 		$this->entityManager->flush($song);
 		$file->move($this->songsDirectory . "/" . $song->getId());

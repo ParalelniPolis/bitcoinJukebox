@@ -18,6 +18,9 @@ class SongReader
 	/** @var string */
 	private $title;
 
+	/** @var string */
+	private $album;
+
 	/**
 	 * Song constructor.
 	 * @param string $path
@@ -33,6 +36,7 @@ class SongReader
 		$info = $getID3->analyze($path);
 		$this->author = $info['tags']['id3v1']['artist'][0] ?? null;
 		$this->title = $info['tags']['id3v1']['title'][0] ?? null;
+		$this->album = $info['tags']['id3v1']['album'][0] ?? null;
 		$this->duration = $info['playtime_string'] ?? null;
 	}
 
@@ -58,6 +62,14 @@ class SongReader
 	public function getTitle()
 	{
 		return $this->title;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAlbum()
+	{
+		return $this->album;
 	}
 
 }

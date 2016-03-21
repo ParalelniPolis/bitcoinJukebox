@@ -3,7 +3,9 @@
 namespace App\AdminModule\Presenters;
 
 use App\Forms\AddSongFormFactory;
+use App\Model\AlbumCoverProvider;
 use App\Model\CantDeleteException;
+use App\Model\Entity\Song;
 use App\Model\GenresManager;
 use App\Model\SongsManager;
 use Doctrine\DBAL\DBALException;
@@ -24,6 +26,9 @@ class SongsPresenter extends BasePresenter
 	/** @var string @persistent */
 	public $genre;
 
+	/** @var AlbumCoverProvider @inject */
+	public $albumCoverProvider;
+
 	public function actionDefault(string $genre = null)
 	{
 		$this->genre = $genre;
@@ -31,12 +36,6 @@ class SongsPresenter extends BasePresenter
 
 	public function renderDefault(string $genre = null)
 	{
-		Debugger::$maxDepth = 4;
-		foreach ($this->songsManager->getSongsByGenreId($genre) as $song) {
-			$getID3 = new \getID3();
-			$info = $getID3->analyze($this->songsManager->getSongPath($song->getId())[0]);
-			Debugger::barDump($info['tags']);
-		}
 		$this->template->songs = $this->songsManager->getSongsByGenreId($genre);
 		$this->template->currentGenre = $genre;
 		$this->template->genres = $this->genresManager->getAllGenres();

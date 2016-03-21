@@ -77,6 +77,9 @@ class AddSongFormFactory extends Object
 		if (!$songReader->getTitle()) {
 			return false;
 		}
+		if (!$songReader->getAlbum()) {
+			return false;
+		}
 		return true;
 	}
 
@@ -93,6 +96,9 @@ class AddSongFormFactory extends Object
 		}
 		if (!$songReader->getTitle()) {
 			$invalidMetadata[] = 'title';
+		}
+		if (!$songReader->getAlbum()) {
+			$invalidMetadata[] = 'album';
 		}
 		return $invalidMetadata;
 	}

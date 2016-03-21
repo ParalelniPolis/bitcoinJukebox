@@ -43,7 +43,7 @@ require_once '../vendor/autoload.php';
 						</a>
 					</div>
 					<div class="col-md-3 col-sm-3 album-icon-wrapper">
-						<img class="album-icon" style="display: none" src="">
+						<img class="album-icon" src="{{:album_cover}}">
 					</div>
 				</div>
 			</div>

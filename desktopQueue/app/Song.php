@@ -25,16 +25,21 @@ class Song implements JsonSerializable
 	/** @var string */
 	private $title;
 
+	/** @var string */
+	private $albumCover;
+
 	/**
 	 * Song constructor.
 	 * @param string $name
 	 * @param string $location
-	 * @param $path
+	 * @param string $path
+	 * @param string $albumCover
 	 */
-	public function __construct(string $name, string $location, string $path)
+	public function __construct(string $name, string $location, string $path, string $albumCover)
 	{
 		$this->name = \Nette\Utils\Strings::fixEncoding($name);
 		$this->location = $location;
+		$this->albumCover = $albumCover;
 		$songReader = new SongReader($path);
 		$this->author = $songReader->getAuthor();
 		$this->title = $songReader->getTitle();
@@ -81,6 +86,13 @@ class Song implements JsonSerializable
 		return $this->title;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getAlbumCover()
+	{
+		return $this->albumCover;
+	}
 
 	/**
 	 * Specify data which should be serialized to JSON
@@ -95,7 +107,8 @@ class Song implements JsonSerializable
 			'location' => $this->location,
 			'title' => $this->title,
 			'author' => $this->author,
-			'duration' => $this->duration
+			'duration' => $this->duration,
+			'album_cover' => $this->albumCover
 		];
 	}
 }
