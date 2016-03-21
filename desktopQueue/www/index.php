@@ -33,7 +33,7 @@ require_once '../vendor/autoload.php';
 <div id="wrapper">
 
 	<script id="songTemplate" type="text/x-jsrender">
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: 0px;">
 			<div class="panel-body">
 				<a data-url="{{:location}}" data-duration="{{:duration}}">
 					<p>Title: {{:title}}</p>
@@ -55,7 +55,7 @@ require_once '../vendor/autoload.php';
 								<audio id="player" preload="none" src=""></audio>
 							</div>
 							<div class="mejs-controls">
-								<div class="mejs-time-rail" style="width: 258px;">
+								<div class="mejs-time-rail" style="width: 245px;">
 									<span class="mejs-time-total" style="width: 240px;">
 										<span class="mejs-time-loaded" style="width: 238px;"></span>
 										<span class="mejs-time-current" style="width: 0px;"></span>

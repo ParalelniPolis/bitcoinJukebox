@@ -4,8 +4,8 @@
 #
 parameters:
 	songsDir: %wwwDir%/../../songs
-	pricePerSong: 0.0000001			# in bitcoins
-	pricePerGenre: 0.0000002			# in bitcoins
+	pricePerSong: 0.00001			# in bitcoins
+	pricePerGenre: 0.000055			# in bitcoins
 	addressLockTime: '- 20 minutes'
 	currentGenreFile: %appDir%/model/currentGenre.txt
 

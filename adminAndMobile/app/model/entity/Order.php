@@ -49,7 +49,7 @@ class Order extends Entities\BaseEntity
 	 * @ORM\ManyToOne(targetEntity="Genre")
 	 * @var boolean
 	 */
-	private $orgeredGenre;
+	private $orderedGenre;
 
 	public function __construct($price, Address $address, Genre $orderedGenre = null)
     {
@@ -58,7 +58,7 @@ class Order extends Entities\BaseEntity
 	    $this->ordered = new \DateTime();
 	    $this->address = $address;
 	    $this->price = $price;
-	    $this->orgeredGenre = $orderedGenre;
+	    $this->orderedGenre = $orderedGenre;
     }
     
 }
