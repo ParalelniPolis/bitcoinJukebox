@@ -45,13 +45,20 @@ class Order extends Entities\BaseEntity
 	 */
 	private $price;
 
-	public function __construct($price, Address $address)
+	/**
+	 * @ORM\ManyToOne(targetEntity="Genre")
+	 * @var boolean
+	 */
+	private $orgeredGenre;
+
+	public function __construct($price, Address $address, Genre $orderedGenre = null)
     {
 	    $this->id = Uuid::uuid4();
     	$this->paid = false;
 	    $this->ordered = new \DateTime();
 	    $this->address = $address;
 	    $this->price = $price;
+	    $this->orgeredGenre = $orderedGenre;
     }
     
 }

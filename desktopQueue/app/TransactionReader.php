@@ -94,14 +94,19 @@ class TransactionReader {
 
 		$addressMaxAge = new \DateTime($this->addressLockTime);
 
-		$stmt = $this->connection->prepare('SELECT id FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
+		$stmt = $this->connection->prepare('SELECT id, ordered_genre_id FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
-		$orderId = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		$orderId = $result['id'];
+		$orderedGenreId = $result['ordered_genre_id'];
 
 		//TODO: dohodnout se, zda zde má být kontrola zaplacení správné částky a co se stane, pokud je částka menší
 		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 
+		if ($orderedGenreId != null) {
+			file_put_contents($this->currentGenreFile, $orderedGenreId);
+		}
 
 		echo $orderId . PHP_EOL;
 		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');

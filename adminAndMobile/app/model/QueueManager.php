@@ -52,14 +52,13 @@ class QueueManager extends Nette\Object
 		$songEntities = [];
 		//genre order is order of random song from given genre and setting of given genre as genre to be played when queue is empty
 		//current genre is saved as genreId in file, because it is simple and fast
-		$order = new Order($price, $address);
+		$genre = $this->genresManager->getGenre($genreId);
+		$order = new Order($price, $address, $genre);
 		$this->entityManager->persist($order);
 		$songEntities[] = $order;
-		$genre = $this->genresManager->getGenre($genreId);
 		$song = $this->songsManager->getRandomSong($genre);
 		$songEntities[] = $this->orderSong($song, $order);
 		$this->entityManager->flush($songEntities);
-		file_put_contents($this->currentGenreFile, $genreId);
 	}
 
 	private function orderSong(Song $song, Order $order) : QueueSong

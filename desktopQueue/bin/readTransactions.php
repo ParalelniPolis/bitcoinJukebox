@@ -14,6 +14,6 @@ $password = $config['parameters']['password'] ?? '';
 $addressLockTime = $config['parameters']['addressLockTime'];
 
 $reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime);
-//$reader->run();
-$reader->transactionReceived('12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ');
+$reader->run();
+//$reader->transactionReceived('12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ');
 
