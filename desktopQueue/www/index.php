@@ -35,10 +35,17 @@ require_once '../vendor/autoload.php';
 	<script id="songTemplate" type="text/x-jsrender">
 		<div class="panel panel-default" style="margin-bottom: 0px;">
 			<div class="panel-body">
-				<a data-url="{{:location}}" data-duration="{{:duration}}">
-					<p>Title: {{:title}}</p>
-					<p>Author: {{:author}}</p>
-				</a>
+				<div class="row">
+					<div class="col-md-9 col-sm-9">
+						<a data-url="{{:location}}" data-duration="{{:duration}}">
+							<p>Title: {{:title}}</p>
+							<p>Author: {{:author}}</p>
+						</a>
+					</div>
+					<div class="col-md-3 col-sm-3 album-icon-wrapper">
+						<img class="album-icon" style="display: none" src="">
+					</div>
+				</div>
 			</div>
 		</div>
 	</script>

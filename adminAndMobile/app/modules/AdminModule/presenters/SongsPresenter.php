@@ -31,6 +31,12 @@ class SongsPresenter extends BasePresenter
 
 	public function renderDefault(string $genre = null)
 	{
+		Debugger::$maxDepth = 4;
+		foreach ($this->songsManager->getSongsByGenreId($genre) as $song) {
+			$getID3 = new \getID3();
+			$info = $getID3->analyze($this->songsManager->getSongPath($song->getId())[0]);
+			Debugger::barDump($info['tags']);
+		}
 		$this->template->songs = $this->songsManager->getSongsByGenreId($genre);
 		$this->template->currentGenre = $genre;
 		$this->template->genres = $this->genresManager->getAllGenres();

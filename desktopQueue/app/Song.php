@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../../SongReader.php';
+
 /**
  * Created by PhpStorm.
  * User: Azathoth
@@ -27,21 +29,16 @@ class Song implements JsonSerializable
 	 * Song constructor.
 	 * @param string $name
 	 * @param string $location
+	 * @param $path
 	 */
-	public function __construct($name, $location, $path)
+	public function __construct(string $name, string $location, string $path)
 	{
 		$this->name = \Nette\Utils\Strings::fixEncoding($name);
 		$this->location = $location;
-		$this->loadInfo($path);
-	}
-
-	private function loadInfo(string $path)
-	{
-		$getID3 = new getID3();
-		$info = $getID3->analyze($path);
-		$this->author = $info['tags']['id3v1']['artist'][0];
-		$this->title = $info['tags']['id3v1']['title'][0];
-		$this->duration = $info['playtime_string'];
+		$songReader = new SongReader($path);
+		$this->author = $songReader->getAuthor();
+		$this->title = $songReader->getTitle();
+		$this->duration = $songReader->getDuration();
 	}
 
 	/**

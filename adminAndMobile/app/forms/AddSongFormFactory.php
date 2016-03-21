@@ -56,7 +56,8 @@ class AddSongFormFactory extends Object
 		foreach ($songFiles as $songFile) {
 			if ($songFile->isOk()) {
 				if (!$this->hasSongValidMetadata($songFile)) {
-					$form->addError('Song ' . $songFile->getName() . ' has invalid metadata, upload not permitted.');
+					$form->addError('Song ' . $songFile->getName() . ' has invalid metadata: ' .
+						implode(', ', $this->getInvalidMetadata($songFile)) . '. Upload not permitted.');
 				}
 			} else {
 				$form->addError('Song ' . $songFile->getName() . ' was invalid, upload failed.');
@@ -66,20 +67,33 @@ class AddSongFormFactory extends Object
 
 	private function hasSongValidMetadata(FileUpload $song) : bool
 	{
-		$getID3 = new \getID3();
-		$info = $getID3->analyze($song->getTemporaryFile());
-		Debugger::barDump($info, 'song info ' . $song->getName());
-		if (!isset($info['tags']['id3v1']['artist'][0])) {
+		$songReader = new \SongReader($song->getTemporaryFile());
+		if (!$songReader->getDuration()) {
 			return false;
 		}
-		if (!isset($info['tags']['id3v1']['title'][0])) {
+		if (!$songReader->getAuthor()) {
 			return false;
 		}
-		if (!isset($info['playtime_string'])) {
+		if (!$songReader->getTitle()) {
 			return false;
 		}
 		return true;
 	}
 
-	//TODO: dodělat hlášení, který tag chybí, dodělat načítání alba
+
+	private function getInvalidMetadata(FileUpload $song) : array
+	{
+		$invalidMetadata = [];
+		$songReader = new \SongReader($song->getTemporaryFile());
+		if (!$songReader->getDuration()) {
+			$invalidMetadata[] = 'playtime_string';
+		}
+		if (!$songReader->getAuthor()) {
+			$invalidMetadata[] = 'artist';
+		}
+		if (!$songReader->getTitle()) {
+			$invalidMetadata[] = 'title';
+		}
+		return $invalidMetadata;
+	}
 }

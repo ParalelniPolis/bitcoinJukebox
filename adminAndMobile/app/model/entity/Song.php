@@ -34,10 +34,17 @@ class Song extends Entities\BaseEntity
 	 */
 	private $genre;
 
-    public function __construct($name, Genre $genre = null)
+	/**
+	 * @ORM\Column(type="string")
+	 * @var string
+	 */
+	private $albumCover;
+
+    public function __construct(string $name, string $albumCover, Genre $genre = null)
     {
 	    $this->id = Uuid::uuid4();
     	$this->name = $name;
+	    $this->albumCover = $albumCover;
 	    $this->genre = $genre;
     }
 
