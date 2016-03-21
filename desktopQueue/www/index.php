@@ -31,6 +31,13 @@ require_once '../vendor/autoload.php';
 	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
+	<style>
+		* {
+			max-font-size: 5px;
+			min-font-size: 5px;
+		}
+	</style>
+
 </head>
 
 <body>
