@@ -5,6 +5,10 @@ require_once '../vendor/autoload.php';
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+//file_put_contents('jsrender.min.js', file_get_contents('https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js'));
+//192.168.0.101
+?>
 <head>
 
 	<meta charset="utf-8">
@@ -17,7 +21,8 @@ require_once '../vendor/autoload.php';
 	<title>Bitcoin Jukebox</title>
 
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<!--	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/bootstrap.min.css">
 	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/style.css">
 	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/mediaelementplayer.css">
 
@@ -109,9 +114,13 @@ require_once '../vendor/autoload.php';
 </div>
 <!-- /#wrapper -->
 
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>-->
+
+<script src="/bitcoinJukebox/desktopQueue/www/http_code.jquery.com_jquery-1.12.0.js"></script>
+<script src="/bitcoinJukebox/desktopQueue/www/http_maxcdn.bootstrapcdn.com_bootstrap_3.3.6_js_bootstrap.js"></script>
+<script src="/bitcoinJukebox/desktopQueue/www/jsrender.min.js"></script>
 
 <script src="/bitcoinJukebox/desktopQueue/www/js/app.js"></script>
 
