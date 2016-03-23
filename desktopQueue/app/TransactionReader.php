@@ -27,6 +27,9 @@ class TransactionReader {
 	/** @var string */
 	private $addressLockTime;
 
+	/** @var string */
+	private $currentGenreFile;
+
 	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime)
 	{
 		$this->addressLockTime = $addressLockTime;
@@ -36,6 +39,7 @@ class TransactionReader {
 		$this->logger->addWriter($fileWriter);
 		$consoleWriter = new Stream('php://output');
 		$this->logger->addWriter($consoleWriter);
+		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
 
 		$options = [];
 		$options['ssl']['local_cert'] = "democert.pem";
@@ -100,7 +104,7 @@ class TransactionReader {
 		$orderId = $result['id'];
 		$orderedGenreId = $result['ordered_genre_id'];
 
-		//TODO: dohodnout se, zda zde má být kontrola zaplacení správné částky a co se stane, pokud je částka menší
+		//TODO: zahodit transakci, pokud je zaplacená částka menší než objednaná
 		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 
