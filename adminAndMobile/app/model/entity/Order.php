@@ -32,6 +32,7 @@ class Order extends Entities\BaseEntity
 	 * @var \DateTime
 	 */
 	private $ordered;
+
 	/**
 	 * @ORM\ManyToOne(targetEntity="Address")
 	 * @ORM\JoinColumn(name="address", referencedColumnName="address")

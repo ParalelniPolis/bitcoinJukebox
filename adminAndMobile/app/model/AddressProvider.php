@@ -97,7 +97,7 @@ class AddressProvider
 	{
 		$lastIndex++;
 		$master = $this->masterKey;
-		$address = BIP32::build_address($master, "$lastIndex'")[0];
+		$address = BIP32::build_address($master, "m/44'/0'/0'/0/$lastIndex")[0];
 		return [$address, $lastIndex];
 	}
 }

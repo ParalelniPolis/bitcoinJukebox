@@ -7,13 +7,18 @@ $config1 = \Nette\Neon\Neon::decode(file_get_contents(__DIR__ . '/../../adminAnd
 $config2 = \Nette\Neon\Neon::decode(file_get_contents(__DIR__ . '/../../adminAndMobile/app/config/config.local.neon'));
 $config = \Nette\Utils\Arrays::mergeTree($config1, $config2);
 
-$host = $config['parameters']['host'];
-$dbName = $config['parameters']['dbname'];
-$username = $config['parameters']['user'];
-$password = $config['parameters']['password'] ?? '';
-$addressLockTime = $config['parameters']['addressLockTime'];
-
-$reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime);
-$reader->run();
+//$host = $config['parameters']['host'];
+//$dbName = $config['parameters']['dbname'];
+//$username = $config['parameters']['user'];
+//$password = $config['parameters']['password'] ?? '';
+//$addressLockTime = $config['parameters']['addressLockTime'];
+//
+//$reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime);
+//$reader->run();
 //$reader->transactionReceived('12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ');
 
+$master = $config['parameters']['masterKey'];
+for ($i = 0; $i < 10; $i++) {
+	$address = \BitWasp\BitcoinLib\BIP32::build_address($master, "m/44'/0'/0'/0/$i")[0];
+	echo $address . PHP_EOL;
+}
