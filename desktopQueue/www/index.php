@@ -121,13 +121,19 @@ require_once '../vendor/autoload.php';
 </div>
 <!-- /#wrapper -->
 
-<!--<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>-->
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
-<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>-->
+<?php
+	$connected = @fsockopen("www.google.com", 80) != false;
+?>
 
+<?php if($connected) { ?>
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.72/jsrender.min.js"></script>
+<?php } else { ?>
 <script src="/bitcoinJukebox/desktopQueue/www/http_code.jquery.com_jquery-1.12.0.js"></script>
 <script src="/bitcoinJukebox/desktopQueue/www/http_maxcdn.bootstrapcdn.com_bootstrap_3.3.6_js_bootstrap.js"></script>
 <script src="/bitcoinJukebox/desktopQueue/www/jsrender.min.js"></script>
+<?php } ?>
 
 <script src="/bitcoinJukebox/desktopQueue/www/js/app.js"></script>
 
