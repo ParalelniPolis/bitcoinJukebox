@@ -5,7 +5,7 @@
  *}
 {block content}
 <div class="tab-content">
-	<form n:name="searchForm" class="search">
+	<form n:name="searchForm" class="search hidden-print">
 		<div class="input-group">
         	<input n:name="text" placeholder="Najít skladby..." class="form-control">
             <span class="input-group-btn">
@@ -45,7 +45,7 @@
 					</label>
 				</div>
 			{/foreach}
-			<input n:name="order" class="btn btn-primary">
+			<input n:name="order" class="btn btn-primary hidden-print">
 		</form>
 	</div>
 
