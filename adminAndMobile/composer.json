@@ -32,7 +32,6 @@
 		"tracy/tracy": "~2.3.0",
 		"dg/adminer-custom": "~1.6",
 		"kartik-v/bootstrap-fileinput": "dev-master",
-		"bitwasp/bitcoin-lib": "^1.2",
 		"kdyby/doctrine": "^3.0",
 		"ramsey/uuid": "^3.2",
 		"moontoast/math": "^1.1",
