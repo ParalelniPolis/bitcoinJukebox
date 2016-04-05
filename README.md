@@ -1,4 +1,4 @@
-TV viewport resolution: 962 x 153
+TV viewport resolution: 962 x 453
 
 how to run it:
 Start websocket server:
