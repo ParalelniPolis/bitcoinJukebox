@@ -4,7 +4,6 @@ namespace App\Model;
 
 use App\Model\Entity\Address;
 use \BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
-use BitWasp\BitcoinLib\BIP32;
 use Doctrine\ORM\AbstractQuery;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
@@ -96,8 +95,7 @@ class AddressProvider
 	private function generateNewAddress(int $lastIndex) : array
 	{
 		$lastIndex++;
-		$master = $this->masterKey;
-		$address = BIP32::build_address($master, "m/44'/0'/0'/0/$lastIndex")[0];
+		$address = "12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ";
 		return [$address, $lastIndex];
 	}
 }

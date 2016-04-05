@@ -8,7 +8,6 @@
     "require": {
         "devristo/phpws": "dev-master",
         "bitcoin-php/bitcoin-ecdsa": "^1.2",
-        "bitwasp/bitcoin-lib": "1.0.*",
         "cboden/ratchet": "^0.3.4",
         "nette/utils": "^2.3",
         "bacon/bacon-qr-code": "^1.0",
