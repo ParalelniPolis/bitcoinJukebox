@@ -49,7 +49,7 @@ class AddSongPresenter extends BasePresenter
 		$uploadOk = true;
 		foreach ($songFiles as $songFile) {
 			if ($songFile->isOk()) {
-				$this->songsManager->addSong($songFile, $genreId);
+				$this->songsManager->addSongFromHTTP($songFile, $genreId);
 			} else {
 				$uploadOk = false;
 			}

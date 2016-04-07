@@ -8,6 +8,7 @@ use Doctrine\DBAL\DBALException;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
 use Nette\Http\FileUpload;
+use Nette\InvalidStateException;
 use Nette\Object;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
@@ -104,8 +105,12 @@ class SongsManager extends Object
 		return array_map(function($id) {return Strings::replace($id, '~-~', '_');}, $this->getSongIds());
 	}
 
-	public function addSong(FileUpload $file, string $genreId = null)
+	private function addSong(FileUpload $file, string $genreId = null, $copy = false)
 	{
+		if ($this->songExists($file->getTemporaryFile())) {
+			return;
+		}
+
 		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getTemporaryFile());
 		if ($genreId) {
 			$genre = $this->genresRepository->find($genreId);
@@ -115,7 +120,35 @@ class SongsManager extends Object
 		$song = new Song($file->getName(), $albumURL, $genre);
 		$this->entityManager->persist($song);
 		$this->entityManager->flush($song);
-		$file->move($this->songsDirectory . "/" . $song->getId());
+		$destination = $this->songsDirectory . "/" . $song->getId();
+		if ($copy) {
+			$this->copy($file, $destination);
+		} else {
+			$file->move($destination);
+		}
+	}
+
+	private function copy(FileUpload $file, string $destination)
+	{
+		//vykopírováno z $file->move(''); a upraveno move na copy
+		@mkdir(dirname($destination), 0777, TRUE); // @ - dir may already exist
+		@unlink($destination); // @ - file may not exists
+		if (!copy($file->getTemporaryFile(), $destination)) {
+			throw new InvalidStateException("Unable to move uploaded file '{$file->getTemporaryFile()}' to '$destination'.");
+		}
+		@chmod($destination, 0666); // @ - possible low permission to chmod
+		return $this;
+
+	}
+
+	public function addSongFromHTTP(FileUpload $file, string $genreId = null)
+	{
+		$this->addSong($file, $genreId);
+	}
+
+	public function addSongFromCLI(FileUpload $file, string $genreId = null)
+	{
+		$this->addSong($file, $genreId, true);
 	}
 
 	/**
@@ -162,6 +195,21 @@ class SongsManager extends Object
 			->setParameters(['genre' => $genre]);
 		return $qb->getQuery()->getSingleResult();
 	}
+
+	private function songExists(string $filename) : bool
+	{
+		//todo: možná v budoucnu ukládat hash do databáze
+		$hash = md5_file($filename);
+		/** @var \SplFileInfo $song */
+		foreach (Finder::findFiles('*')->from($this->songsDirectory) as $song) {
+			if (md5_file($song->getRealPath()) === $hash) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 }
 
 class CantDeleteException extends \Exception {}
