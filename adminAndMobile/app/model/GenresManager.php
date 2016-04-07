@@ -62,6 +62,10 @@ class GenresManager extends Object
 
 	public function addGenre(string $name)
 	{
+		if ($this->genreExists($name)) {
+			return;
+		}
+
 		$genre = new Genre($name);
 		$this->entityManager->persist($genre);
 		$this->entityManager->flush($genre);
@@ -71,4 +75,10 @@ class GenresManager extends Object
 	{
 		return $this->genreRepository->find($id);
 	}
+
+	public function genreExists(string $name) : bool
+	{
+		return $this->genreRepository->countBy(['name' => $name]) > 0;
+	}
+
 }

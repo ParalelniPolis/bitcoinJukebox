@@ -144,8 +144,9 @@ class SongsManager extends Object
 		return $this->addSong(File::fromFileUpload($file), $genreId);
 	}
 
-	public function addSongFromCLI(\SplFileInfo $file, string $genreId = null)
+	public function addSongFromCLI(\SplFileInfo $file, string  $genreName = null)
 	{
+		$genreId = $this->genresRepository->findOneBy(['name' => $genreName])->getId();
 		$this->addSong(File::fromSplFileInfo($file), $genreId, true);
 	}
 
