@@ -72,9 +72,15 @@ class SongProvider
 
 	public function getRandomSong(int $genreId) : Song
 	{
+		//todo: ošetřit, aby bylo možno objednávat jen žánry s alespoň jednou písní
 		$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover FROM song WHERE genre_id = :genreId ORDER BY RAND() LIMIT 1');
 		$stmt->execute(['genreId' => $genreId]);
 		$songData = $stmt->fetch(PDO::FETCH_ASSOC);
+		if (!$songData) {   //vybraný žánr nemá žádnou skladbu
+			$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover FROM song ORDER BY RAND() LIMIT 1');
+			$stmt->execute();
+			$songData = $stmt->fetch(PDO::FETCH_ASSOC);
+		}
 		echo 'song name: ' . $songData['name'] .  ', album cover:' . $songData['album_cover'] . PHP_EOL;
 		$song = new Song($songData['name'], $this->webSongsDir. '/' . $songData['id'], $this->filesystemSongsDir. '/' . $songData['id'], $songData['album_cover']);
 		return $song;

@@ -27,7 +27,7 @@ $previous = 0;
 //zobrazování procent
 
 /** @var \SplFileInfo $genreDirectory */
-foreach (\Nette\Utils\Finder::findFiles('*.*')->from($path) as $genreDirectory) {
+foreach (\Nette\Utils\Finder::findDirectories('*')->from($path) as $genreDirectory) {
 	$genre = $genreDirectory->getBasename();
 
 	$genresManager->addGenre($genre);

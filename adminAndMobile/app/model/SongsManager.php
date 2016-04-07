@@ -115,10 +115,9 @@ class SongsManager extends Object
 	 */
 	private function addSong(File $file, string $genreId = null, $copy = false) : bool
 	{
-		Debugger::barDump($this->songExists($file->getDestination()), 'file exists');
-		if ($this->songExists($file->getDestination())) {
-			return true;
-		}
+//		if ($this->songExists($file->getDestination())) {
+//			return true;
+//		}
 
 		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getDestination());
 		if ($genreId) {
