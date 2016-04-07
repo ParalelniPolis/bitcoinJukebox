@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\Entity\File;
 use App\Model\Entity\Genre;
 use App\Model\Entity\Song;
 use Doctrine\DBAL\DBALException;
@@ -105,13 +106,13 @@ class SongsManager extends Object
 		return array_map(function($id) {return Strings::replace($id, '~-~', '_');}, $this->getSongIds());
 	}
 
-	private function addSong(FileUpload $file, string $genreId = null, $copy = false)
+	private function addSong(File $file, string $genreId = null, $copy = false)
 	{
-		if ($this->songExists($file->getTemporaryFile())) {
+		if ($this->songExists($file->getDestination())) {
 			return;
 		}
 
-		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getTemporaryFile());
+		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getDestination());
 		if ($genreId) {
 			$genre = $this->genresRepository->find($genreId);
 		} else {
@@ -122,33 +123,20 @@ class SongsManager extends Object
 		$this->entityManager->flush($song);
 		$destination = $this->songsDirectory . "/" . $song->getId();
 		if ($copy) {
-			$this->copy($file, $destination);
+			$file->copy($destination);
 		} else {
 			$file->move($destination);
 		}
 	}
 
-	private function copy(FileUpload $file, string $destination)
-	{
-		//vykopírováno z $file->move(''); a upraveno move na copy
-		@mkdir(dirname($destination), 0777, TRUE); // @ - dir may already exist
-		@unlink($destination); // @ - file may not exists
-		if (!copy($file->getTemporaryFile(), $destination)) {
-			throw new InvalidStateException("Unable to move uploaded file '{$file->getTemporaryFile()}' to '$destination'.");
-		}
-		@chmod($destination, 0666); // @ - possible low permission to chmod
-		return $this;
-
-	}
-
 	public function addSongFromHTTP(FileUpload $file, string $genreId = null)
 	{
-		$this->addSong($file, $genreId);
+		$this->addSong(File::fromFileUpload($file), $genreId);
 	}
 
-	public function addSongFromCLI(FileUpload $file, string $genreId = null)
+	public function addSongFromCLI(\SplFileInfo $file, string $genreId = null)
 	{
-		$this->addSong($file, $genreId, true);
+		$this->addSong(File::fromSplFileInfo($file), $genreId, true);
 	}
 
 	/**

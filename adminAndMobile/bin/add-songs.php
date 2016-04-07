@@ -27,7 +27,7 @@ $previous = 0;
 /** @var \SplFileInfo $file */
 foreach ($songs as $file) {
 	//todo: vymyslet, jak načítat žánry
-	$songsManager->addSongFromCLI(getFakeFileUpload($file));
+	$songsManager->addSongFromCLI($file);
 
 	$i++;
 	$percentage = (int) ($i * 100 / $count);
@@ -39,20 +39,3 @@ foreach ($songs as $file) {
 }
 
 echo 'Songs have been added.' . PHP_EOL;
-
-function getFakeFileUpload(\SplFileInfo $fileInfo)
-{
-	$values = [];
-	$values['name'] = $fileInfo->getBasename();
-	$values['type'] = getMimeType($fileInfo);
-	$values['size'] = $fileInfo->getSize();
-	$values['tmp_name'] = $fileInfo->getPathname();
-	$values['error'] = UPLOAD_ERR_OK;
-	return new Nette\Http\FileUpload($values);
-}
-
-function getMimeType(\SplFileInfo $fileInfo)
-{
-	$mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileInfo->getPathname());
-	return $mimeType;
-}
