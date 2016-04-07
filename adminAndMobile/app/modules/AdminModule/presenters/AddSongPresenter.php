@@ -9,6 +9,10 @@ use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
 use Tracy\Debugger;
 
+/**
+ * Class AddSongPresenter
+ * @property-read callback $addSong
+ */
 class AddSongPresenter extends BasePresenter
 {
 
