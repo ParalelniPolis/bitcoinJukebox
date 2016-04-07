@@ -9,6 +9,10 @@ use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
 use Tracy\Debugger;
 
+/**
+ * Class AddSongPresenter
+ * @property-read callback $addSong
+ */
 class AddSongPresenter extends BasePresenter
 {
 
@@ -47,18 +51,25 @@ class AddSongPresenter extends BasePresenter
 		$genreId = $values['genre'];
 		$onlyOneSong = count($songFiles) == 1;
 		$uploadOk = true;
+		$alreadyExists = false;
 		foreach ($songFiles as $songFile) {
 			if ($songFile->isOk()) {
-				$this->songsManager->addSong($songFile, $genreId);
+				$alreadyExists = $alreadyExists || $this->songsManager->addSongFromHTTP($songFile, $genreId);
 			} else {
 				$uploadOk = false;
 			}
 		}
-		if ($uploadOk) {
+		if ($uploadOk && !$alreadyExists) {
 			if ($onlyOneSong) {
 				$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
 			} else {
 				$this->flashMessage('Skladby byly úspěšně přidány.', 'success');
+			}
+		} else if ($alreadyExists) {
+			if ($onlyOneSong) {
+				$this->flashMessage('Skladba již byla nahrána dříve.', 'info');
+			} else {
+				$this->flashMessage('Některé skladby již byly nahrány dříve.', 'info');
 			}
 		} else {
 			if ($onlyOneSong) {

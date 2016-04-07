@@ -1,7 +1,15 @@
 <?php
 
-require_once '../vendor/autoload.php';
-require_once '../app/TransactionReader.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../app/TransactionReader.php';
+
+if (!file_exists(__DIR__ . '/../../adminAndMobile/app/config/config.local.neon')) {
+	die('Configuration file config.local.neon is missing!');
+}
+
+if (!file_exists(__DIR__ . '/../../adminAndMobile/app/config/config.neon')) {
+	die('Configuration file config.neon is missing!');
+}
 
 $config1 = \Nette\Neon\Neon::decode(file_get_contents(__DIR__ . '/../../adminAndMobile/app/config/config.neon'));
 $config2 = \Nette\Neon\Neon::decode(file_get_contents(__DIR__ . '/../../adminAndMobile/app/config/config.local.neon'));
