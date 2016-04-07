@@ -47,18 +47,25 @@ class AddSongPresenter extends BasePresenter
 		$genreId = $values['genre'];
 		$onlyOneSong = count($songFiles) == 1;
 		$uploadOk = true;
+		$alreadyExists = false;
 		foreach ($songFiles as $songFile) {
 			if ($songFile->isOk()) {
-				$this->songsManager->addSongFromHTTP($songFile, $genreId);
+				$alreadyExists = $alreadyExists || $this->songsManager->addSongFromHTTP($songFile, $genreId);
 			} else {
 				$uploadOk = false;
 			}
 		}
-		if ($uploadOk) {
+		if ($uploadOk && !$alreadyExists) {
 			if ($onlyOneSong) {
 				$this->flashMessage('Skladba byla úspěšně přidána.', 'success');
 			} else {
 				$this->flashMessage('Skladby byly úspěšně přidány.', 'success');
+			}
+		} else if ($alreadyExists) {
+			if ($onlyOneSong) {
+				$this->flashMessage('Skladba již byla nahrána dříve.', 'info');
+			} else {
+				$this->flashMessage('Některé skladby již byly nahrány dříve.', 'info');
 			}
 		} else {
 			if ($onlyOneSong) {

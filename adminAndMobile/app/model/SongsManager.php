@@ -106,10 +106,18 @@ class SongsManager extends Object
 		return array_map(function($id) {return Strings::replace($id, '~-~', '_');}, $this->getSongIds());
 	}
 
-	private function addSong(File $file, string $genreId = null, $copy = false)
+	/**
+	 * @param File $file
+	 * @param string|null $genreId
+	 * @param bool $copy
+	 * @return bool returns true if file already exists
+	 * @throws \Exception
+	 */
+	private function addSong(File $file, string $genreId = null, $copy = false) : bool
 	{
+		Debugger::barDump($this->songExists($file->getDestination()), 'file exists');
 		if ($this->songExists($file->getDestination())) {
-			return;
+			return true;
 		}
 
 		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getDestination());
@@ -127,11 +135,13 @@ class SongsManager extends Object
 		} else {
 			$file->move($destination);
 		}
+
+		return false;
 	}
 
-	public function addSongFromHTTP(FileUpload $file, string $genreId = null)
+	public function addSongFromHTTP(FileUpload $file, string $genreId = null) : bool
 	{
-		$this->addSong(File::fromFileUpload($file), $genreId);
+		return $this->addSong(File::fromFileUpload($file), $genreId);
 	}
 
 	public function addSongFromCLI(\SplFileInfo $file, string $genreId = null)
