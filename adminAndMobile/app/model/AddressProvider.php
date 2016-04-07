@@ -7,8 +7,6 @@ use \BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
 use Doctrine\ORM\AbstractQuery;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
-use Nette\Database\Context;
-use Nette\Database\SqlLiteral;
 use PDO;
 use PDOException;
 use Tracy\Debugger;
