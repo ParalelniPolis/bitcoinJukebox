@@ -20,9 +20,9 @@ class SongProvider
 	/** @var string */
 	private $filesystemSongsDir;
 
-	public function __construct(string $host, string $dbName, string $username, string $password, string $songsDirectory) {
+	public function __construct(string $host, string $dbName, string $username, string $password, string $songsDirectory, string $webSongsDir) {
 		$this->connectToDatabase($host, $dbName, $username, $password);
-		$this->webSongsDir = '/bitcoinJukebox/songs';
+		$this->webSongsDir = $webSongsDir;
 		$this->filesystemSongsDir = $songsDirectory;
 	}
 
@@ -82,7 +82,7 @@ class SongProvider
 			$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		}
 		echo 'song name: ' . $songData['name'] .  ', album cover:' . $songData['album_cover'] . PHP_EOL;
-		$song = new Song($songData['name'], $this->webSongsDir. '/' . $songData['id'], $this->filesystemSongsDir. '/' . $songData['id'], $songData['album_cover']);
+		$song = new Song($songData['name'], "$this->webSongsDir/{$songData['id']}.mp3", "$this->filesystemSongsDir/{$songData['id']}.mp3", $songData['album_cover']);
 		return $song;
 	}
 
