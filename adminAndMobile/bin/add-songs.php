@@ -1,5 +1,12 @@
 <?php
 
+//preg_match('~(?P<Marks>)~', 'Ian D Marks-16-King of the Mountain The Proclamation.mp3', $matches);
+preg_match('~(?P<artist>.+)-[\d]+-(?P<title>.+)~', 'Ian D Marks-16-King of the Mountain The Proclamation.mp3', $matches);
+
+var_dump($matches);
+
+exit;
+
 /** @var \Nette\DI\Container $container */
 $container = require __DIR__ . '/../app/bootstrap.php';
 /** @var \App\Model\SongsManager $songsManager */

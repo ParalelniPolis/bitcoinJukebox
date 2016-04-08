@@ -1,0 +1,28 @@
+{block content}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Skladby</h1>
+    </div>
+</div>
+{*TODO: opravit různé výšky sloupců u textů, které přetékají na více řádek *}
+<div class="row">
+	<table class="table-bordered">
+		<tr>
+			<th>název</th>
+			<th>žánr</th>
+			<th>title</th>
+			<th>artist</th>
+			<th>duration</th>
+		</tr>
+	{foreach $songs as $song}
+		<tr>
+			<td>{$song->getName()}</td>
+			<td>{$song->getGenre()->getName()}</td>
+			<td>{$song->getTitle()}</td>
+			<td>{$song->getArtist()}</td>
+			<td>{$song->getDuration()}</td>
+		</tr>
+    </div>
+    {/foreach}
+	</table>
+</div>

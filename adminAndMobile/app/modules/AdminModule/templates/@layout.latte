@@ -31,6 +31,7 @@
             		<li {ifCurrent AddSong:*} class="active"{/ifCurrent}><a n:href="AddSong:">Přidat skladbu</a></li>
             		<li {ifCurrent Genres:*} class="active"{/ifCurrent}><a n:href="Genres:">Žánry</a></li>
             		<li {ifCurrent Songs:*} class="active"{/ifCurrent}><a n:href="Songs:">Skladby</a></li>
+					<li {ifCurrent SongsGrid:*} class="active"{/ifCurrent}><a n:href="SongsGrid:">Tabulka skladeb</a></li>
             		{else}
            			<li class="active"><a n:href="Sign:in">Přihlášení</a></li>
             		{/if}

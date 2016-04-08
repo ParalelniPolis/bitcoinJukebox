@@ -56,7 +56,7 @@ class SongsPresenter extends BasePresenter
 
 	public function actionDownload($songId)
 	{
-		list($path, $song) = $this->songsManager->getSongPath($songId);
+		list($path, $song) = $this->songsManager->getSongPathAndName($songId);
 		$this->presenter->sendResponse(new FileResponse($path, $song));
 	}
 }

@@ -40,6 +40,24 @@ class Song extends Entities\BaseEntity
 	 */
 	private $albumCover;
 
+	/**
+	 * @ORM\Column(type="string")
+	 * @var string
+	 */
+	private $title;
+
+	/**
+	 * @ORM\Column(type="string")
+	 * @var string
+	 */
+	private $artist;
+
+	/**
+	 * @ORM\Column(type="string")
+	 * @var string
+	 */
+	private $duration;
+
     public function __construct(string $name, string $albumCover, Genre $genre = null)
     {
 	    $this->id = Uuid::uuid4();
@@ -67,6 +85,50 @@ class Song extends Entities\BaseEntity
 	{
 		return $this->genre;
 	}
-    
+
+	/**
+	 * @param string $name
+	 */
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+
+	public function loadMetadata(\SongReader $songReader)
+	{
+		$this->title = $songReader->getTitle();
+		$this->artist = $songReader->getAuthor();
+		$this->duration = $songReader->getDuration();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getArtist()
+	{
+		return $this->artist;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDuration()
+	{
+		return $this->duration;
+	}
+
+	public function hasMetadata() :bool
+	{
+		return $this->title && $this->artist && $this->duration;
+	}
+
 }
 

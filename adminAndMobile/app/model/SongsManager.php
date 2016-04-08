@@ -2,6 +2,9 @@
 
 namespace App\Model;
 
+require_once 'C:\xampp\htdocs\bitcoinJukebox\adminAndMobile\vendor\james-heinrich\getid3\getid3\getid3.php';
+require_once 'C:\xampp\htdocs\bitcoinJukebox\adminAndMobile\vendor\james-heinrich\getid3\getid3\write.php';
+
 use App\Model\Entity\File;
 use App\Model\Entity\Genre;
 use App\Model\Entity\Song;
@@ -85,7 +88,12 @@ class SongsManager extends Object
 	 */
 	public function getAllSongs() : array
 	{
-		return $this->songRepository->findAll();
+		$songs = $this->songRepository->findAll();
+		foreach ($songs as $song) {
+			$this->processSong($song);
+		}
+		$this->entityManager->flush();
+		return $songs;
 	}
 
 	/**
@@ -115,9 +123,9 @@ class SongsManager extends Object
 	 */
 	private function addSong(File $file, string $genreId = null, $copy = false) : bool
 	{
-//		if ($this->songExists($file->getDestination())) {
-//			return true;
-//		}
+		if ($this->songExists($file->getDestination())) {
+			return true;
+		}
 
 		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getDestination());
 		if ($genreId) {
@@ -128,13 +136,14 @@ class SongsManager extends Object
 		$song = new Song($file->getName(), $albumURL, $genre);
 		$this->entityManager->persist($song);
 		$this->entityManager->flush($song);
-		$destination = $this->songsDirectory . "/" . $song->getId();
+		$destination = $this->getSongPath($song->getId());
 		if ($copy) {
 			$file->copy($destination);
 		} else {
 			$file->move($destination);
 		}
 
+		$this->processSong($song);
 		return false;
 	}
 
@@ -164,8 +173,8 @@ class SongsManager extends Object
 		}
 		$this->entityManager->remove($song);
 		$this->entityManager->flush($song);
-		if (file_exists($this->songsDirectory . '/' . $song->getId())) {    //deleting of file is after database delete due to exceptions
-			unlink($this->songsDirectory . '/' . $song->getId());
+		if (file_exists($this->getSongPath($song->getId()))) {    //deleting of file is after database delete due to exceptions
+			unlink($this->getSongPath($song->getId()));
 		}
 		return $song->getName();
 	}
@@ -174,12 +183,16 @@ class SongsManager extends Object
 	 * @param string $songId
 	 * @return \string[]
 	 */
-	public function getSongPath(string $songId) : array
+	public function getSongPathAndName(string $songId) : array
 	{
 		/** @var Song $song */
 		$song = $this->songRepository->find($songId);
-		$destination = $this->songsDirectory;
-		return [$destination . "/" . $song->getId(), $song->getName()];
+		return [$this->getSongPath($songId), $song->getName()];
+	}
+
+	private function getSongPath(string $songId) : string
+	{
+		return "$this->songsDirectory/$songId";
 	}
 
 	public function getRandomSong(Genre $genre) : Song
@@ -207,6 +220,65 @@ class SongsManager extends Object
 		return false;
 	}
 
+	private function addSongMetadata(Song $song)
+	{
+		$songReader = new \SongReader($this->getSongPath($song->getId()));
+		$song->loadMetadata($songReader);
+	}
+
+	private function processSong(Song $song)
+	{
+		//format name
+		$name = $song->getName();
+		//remove starting dot
+		if (Strings::startsWith($name, '.')) {
+			$name = Strings::substring($name, 1);
+		}
+		if (Strings::startsWith($name, ' ')) {
+			$name = Strings::substring($name, 1);
+		}
+		//change underscore to space
+		if (Strings::contains($name, '_-_')) {
+			$name = Strings::replace($name, '~_-_~', '-');
+		}
+		$name = Strings::replace($name, '~_~', ' ');
+		//end of format name
+
+		$song->setName($name);
+		//load metadata from name
+		if (!$song->hasMetadata()) {
+			$this->addGetID3tags($song);
+			$this->addSongMetadata($song);
+		}
+	}
+
+	private function addGetID3tags(Song $song)
+	{
+		preg_match('~(?P<artist>.+)-[\d]+-(?P<title>.+)~', $song->getName(), $matches);
+
+		if (!isset($matches['artist']) || !isset($matches['title']) ) {
+			return;
+		}
+
+		$artist = $matches['artist'];
+		$title = $matches['title'];
+
+		$mp3_tagformat = 'UTF-8';
+		$mp3_handler = new \getID3();
+		$mp3_handler->setOption(array('encoding'=>$mp3_tagformat));
+		$mp3_writter = new \getid3_writetags();
+		$mp3_writter->filename       = $this->getSongPath($song->getId());
+		$mp3_writter->tagformats     = array('id3v1', 'id3v2.3');
+		$mp3_writter->overwrite_tags = true;
+		$mp3_writter->tag_encoding   = $mp3_tagformat;
+		$mp3_writter->remove_other_tags = false;
+
+		$mp3_data['title'][]   = $title;
+		$mp3_data['artist'][]  = $artist;
+
+		$mp3_writter->tag_data = $mp3_data;
+		$mp3_writter->WriteTags();
+	}
 
 }
 
