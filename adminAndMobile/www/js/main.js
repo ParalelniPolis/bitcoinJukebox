@@ -42,6 +42,7 @@
     })
 
 })(jQuery);
+
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @version 4.3.1

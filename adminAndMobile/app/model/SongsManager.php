@@ -36,6 +36,12 @@ class SongsManager extends Object
 	/** @var AlbumCoverProvider */
 	private $albumCoverProvider;
 
+	/** @var string[] */
+	private $genreCache;
+
+	/** @var string[] */
+	private $hashCache;
+
 	public function __construct(EntityManager $entityManager, AlbumCoverProvider $albumCoverProvider, string $songsDirectory)
 	{
 		$this->entityManager = $entityManager;
@@ -44,6 +50,8 @@ class SongsManager extends Object
 		$this->songRepository = $entityManager->getRepository(Song::getClassName());
 		$this->genresRepository = $entityManager->getRepository(Genre::getClassName());
 		$this->addFunctions();
+		$this->genreCache = [];
+		$this->hashCache = [];
 	}
 
 	private function addFunctions()
@@ -127,7 +135,8 @@ class SongsManager extends Object
 			return true;
 		}
 
-		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getDestination());
+//		$albumURL = $this->albumCoverProvider->getAlbumCoverURL($file->getDestination());
+		$albumURL = '';
 		if ($genreId) {
 			$genre = $this->genresRepository->find($genreId);
 		} else {
@@ -135,7 +144,6 @@ class SongsManager extends Object
 		}
 		$song = new Song($file->getName(), $albumURL, $genre);
 		$this->entityManager->persist($song);
-		$this->entityManager->flush($song);
 		$destination = $this->getSongPath($song->getId());
 		if ($copy) {
 			$file->copy($destination);
@@ -144,6 +152,7 @@ class SongsManager extends Object
 		}
 
 		$this->processSong($song);
+		$this->entityManager->flush($song);
 		return false;
 	}
 
@@ -154,7 +163,12 @@ class SongsManager extends Object
 
 	public function addSongFromCLI(\SplFileInfo $file, string  $genreName = null)
 	{
-		$genreId = $this->genresRepository->findOneBy(['name' => $genreName])->getId();
+		if (isset($this->genreCache[$genreName])) {
+			$genreId = $this->genreCache[$genreName];
+		} else {
+			$genreId = $this->genresRepository->findOneBy(['name' => $genreName])->getId();
+			$this->genreCache[$genreName] = $genreId;
+		}
 		$this->addSong(File::fromSplFileInfo($file), $genreId, true);
 	}
 
@@ -192,7 +206,7 @@ class SongsManager extends Object
 
 	private function getSongPath(string $songId) : string
 	{
-		return "$this->songsDirectory/$songId";
+		return "$this->songsDirectory/$songId.mp3";
 	}
 
 	public function getRandomSong(Genre $genre) : Song
@@ -211,9 +225,16 @@ class SongsManager extends Object
 	{
 		//todo: možná v budoucnu ukládat hash do databáze
 		$hash = md5_file($filename);
+		if (isset($this->hashCache[$hash])) {
+			return true;
+		}
 		/** @var \SplFileInfo $song */
 		foreach (Finder::findFiles('*')->from($this->songsDirectory) as $song) {
-			if (md5_file($song->getRealPath()) === $hash) {
+			$songHash = md5_file($song->getRealPath());
+			if (!isset($this->hashCache[$songHash])) {
+				$this->hashCache[$songHash] = $songHash;
+			}
+			if ($songHash === $hash) {
 				return true;
 			}
 		}
@@ -224,9 +245,33 @@ class SongsManager extends Object
 	{
 		$songReader = new \SongReader($this->getSongPath($song->getId()));
 		$song->loadMetadata($songReader);
+
+		preg_match('~(?P<artist>.+)-[\d]+-(?P<title>.+)\.mp3~', $song->getName(), $matches);
+
+		$artist = null;
+		$title = null;
+
+		if (isset($matches['artist']) && isset($matches['title']) ) {
+			$artist = $matches['artist'];
+			$title = $matches['title'];
+		}
+
+		if (!$artist && !$title) {
+			preg_match('~(?P<artist>.+)-(?P<title>.+)\.mp3~', $song->getName(), $matches2);
+
+			if (isset($matches2['artist']) && isset($matches2['title']) ) {
+				$artist = $matches2['artist'];
+				$title = $matches2['title'];
+			}
+		}
+
+		if ($artist && $title && !$song->getArtist() && !$song->getTitle()) {
+			$song->setArtist($artist);
+			$song->setTitle($title);
+		}
 	}
 
-	private function processSong(Song $song)
+	public function processSong(Song $song)
 	{
 		//format name
 		$name = $song->getName();
@@ -247,37 +292,8 @@ class SongsManager extends Object
 		$song->setName($name);
 		//load metadata from name
 		if (!$song->hasMetadata()) {
-			$this->addGetID3tags($song);
 			$this->addSongMetadata($song);
 		}
-	}
-
-	private function addGetID3tags(Song $song)
-	{
-		preg_match('~(?P<artist>.+)-[\d]+-(?P<title>.+)~', $song->getName(), $matches);
-
-		if (!isset($matches['artist']) || !isset($matches['title']) ) {
-			return;
-		}
-
-		$artist = $matches['artist'];
-		$title = $matches['title'];
-
-		$mp3_tagformat = 'UTF-8';
-		$mp3_handler = new \getID3();
-		$mp3_handler->setOption(array('encoding'=>$mp3_tagformat));
-		$mp3_writter = new \getid3_writetags();
-		$mp3_writter->filename       = $this->getSongPath($song->getId());
-		$mp3_writter->tagformats     = array('id3v1', 'id3v2.3');
-		$mp3_writter->overwrite_tags = true;
-		$mp3_writter->tag_encoding   = $mp3_tagformat;
-		$mp3_writter->remove_other_tags = false;
-
-		$mp3_data['title'][]   = $title;
-		$mp3_data['artist'][]  = $artist;
-
-		$mp3_writter->tag_data = $mp3_data;
-		$mp3_writter->WriteTags();
 	}
 
 }

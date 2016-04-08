@@ -18,8 +18,8 @@ class QueueProducer implements MessageComponentInterface {
 	/** @var string */
 	private $currentGenreFile;
 
-	public function __construct(string $host, string $dbName, string $username, string $password) {
-		$this->songProvider = new SongProvider($host, $dbName, $username, $password);
+	public function __construct(string $host, string $dbName, string $username, string $password, string $songsDirectory) {
+		$this->songProvider = new SongProvider($host, $dbName, $username, $password, $songsDirectory);
 		$this->clients = new \SplObjectStorage;
 		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
 		echo "created\n";

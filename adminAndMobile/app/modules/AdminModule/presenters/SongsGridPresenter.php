@@ -36,6 +36,10 @@ class SongsGridPresenter extends BasePresenter
 
 	public function renderDefault()
 	{
+		$songs = $this->songsManager->getSongsWithIds(['00260f88-7029-4e1e-850a-cbfcc68c493b']);
+		$song = $songs['00260f88-7029-4e1e-850a-cbfcc68c493b'];
+		Debugger::barDump($song);
+//		var_dump($song);
 		$this->template->songs = $this->songsManager->getAllSongs();
 	}
 

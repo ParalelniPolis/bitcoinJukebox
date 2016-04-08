@@ -33,7 +33,7 @@ class SongReader
 	private function loadInfo(string $path)
 	{
 		$getID3 = new getID3();
-		$info = $getID3->analyze($path);
+		$info = $getID3->analyze("$path");
 		$this->author = $info['tags']['id3v1']['artist'][0] ?? null;
 		$this->title = $info['tags']['id3v1']['title'][0] ?? null;
 		$this->album = $info['tags']['id3v1']['album'][0] ?? null;

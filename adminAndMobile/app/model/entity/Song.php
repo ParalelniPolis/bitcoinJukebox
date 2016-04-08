@@ -41,19 +41,19 @@ class Song extends Entities\BaseEntity
 	private $albumCover;
 
 	/**
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
 	 */
 	private $title;
 
 	/**
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
 	 */
 	private $artist;
 
 	/**
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
 	 */
 	private $duration;
@@ -94,11 +94,27 @@ class Song extends Entities\BaseEntity
 		$this->name = $name;
 	}
 
+	/**
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	/**
+	 * @param string $artist
+	 */
+	public function setArtist($artist)
+	{
+		$this->artist = $artist;
+	}
+
 	public function loadMetadata(\SongReader $songReader)
 	{
-		$this->title = $songReader->getTitle();
-		$this->artist = $songReader->getAuthor();
-		$this->duration = $songReader->getDuration();
+		$songReader->getTitle() ? $this->title = $songReader->getTitle() : null;
+		$songReader->getAuthor() ? $this->artist = $songReader->getAuthor() : null;
+		$songReader->getDuration() ? $this->duration = $songReader->getDuration() : null;
 	}
 
 	/**

@@ -24,11 +24,14 @@ $host = $config['parameters']['host'];
 $dbName = $config['parameters']['dbname'];
 $username = $config['parameters']['user'];
 $password = $config['parameters']['password'] ?? '';
+$songsDirectory = $config['parameters']['songsDir'];
+$songsDirectory = \Nette\Utils\Strings::replace($songsDirectory, '~%wwwDir%~', __DIR__ . '/../../adminAndMobile/www');
 
+echo $songsDirectory . PHP_EOL;
 $server = IoServer::factory(
 	new HttpServer(
 		new WsServer(
-			new QueueProducer($host, $dbName, $username, $password)
+			new QueueProducer($host, $dbName, $username, $password, $songsDirectory)
 		)
 	),
 	8080

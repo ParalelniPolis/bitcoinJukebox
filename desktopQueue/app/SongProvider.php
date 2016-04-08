@@ -20,10 +20,10 @@ class SongProvider
 	/** @var string */
 	private $filesystemSongsDir;
 
-	public function __construct(string $host, string $dbName, string $username, string $password) {
+	public function __construct(string $host, string $dbName, string $username, string $password, string $songsDirectory) {
 		$this->connectToDatabase($host, $dbName, $username, $password);
 		$this->webSongsDir = '/bitcoinJukebox/songs';
-		$this->filesystemSongsDir = __DIR__ . '/../../../bitcoinJukebox/songs';
+		$this->filesystemSongsDir = $songsDirectory;
 	}
 
 	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
