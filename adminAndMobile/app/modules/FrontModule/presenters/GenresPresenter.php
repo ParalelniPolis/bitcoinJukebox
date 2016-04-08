@@ -46,7 +46,7 @@ class GenresPresenter extends BasePresenter
 	{
 		$form = new Form();
 		$radioList = [];
-		foreach ($this->genresManager->getAllGenres() as $genre) {
+		foreach ($this->genresManager->getAllNonEmptyGenres() as $genre) {
 			$radioList[$genre->getId()] = $genre->getName();
 		}
 		$form->addRadioList('genre', '', $radioList);

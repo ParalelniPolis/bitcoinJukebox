@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Model\Entity\Genre;
+use App\Model\Entity\Song;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
 use Nette\Object;
@@ -40,6 +41,22 @@ class GenresManager extends Object
 	public function getAllGenres() : array
 	{
 		return $this->genreRepository->findAll();
+	}
+
+	/**
+	 * @return Genre[]
+	 */
+	public function getAllNonEmptyGenres() : array
+	{
+		$qb = $this->entityManager->createQueryBuilder();
+		$qb2 = $this->entityManager->createQueryBuilder();
+		$qb2->select('IDENTITY(song.genre)')->from(Song::getClassName(), 'song')
+			->distinct();
+		$qb->select('genre')->from(Genre::getClassName(), 'genre')
+			->where('genre.id IN (' .
+				$qb2->getDQL()
+				. ')');
+		return $qb->getQuery()->getResult();
 	}
 
 	/**
