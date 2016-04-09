@@ -54,7 +54,7 @@ class SongProvider
 		/** @var Song[] $data */
 		$data = [];
 		foreach ($result as $songData) {
-			$song = new Song($songData['name'], $this->webSongsDir. '/' . $songData['id'], $this->filesystemSongsDir. '/' . $songData['id'], $songData['album_cover'], $songData['artist'], $songData['title'], $songData['duration']);
+			$song = new Song($songData['name'], "$this->webSongsDir/{$songData['id']}.mp3", "$this->filesystemSongsDir/{$songData['id']}.mp3", $songData['album_cover'], $songData['artist'], $songData['title'], $songData['duration']);
 			$data[] = $song;
 		}
 
