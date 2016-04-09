@@ -1,6 +1,6 @@
 (function ($, undefined) {
 
-    $('[data-confirm]').click(function (event) {
+    $('[data-confirm]').on('click', function (event) {
         var obj = this;
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -42,7 +42,6 @@
     })
 
 })(jQuery);
-
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @version 4.3.1
@@ -2916,7 +2915,7 @@ $(function(){
         }
     });
 
-    $('.genre').click(function() {
+    $('.genre').on('click', function() {
         var genreId = $(this).data('genre');
         var opened = $(this).data('opened');
         console.log(opened);
@@ -2935,7 +2934,7 @@ $(function(){
 
 (function ($) {
 
-    $('#frm-searchForm').submit(function (event) {
+    $('#frm-searchForm').on('submit', function (event) {
         event.preventDefault();
         event.stopImmediatePropagation();
 
