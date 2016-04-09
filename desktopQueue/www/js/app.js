@@ -2,7 +2,12 @@
 var audioElement = document.getElementById('player');
 var queueList = $('#queue-list');
 
-var conn = new WebSocket('ws://' + document.domain + ':10666');
+var conn;
+if (document.location.hostname == "localhost") {
+    conn = new WebSocket('ws://' + document.domain + ':10666');
+} else {
+    conn = new WebSocket('ws://' + document.domain + '/ws/');
+}
 var state = 'genre';    //state is songs or genre. If state is genre, random songs from chosen genre are played. Genre state is cancelled, when new songs arrive
 //default state, on page load, is genre. When some songs arrive, it is changed to songs.
 var emptyQueue = true;

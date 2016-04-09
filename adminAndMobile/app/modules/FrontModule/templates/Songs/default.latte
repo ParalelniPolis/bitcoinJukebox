@@ -7,15 +7,16 @@
 <div class="tab-content">
 	<form n:name="searchForm" class="search hidden-print">
 		<div class="input-group">
-        	<input n:name="text" placeholder="Najít skladby..." class="form-control">
+			<input n:name="text" placeholder="Najít skladby..." class="form-control">
             <span class="input-group-btn">
             	<button n:name="search" class="btn btn-default"><img src="{$basePath}/img/magnifying-glass.png"></button>
             </span>
-        </div>
+		</div>
 	</form>
 
-	<div class="list-group">
-		<form n:name="orderForm">
+	<form n:name="orderForm">
+		<input n:name="order" class="btn btn-primary hidden-print">
+		<div class="list-group">
 			{foreach $genres as $genre}
 				<div class="list-group-item genre" data-genre="{$genre->getId()}" data-opened="true">
 					{$genre->getName()}
@@ -45,9 +46,8 @@
 					</label>
 				</div>
 			{/foreach}
-			<input n:name="order" class="btn btn-primary hidden-print">
-		</form>
-	</div>
+		</div>
+	</form>
 
 </div>
 
