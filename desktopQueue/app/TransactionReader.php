@@ -69,9 +69,9 @@ class TransactionReader {
 					continue;
 				}
 				$address = $receiver['addr'];
-//				$this->logger->notice($address);
-				if (in_array($address, $this->addresses)) {
-					$this->transactionReceived($address);
+				$amount = $receiver['value'] / 10000000;
+				if (in_array($address, $this->addresses)) {     //todo: zjistit si, jestli není lepší mít to spíše jako hashset, aby to bylo rychlejší
+					$this->transactionReceived($address, $amount);
 				}
 			}
 		});
@@ -90,7 +90,7 @@ class TransactionReader {
 		}
 	}
 
-	public function transactionReceived(string $address)
+	public function transactionReceived(string $address, float $amount)
 	{
 		$this->logger->notice("Received transaction to address $address");
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
@@ -98,13 +98,17 @@ class TransactionReader {
 
 		$addressMaxAge = new \DateTime($this->addressLockTime);
 
-		$stmt = $this->connection->prepare('SELECT id, ordered_genre_id FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
+		$stmt = $this->connection->prepare('SELECT id, ordered_genre_id, price FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		$orderId = $result['id'];
 		$orderedGenreId = $result['ordered_genre_id'];
+		$price = $result['price'];
 
-		//TODO: zahodit transakci, pokud je zaplacená částka menší než objednaná
+		if ($price > $amount) { //if paid amount is smaller than ordered price
+			return;
+		}
+
 		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 
@@ -112,7 +116,7 @@ class TransactionReader {
 			file_put_contents($this->currentGenreFile, $orderedGenreId);
 		}
 
-		echo $orderId . PHP_EOL;
+		$this->logger->info("$orderId has been paid");
 		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');
 		$stmt->execute([':id' => $orderId]);
 	}

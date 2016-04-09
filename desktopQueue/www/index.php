@@ -20,8 +20,7 @@ require_once '../vendor/autoload.php';
 
 	<title>Bitcoin Jukebox</title>
 
-
-	<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www')) { ?>
+	<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost')) { ?>
 		<link rel="stylesheet" href="bootstrap.min.css">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/mediaelementplayer.css">
@@ -142,7 +141,7 @@ require_once '../vendor/autoload.php';
 <script src="/bitcoinJukebox/desktopQueue/www/jsrender.min.js"></script>
 <?php } ?>
 
-<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www')) { ?>
+<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost')) { ?>
 <script src="js/app.js"></script>
 <?php } else { ?>
 <script src="www/js/app.js"></script>
