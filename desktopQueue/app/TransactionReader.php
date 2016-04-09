@@ -30,27 +30,24 @@ class TransactionReader {
 	/** @var string */
 	private $currentGenreFile;
 
-	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime)
+	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime, int $port)
 	{
 		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
-		$fileWriter = new Stream("log.txt");
-		$this->logger->addWriter($fileWriter);
+//		$fileWriter = new Stream("log.txt");
+//		$this->logger->addWriter($fileWriter);
 		$consoleWriter = new Stream('php://output');
 		$this->logger->addWriter($consoleWriter);
 		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
-
 		$options = [];
 		$options['ssl']['local_cert'] = "democert.pem";
 		$options['ssl']['allow_self_signed'] = true;
 		$options['ssl']['verify_peer'] = false;
-
 		$this->client = new WebSocket("wss://ws.blockchain.info/inv", $this->loop, $this->logger, $options);
-
 		$this->addresses = [];
 		$this->initClient();
-		$this->connectToDatabase($host, $dbName, $username, $password);
+		$this->connectToDatabase($host, $dbName, $username, $password, $port);
 		$this->loadAddresses();
 	}
 
@@ -60,7 +57,6 @@ class TransactionReader {
 			$this->logger->notice("Connected to websocket.");
 			$this->client->send('{"op":"unconfirmed_sub"}');
 		});
-
 		$this->client->on("message", function(WebSocketMessage $message) {
 			$data = json_decode($message->getData(), true);
 			$output = $data['x']['out'];
@@ -69,18 +65,18 @@ class TransactionReader {
 					continue;
 				}
 				$address = $receiver['addr'];
-//				$this->logger->notice($address);
-				if (in_array($address, $this->addresses)) {
-					$this->transactionReceived($address);
+				$amount = $receiver['value'] / 10000000;
+//				$this->logger->notice("$address, $amount");
+				if (in_array($address, $this->addresses)) {     //todo: zjistit si, jestli není lepší mít to spíše jako hashset, aby to bylo rychlejší
+					$this->transactionReceived($address, $amount);
 				}
 			}
 		});
 	}
 
-	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
+	private function connectToDatabase(string $host, string $dbName, string $username, string $password, int $port)
 	{
-		$dsn = "mysql:dbname=$dbName;host=$host";
-
+		$dsn = "mysql:dbname=$dbName;host=$host;port=$port";
 		try {
 			$this->connection = new PDO($dsn, $username, $password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -90,29 +86,27 @@ class TransactionReader {
 		}
 	}
 
-	public function transactionReceived(string $address)
+	public function transactionReceived(string $address, float $amount)
 	{
 		$this->logger->notice("Received transaction to address $address");
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
 		$stmt->execute([':address' => $address]);
-
 		$addressMaxAge = new \DateTime($this->addressLockTime);
-
-		$stmt = $this->connection->prepare('SELECT id, ordered_genre_id FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
+		$stmt = $this->connection->prepare('SELECT id, ordered_genre_id, price FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		$orderId = $result['id'];
 		$orderedGenreId = $result['ordered_genre_id'];
-
-		//TODO: zahodit transakci, pokud je zaplacená částka menší než objednaná
+		$price = $result['price'];
+		if ($price > $amount) { //if paid amount is smaller than ordered price
+			return;
+		}
 		$stmt = $this->connection->prepare('UPDATE orders SET paid = TRUE WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
-
 		if ($orderedGenreId != null) {
 			file_put_contents($this->currentGenreFile, $orderedGenreId);
 		}
-
-		echo $orderId . PHP_EOL;
+		$this->logger->info("$orderId has been paid");
 		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');
 		$stmt->execute([':id' => $orderId]);
 	}

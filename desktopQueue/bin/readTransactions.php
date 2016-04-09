@@ -20,7 +20,8 @@ $dbName = $config['parameters']['dbname'];
 $username = $config['parameters']['user'];
 $password = $config['parameters']['password'] ?? '';
 $addressLockTime = $config['parameters']['addressLockTime'];
+$port = $config['doctrine']['port'];
 
-$reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime);
+$reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime, $port);
 $reader->run();
 //$reader->transactionReceived('12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ');
