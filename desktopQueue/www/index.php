@@ -21,10 +21,15 @@ require_once '../vendor/autoload.php';
 	<title>Bitcoin Jukebox</title>
 
 
-<!--	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
-	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/bootstrap.min.css">
-	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/style.css">
-	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/css/mediaelementplayer.css">
+	<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www')) { ?>
+		<link rel="stylesheet" href="bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/mediaelementplayer.css">
+	<?php } else { ?>
+		<link rel="stylesheet" href="www/bootstrap.min.css">
+		<link rel="stylesheet" href="www/css/style.css">
+		<link rel="stylesheet" href="www/css/mediaelementplayer.css">
+	<?php } ?>
 
 	<!--[if lt IE 9]>
 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
