@@ -111,7 +111,9 @@ require_once '../vendor/autoload.php';
 				$renderer->setWidth(250);
 				$renderer->setMargin(0);
 				$writer = new \BaconQrCode\Writer($renderer);
-				echo "base64," . base64_encode($writer->writeString(getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile'));
+				$isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost';
+				$url = $isLocalhost ? getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile' : 'https://jukebox.paralelnipolis.cz/';
+				echo "base64," . base64_encode($writer->writeString($url));
 			?>
 			" class="qr-image">
 		</div>
