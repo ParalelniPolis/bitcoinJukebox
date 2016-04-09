@@ -9,8 +9,9 @@
         </div>
 	</form>
 
-	<div class="list-group">
-		<form n:name="orderForm">
+	<form n:name="orderForm">
+		<input n:name="order" class="btn btn-primary order-button">
+		<div class="list-group">
 			{foreach $form[genre]->items as $key => $label}
 				<div class="list-group-item order-list">
 					<label n:name="genre:$key">
@@ -22,9 +23,8 @@
 				</div>
 			{/foreach}
 
-			<input n:name="order" class="btn btn-primary">
-		</form>
-	</div>
+		</div>
+	</form>
 
 </div>
 {/block}
