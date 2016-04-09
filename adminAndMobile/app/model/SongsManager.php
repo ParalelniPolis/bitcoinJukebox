@@ -2,9 +2,6 @@
 
 namespace App\Model;
 
-require_once 'C:\xampp\htdocs\bitcoinJukebox\adminAndMobile\vendor\james-heinrich\getid3\getid3\getid3.php';
-require_once 'C:\xampp\htdocs\bitcoinJukebox\adminAndMobile\vendor\james-heinrich\getid3\getid3\write.php';
-
 use App\Model\Entity\File;
 use App\Model\Entity\Genre;
 use App\Model\Entity\Song;
