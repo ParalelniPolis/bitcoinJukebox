@@ -43,6 +43,7 @@
 		"paquettg/php-html-parser": "^1.6"
 	},
 	"require-dev": {
-		"nette/tester": "~1.3"
+		"nette/tester": "~1.3",
+		"clue/graph-composer": "^1.0"
 	}
 }
