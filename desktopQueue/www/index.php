@@ -137,8 +137,11 @@ require_once '../vendor/autoload.php';
 <script src="/bitcoinJukebox/desktopQueue/www/jsrender.min.js"></script>
 <?php } ?>
 
-<script src="/bitcoinJukebox/desktopQueue/www/js/app.js"></script>
-
+<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www')) { ?>
+<script src="js/app.js"></script>
+<?php } else { ?>
+<script src="www/js/app.js"></script>
+<?php } ?>
 
 </body>
 

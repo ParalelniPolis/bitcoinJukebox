@@ -44,7 +44,7 @@ class SongProvider
 	 */
 	public function readNonProcessedSongs() : array
 	{
-		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id, song.album_cover AS queueId FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
+		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id, song.album_cover, song.artist, song.title, song.duration AS queueId FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		var_dump($result);
@@ -54,7 +54,7 @@ class SongProvider
 		/** @var Song[] $data */
 		$data = [];
 		foreach ($result as $songData) {
-			$song = new Song($songData['name'], $this->webSongsDir. '/' . $songData['id'], $this->filesystemSongsDir. '/' . $songData['id'], $songData['album_cover']);
+			$song = new Song($songData['name'], $this->webSongsDir. '/' . $songData['id'], $this->filesystemSongsDir. '/' . $songData['id'], $songData['album_cover'], $songData['artist'], $songData['title'], $songData['duration']);
 			$data[] = $song;
 		}
 
@@ -73,7 +73,7 @@ class SongProvider
 	public function getRandomSong(int $genreId) : Song
 	{
 		//todo: ošetřit, aby bylo možno objednávat jen žánry s alespoň jednou písní
-		$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover FROM song WHERE genre_id = :genreId ORDER BY RAND() LIMIT 1');
+		$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover, song.artist, song.title, song.duration FROM song WHERE genre_id = :genreId ORDER BY RAND() LIMIT 1');
 		$stmt->execute(['genreId' => $genreId]);
 		$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		if (!$songData) {   //vybraný žánr nemá žádnou skladbu
@@ -82,7 +82,7 @@ class SongProvider
 			$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		}
 		echo 'song name: ' . $songData['name'] .  ', album cover:' . $songData['album_cover'] . PHP_EOL;
-		$song = new Song($songData['name'], "$this->webSongsDir/{$songData['id']}.mp3", "$this->filesystemSongsDir/{$songData['id']}.mp3", $songData['album_cover']);
+		$song = new Song($songData['name'], "$this->webSongsDir/{$songData['id']}.mp3", "$this->filesystemSongsDir/{$songData['id']}.mp3", $songData['album_cover'], $songData['artist'], $songData['title'], $songData['duration']);
 		return $song;
 	}
 
