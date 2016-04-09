@@ -20,15 +20,15 @@ class SongProvider
 	/** @var string */
 	private $filesystemSongsDir;
 
-	public function __construct(string $host, string $dbName, string $username, string $password, string $songsDirectory, string $webSongsDir) {
-		$this->connectToDatabase($host, $dbName, $username, $password);
+	public function __construct(string $host, string $dbName, string $username, string $password, string $songsDirectory, string $webSongsDir, int $port) {
+		$this->connectToDatabase($host, $dbName, $username, $password, $port);
 		$this->webSongsDir = $webSongsDir;
 		$this->filesystemSongsDir = $songsDirectory;
 	}
 
-	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
+	private function connectToDatabase(string $host, string $dbName, string $username, string $password, int $port)
 	{
-		$dsn = "mysql:dbname=$dbName;host=$host";
+		$dsn = "mysql:dbname=$dbName;host=$host;port=$port";
 
 		try {
 			$this->connection = new PDO($dsn, $username, $password);

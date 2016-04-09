@@ -30,7 +30,7 @@ class TransactionReader {
 	/** @var string */
 	private $currentGenreFile;
 
-	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime)
+	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime, int $port)
 	{
 		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
@@ -50,7 +50,7 @@ class TransactionReader {
 
 		$this->addresses = [];
 		$this->initClient();
-		$this->connectToDatabase($host, $dbName, $username, $password);
+		$this->connectToDatabase($host, $dbName, $username, $password, $port);
 		$this->loadAddresses();
 	}
 
@@ -78,9 +78,9 @@ class TransactionReader {
 		});
 	}
 
-	private function connectToDatabase(string $host, string $dbName, string $username, string $password)
+	private function connectToDatabase(string $host, string $dbName, string $username, string $password, int $port)
 	{
-		$dsn = "mysql:dbname=$dbName;host=$host";
+		$dsn = "mysql:dbname=$dbName;host=$host;port=$port";
 
 		try {
 			$this->connection = new PDO($dsn, $username, $password);

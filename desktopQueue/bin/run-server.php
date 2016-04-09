@@ -25,6 +25,7 @@ $dbName = $config['parameters']['dbname'];
 $username = $config['parameters']['user'];
 $password = $config['parameters']['password'] ?? '';
 $songsDirectory = $config['parameters']['songsDir'];
+$port = $config['doctrine']['port'];
 $webSongsDir = \Nette\Utils\Strings::replace($songsDirectory, '~%wwwDir%/../../~', '');
 $songsDirectory = \Nette\Utils\Strings::replace($songsDirectory, '~%wwwDir%~', __DIR__ . '/../../adminAndMobile/www');
 
@@ -32,7 +33,7 @@ echo $songsDirectory . PHP_EOL;
 $server = IoServer::factory(
 	new HttpServer(
 		new WsServer(
-			new QueueProducer($host, $dbName, $username, $password, $songsDirectory, $webSongsDir)
+			new QueueProducer($host, $dbName, $username, $password, $songsDirectory, $webSongsDir, $port)
 		)
 	),
 	10666
