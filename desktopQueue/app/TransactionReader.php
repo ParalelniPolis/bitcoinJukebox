@@ -70,6 +70,7 @@ class TransactionReader {
 				}
 				$address = $receiver['addr'];
 				$amount = $receiver['value'] / 10000000;
+//				$this->logger->notice("$address, $amount");
 				if (in_array($address, $this->addresses)) {     //todo: zjistit si, jestli není lepší mít to spíše jako hashset, aby to bylo rychlejší
 					$this->transactionReceived($address, $amount);
 				}

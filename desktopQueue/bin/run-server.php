@@ -35,7 +35,7 @@ $server = IoServer::factory(
 			new QueueProducer($host, $dbName, $username, $password, $songsDirectory, $webSongsDir)
 		)
 	),
-	8080
+	10666
 );
 
 $server->run();
