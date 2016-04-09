@@ -44,7 +44,7 @@ class SongProvider
 	 */
 	public function readNonProcessedSongs() : array
 	{
-		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id, song.album_cover, song.artist, song.title, song.duration AS queueId FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
+		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id AS queueId, song.album_cover, song.artist, song.title, song.duration FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		var_dump($result);
