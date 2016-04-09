@@ -45,7 +45,7 @@ class SongsPresenter extends BasePresenter
 
 	public function actionDefault()
 	{
-		$this->genres = $this->genresManager->getAllGenres();
+		$this->genres = $this->genresManager->getAllNonEmptyGenres();
 	}
 
 	public function renderDefault()
