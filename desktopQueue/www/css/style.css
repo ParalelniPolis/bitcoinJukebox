@@ -7,7 +7,7 @@
 /* Toggle Styles */
 
 body {
-    background: #000;
+    background: url('../img/bitcoin-logo.jpg') no-repeat right bottom #000;
     color: #fff;
 }
 
