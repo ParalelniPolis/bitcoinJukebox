@@ -6,11 +6,14 @@
 
 /* Toggle Styles */
 
+body {
+    background: #000;
+    color: #fff;
+}
+
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
 
@@ -22,16 +25,19 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: rgb(250, 250, 250);
+    background: #000;
+    color: #fff;
     -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
 
 #page-content-wrapper {
     width: 100%;
     position: absolute;
+}
+
+#page-content-wrapper h1 {
+    border-bottom: 2px solid #C7C7C7;
 }
 
 #wrapper.toggled #page-content-wrapper {
@@ -57,6 +63,10 @@
 .panel {
     margin-right: 30px;
     margin-left: 20px;
+}
+
+.panel-default {
+    border-color: #000;
 }
 
 .panel-body {
