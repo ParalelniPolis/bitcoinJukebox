@@ -18,8 +18,6 @@ require_once '../vendor/autoload.php';
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="author" content="">
 
-	<title>Bitcoin Jukebox</title>
-
 
 <!--	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
 	<link rel="stylesheet" href="/bitcoinJukebox/desktopQueue/www/bootstrap.min.css">
@@ -64,7 +62,7 @@ require_once '../vendor/autoload.php';
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-		<h1>Current playlist</h1>
+		<h2>Current playlist</h2>
 		<div class="panel panel-default" style="margin-bottom: 0">
 			<div class="panel-body" style="padding: 0; text-indent: 5px">
 				<div id="audio-container">
