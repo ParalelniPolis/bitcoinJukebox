@@ -73,8 +73,24 @@ class SongsPresenter extends BasePresenter
 			$form->addCheckbox($song);
 		}
 		$form->addSubmit('order', 'Objednat');
+		$form->onValidate[] = $this->atLeastOneSongSelected;
 		$form->onSuccess[] = $this->orderSongs;
 		return $form;
+	}
+
+	public function atLeastOneSongSelected(Form $form)
+	{
+		$songsArray = $form->getValues();
+		$songs = [];
+		foreach ($songsArray as $song => $selected) {
+			if ($selected) {
+				$songs[] = Strings::replace($song, '~_~', '-');
+			}
+		}
+		if (count($songs) == 0) {
+			$form->addError('Musíte objednat alespoň jednu skladbu.');
+		}
+
 	}
 
 	public function orderSongs(Form $form)

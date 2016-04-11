@@ -2940,7 +2940,7 @@ $(function(){
 
         var searchedText = $('#frm-searchForm').find(':input').val();
         var searchedTextRegex = new RegExp(searchedText, "igm");
-        var songs = $('#frm-orderForm').find('> div');
+        var songs = $('#frm-orderForm').find('> div > div');
         for (var i = 0; i < songs.length; i++) {    //can be song or genre
             var song = $(songs[i]);
             var songText;
