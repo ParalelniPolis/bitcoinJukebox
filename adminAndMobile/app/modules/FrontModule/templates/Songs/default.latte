@@ -9,13 +9,13 @@
 		<div class="input-group">
 			<input n:name="text" placeholder="Najít skladby..." class="form-control" accesskey="s">
             <span class="input-group-btn">
-            	<button n:name="search" class="btn btn-default" accesskey="f"><img src="{$basePath}/img/magnifying-glass.png"></button>
+            	<button n:name="search" class="btn btn-default" accesskey="f"><img src="{$basePath}/img/magnifying-glass.png" alt="searchImage"></button>
             </span>
 		</div>
 	</form>
 
 	<form n:name="orderForm">
-		<input n:name="order" class="btn btn-primary hidden-print order-button">
+		<input n:name="order" class="btn btn-primary hidden-print order-button" accesskey="o">
 		<div class="list-group">
 			{foreach $genres as $genre}
 				<div class="list-group-item genre" data-genre="{$genre->getId()}" data-opened="true">

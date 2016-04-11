@@ -35,14 +35,16 @@ class AddSongFormFactory extends Object
 		$maxSize = SizeParser::parse_size(ini_get("upload_max_filesize"));
 		$form->addUpload('song', 'Nová skladba: ', true)
 			->addRule(Form::MAX_FILE_SIZE, 'Nemůžete nahrát vetší soubor než ' . Filters::bytes($maxSize) . '(nastaveno v php.ini)', $maxSize)
-			->getControlPrototype()->addAttributes(['class' => 'file']);
+			->getControlPrototype()->addAttributes(['class' => 'file', 'tabindex' => 1, 'accesskey' => 'i']);
 
 		$genres = $this->genresManager->getAllGenreIdsAndNames();
 		$form->addSelect('genre', 'Žánr: ', $genres)
 			->setPrompt('-')
-			->setDefaultValue($defaultGenre);
+			->setDefaultValue($defaultGenre)
+			->getControlPrototype()->addAttributes(['tabindex' => 2, 'accesskey' => 'g']);
 
-		$form->addSubmit('send', 'Nahrát skladbu');
+		$form->addSubmit('send', 'Nahrát skladbu')
+			->getControlPrototype()->addAttributes(['tabindex' => 3, 'accesskey' => 's']);
 
 		$form->onValidate[] = $this->validateSongsMetadata;
 

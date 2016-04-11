@@ -59,7 +59,7 @@ require_once '../vendor/autoload.php';
 						</a>
 					</div>
 					<div class="col-md-3 col-sm-3 album-icon-wrapper">
-						<img class="album-icon" src="{{:album_cover}}">
+						<img class="album-icon" src="{{:album_cover}}" alt="Album cover">
 					</div>
 				</div>
 			</div>
@@ -119,7 +119,7 @@ require_once '../vendor/autoload.php';
 				$url = $isLocalhost ? getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile' : 'https://jukebox.paralelnipolis.cz/';
 				echo "base64," . base64_encode($writer->writeString($url));
 			?>
-			" class="qr-image">
+			" class="qr-image" alt="QR code link to order page">
 		</div>
 	</div>
 	<!-- /#page-content-wrapper -->

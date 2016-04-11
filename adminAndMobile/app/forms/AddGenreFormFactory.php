@@ -30,8 +30,12 @@ class AddGenreFormFactory extends Object
 		$form = $this->factory->create();
 		$form->addText('genre', 'Název žánru: ')
 			->setRequired('Musíte vyplnit název žánru')
-			->addRule(Form::IS_NOT_IN, 'Tento žánr již existuje', $this->genresManager->getAllGenreNames());
-		$form->addSubmit('send', 'Vytvořit nový žánr');
+			->addRule(Form::IS_NOT_IN, 'Tento žánr již existuje', $this->genresManager->getAllGenreNames())
+			->getControlPrototype()->addAttributes(['tabindex' => 1, 'accesskey' => 'i']);
+
+		$form->addSubmit('send', 'Vytvořit nový žánr')
+			->getControlPrototype()->addAttributes(['tabindex' => 2, 'accesskey' => 's']);
+
 		return $form;
 	}
 

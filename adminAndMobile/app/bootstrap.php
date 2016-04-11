@@ -5,7 +5,8 @@ require __DIR__ . '/../../desktopQueue/app/Song.php';
 
 $configurator = new Nette\Configurator;
 
-$configurator->setDebugMode(true); // enable for your remote IP
+//$configurator->setDebugMode(true); // enable for your remote IP
+$configurator->setDebugMode(false); // enable for your remote IP
 $configurator->enableDebugger(__DIR__ . '/../log');
 
 $configurator->setTempDirectory(__DIR__ . '/../temp');
