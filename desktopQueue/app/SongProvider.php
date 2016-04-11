@@ -62,7 +62,7 @@ class SongProvider
 		$stmt->execute(['genreId' => $genreId]);
 		$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		if (!$songData) {   //vybraný žánr nemá žádnou skladbu
-			$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover FROM song ORDER BY RAND() LIMIT 1');
+			$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover, song.artist, song.title, song.duration FROM song ORDER BY RAND() LIMIT 1');
 			$stmt->execute();
 			$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		}

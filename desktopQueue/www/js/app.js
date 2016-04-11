@@ -71,7 +71,7 @@ var playNextOrLastGenre = function() {
 
 var playNext = function() {
     var firstInQueue = $(queueList.children()[0]);
-    audioElement.src = firstInQueue.find('[data-url]').attr('data-url');
+    audioElement.src = window.location.href + '../' + firstInQueue.find('[data-url]').attr('data-url');
     var audioContainer = $('#audio-container');
     audioContainer.find('.mejs-duration').text(firstInQueue.find('[data-duration]').attr('data-duration'));
     audioElement.play();
