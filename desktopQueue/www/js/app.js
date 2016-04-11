@@ -69,7 +69,6 @@ var playNextOrLastGenre = function() {
     }
 };
 
-
 var playNext = function() {
     var firstInQueue = $(queueList.children()[0]);
     audioElement.src = window.location.href + '../' + firstInQueue.find('[data-url]').attr('data-url');

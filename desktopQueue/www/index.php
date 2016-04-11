@@ -68,7 +68,7 @@ require_once '../vendor/autoload.php';
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-		<h1>Current playlist</h1>
+		<h2>Current playlist</h2>
 		<div class="panel panel-default" style="margin-bottom: 0">
 			<div class="panel-body" style="padding: 0; text-indent: 5px">
 				<div id="audio-container">

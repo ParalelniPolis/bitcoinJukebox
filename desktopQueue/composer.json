@@ -15,6 +15,7 @@
         "nette/neon": "^2.3"
     },
     "require-dev": {
-      "phploc/phploc": "*"
+      "phploc/phploc": "*",
+      "clue/graph-composer": "^1.0"
     }
 }

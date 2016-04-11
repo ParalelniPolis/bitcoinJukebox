@@ -6,3 +6,4 @@ node_modules/*
 !.htaccess
 !web.config
 app/config/config.local.neon
+composer.lock

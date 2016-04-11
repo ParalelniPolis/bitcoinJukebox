@@ -98,8 +98,8 @@ class TransactionReader {
 		$stmt->execute([':address' => $address]);
 
 		$addressMaxAge = new \DateTime($this->addressLockTime);
-
 		$stmt = $this->connection->prepare('SELECT id, ordered_genre_id, price FROM orders WHERE address = :address AND ordered > :maxAge AND paid = FALSE');
+
 		$stmt->execute([':address' => $address, ':maxAge' => $addressMaxAge->format("Y-m-d H:i:s")]);
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		$orderId = $result['id'];
