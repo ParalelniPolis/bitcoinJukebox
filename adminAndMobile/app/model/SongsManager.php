@@ -94,10 +94,10 @@ class SongsManager extends Object
 	public function getAllSongs() : array
 	{
 		$songs = $this->songRepository->findAll();
-		foreach ($songs as $song) {
-			$this->processSong($song);
-		}
-		$this->entityManager->flush();
+//		foreach ($songs as $song) {
+//			$this->processSong($song);
+//		}
+//		$this->entityManager->flush();
 		return $songs;
 	}
 
