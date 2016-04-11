@@ -56,8 +56,8 @@ body {
     list-style: none;
 }
 
-#sidebar-wrapper {
-    text-indent: 20px;
+#sidebar-wrapper .panel-body p {
+    margin-left: 20px;
 }
 
 .panel {
