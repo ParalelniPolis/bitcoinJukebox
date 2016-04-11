@@ -58,15 +58,18 @@ body {
 
 #sidebar-wrapper .panel-body p {
     margin-left: 20px;
+    color: white;
 }
 
 .panel {
     margin-right: 30px;
     margin-left: 20px;
+    background-color: #4a4a4a;
+    border: 2px solid #3a3a3a;
 }
 
 .panel-default {
-    border-color: #000;
+    /*border-color: #000;*/
 }
 
 .panel-body {
@@ -77,6 +80,10 @@ body {
     height: 65px;
     font-size: 18px;
     line-height: 60px;
+}
+
+#sidebar-wrapper h2 {
+    text-indent: 20px;
 }
 
 @media(min-width:768px) {
@@ -111,6 +118,6 @@ body {
 
 .panel.active {
     font-weight: bold;
-    border: 2px solid black;
-    background: lightgray;
+    /*border: 2px solid black;*/
+    background: black;
 }
