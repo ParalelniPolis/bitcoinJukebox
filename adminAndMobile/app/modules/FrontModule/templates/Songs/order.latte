@@ -4,4 +4,6 @@
 	Skladby byly objednány.
 </div>
 
+
 <a href="bitcoin:{$address}?amount={$amount}"><button class="btn btn-success">Zaplatit</button></a>
+<img src="data:image/png;base64,{$qrcode|noescape}" class="qr-image" alt="QR code link to order page">

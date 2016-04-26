@@ -19,8 +19,7 @@ require_once '../vendor/autoload.php';
 	<meta name="author" content="">
 
 	<title>Bitcoin Jukebox</title>
-
-	<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost')) { ?>
+	<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost' || \Nette\Utils\Strings::startsWith($_SERVER['SERVER_NAME'], '192.168'))) { ?>
 		<link rel="stylesheet" href="bootstrap.min.css">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/mediaelementplayer.css">
@@ -111,11 +110,11 @@ require_once '../vendor/autoload.php';
 			<img src="data:image/png;
 			<?php
 				$renderer = new \BaconQrCode\Renderer\Image\Png();
-				$renderer->setHeight(250);
-				$renderer->setWidth(250);
-				$renderer->setMargin(0);
+				$renderer->setHeight(240);
+				$renderer->setWidth(240);
+				$renderer->setMargin(5);
 				$writer = new \BaconQrCode\Writer($renderer);
-				$isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost';
+				$isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost' || \Nette\Utils\Strings::startsWith($_SERVER['SERVER_NAME'], '192.168');
 				$url = $isLocalhost ? getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile' : 'https://jukebox.paralelnipolis.cz/';
 				echo "base64," . base64_encode($writer->writeString($url));
 			?>
@@ -141,7 +140,7 @@ require_once '../vendor/autoload.php';
 <script src="/bitcoinJukebox/desktopQueue/www/jsrender.min.js"></script>
 <?php } ?>
 
-<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost')) { ?>
+<?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost' || \Nette\Utils\Strings::startsWith($_SERVER['SERVER_NAME'], '192.168'))) { ?>
 <script src="js/app.js"></script>
 <?php } else { ?>
 <script src="www/js/app.js"></script>

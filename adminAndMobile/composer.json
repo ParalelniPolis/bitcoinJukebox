@@ -40,7 +40,8 @@
 		"beberlei/DoctrineExtensions": "^1.0",
 		"james-heinrich/getid3": "^1.9",
 		"guzzlehttp/guzzle": "^6.1",
-		"paquettg/php-html-parser": "^1.6"
+		"paquettg/php-html-parser": "^1.6",
+        "bacon/bacon-qr-code": "^1.0"
 	},
 	"require-dev": {
 		"nette/tester": "~1.3",

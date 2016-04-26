@@ -3,7 +3,7 @@ var audioElement = document.getElementById('player');
 var queueList = $('#queue-list');
 
 var conn;
-if (document.location.hostname == "localhost") {
+if (document.location.hostname == "localhost" || document.location.hostname.indexOf('192.168') > -1) {
     conn = new WebSocket('ws://' + document.domain + ':10666');
 } else {
     conn = new WebSocket('ws://' + document.domain + '/ws/');
@@ -132,3 +132,7 @@ setInterval(function() {
     var totalWidth = audioContainer.find('.mejs-time-loaded').width();
     audioContainer.find('.mejs-time-current').width(playedRatio * totalWidth);
 }, 250);
+
+window.onerror = function (e) {
+    alert(e);
+}

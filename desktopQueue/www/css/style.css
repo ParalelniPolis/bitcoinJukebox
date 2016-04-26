@@ -86,7 +86,7 @@ body {
     text-indent: 20px;
 }
 
-@media(min-width:768px) {
+@media(min-width:0px) {
     #wrapper {
         padding-left: 400px;
     }

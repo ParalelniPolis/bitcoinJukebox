@@ -118,6 +118,18 @@ class SongsPresenter extends BasePresenter
 		$songIdsArray = Strings::split($songIds, '~, ~');
 		$this->template->amount = $this->pricePerSong * count($songIdsArray);
 		$this->template->address = $this->address->getAddress();
+
+		$amount = $this->template->amount;
+		$address = $this->template->address;
+
+
+		$renderer = new \BaconQrCode\Renderer\Image\Png();
+		$renderer->setHeight(250);
+		$renderer->setWidth(250);
+		$renderer->setMargin(0);
+		$writer = new \BaconQrCode\Writer($renderer);
+		$url = "bitcoin:$address?amount=$amount";
+		$this->template->qrcode = base64_encode($writer->writeString($url));
 	}
 
 	private function modify(string $string) : string
