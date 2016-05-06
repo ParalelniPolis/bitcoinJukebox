@@ -115,7 +115,7 @@ require_once '../vendor/autoload.php';
 				$renderer->setMargin(5);
 				$writer = new \BaconQrCode\Writer($renderer);
 				$isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost' || \Nette\Utils\Strings::startsWith($_SERVER['SERVER_NAME'], '192.168');
-				$url = $isLocalhost ? getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile' : 'https://jukebox.paralelnipolis.cz/';
+				$url = $isLocalhost ? getHostByName(getHostName()) . '/bitcoinJukebox/adminAndMobile' : 'http://jukebox.paralelnipolis.cz/';
 				echo "base64," . base64_encode($writer->writeString($url));
 			?>
 			" class="qr-image" alt="QR code link to order page">
