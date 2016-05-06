@@ -1,6 +1,41 @@
 /** @type HTMLMediaElement */
 var audioElement = document.getElementById('player');
 var queueList = $('#queue-list');
+// /*
+// if (
+//     document.fullscreenEnabled ||
+//     document.webkitFullscreenEnabled ||
+//     document.mozFullScreenEnabled ||
+//     document.msFullscreenEnabled
+// ) {
+//     alert('fullscreen, madafaka');
+//     var body = document.getElementsByTagName("body")[0];
+//     body.requestFullscreen();
+// }
+// */
+// function DoFullScreen() {
+//
+//     var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !==     null) ||    // alternative standard method
+//         (document.mozFullScreen || document.webkitIsFullScreen);
+//
+//     var docElm = document.documentElement;
+//     if (!isInFullScreen) {
+//
+//         if (docElm.requestFullscreen) {
+//             docElm.requestFullscreen();
+//         }
+//         else if (docElm.mozRequestFullScreen) {
+//             docElm.mozRequestFullScreen();
+//             alert("Mozilla entering fullscreen!");
+//         }
+//         else if (docElm.webkitRequestFullScreen) {
+//             docElm.webkitRequestFullScreen();
+//             alert("Webkit entering fullscreen!");
+//         }
+//     }
+// }
+// //FULLSCREEN
+// DoFullScreen();
 
 var conn;
 if (document.location.hostname == "localhost" || document.location.hostname.indexOf('192.168') > -1) {

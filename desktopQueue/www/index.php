@@ -43,7 +43,7 @@ require_once '../vendor/autoload.php';
 
 </head>
 
-<body>
+<body id="tofullscreen">
 
 <div id="wrapper">
 
@@ -74,7 +74,7 @@ require_once '../vendor/autoload.php';
 					<div id="mep_0" class="mejs-container mejs-audio" style="width: 100%; height: 30px;">
 						<div class="mejs-inner">
 							<div class="mejs-mediaelement">
-								<audio id="player" preload="none" src=""></audio>
+								<audio id="player" src=""></audio>
 							</div>
 							<div class="mejs-controls">
 								<div class="mejs-time-rail" style="width: 245px;">

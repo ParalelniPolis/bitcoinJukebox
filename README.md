@@ -18,3 +18,6 @@ Add songs as batch via command line:
 ```sh
 $ php adminAndMobile/bin/add-songs.php <directory>
 ```
+
+If the google chrome browser on android does not automatically play songs, please, read this:
+http://stackoverflow.com/questions/12587977/html5-audio-chrome-on-android-doesnt-automatically-play-song-vs-chrome-on-pc-d
