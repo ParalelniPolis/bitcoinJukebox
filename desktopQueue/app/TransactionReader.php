@@ -133,8 +133,15 @@ class TransactionReader {
 
 	public function run()
 	{
-		$this->client->open();
-		$this->loop->run();
+		while (true) {
+			try {
+				$this->client->open();
+				$this->loop->run();
+			} catch(\Exception $e) {
+				$this->logger->err($e->getMessage());
+				$this->logger->err($e->getTraceAsString());
+			}
+		}
 	}
 
 }

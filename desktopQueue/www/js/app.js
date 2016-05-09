@@ -1,48 +1,7 @@
 /** @type HTMLMediaElement */
 var audioElement = document.getElementById('player');
 var queueList = $('#queue-list');
-// /*
-// if (
-//     document.fullscreenEnabled ||
-//     document.webkitFullscreenEnabled ||
-//     document.mozFullScreenEnabled ||
-//     document.msFullscreenEnabled
-// ) {
-//     alert('fullscreen, madafaka');
-//     var body = document.getElementsByTagName("body")[0];
-//     body.requestFullscreen();
-// }
-// */
-// function DoFullScreen() {
-//
-//     var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !==     null) ||    // alternative standard method
-//         (document.mozFullScreen || document.webkitIsFullScreen);
-//
-//     var docElm = document.documentElement;
-//     if (!isInFullScreen) {
-//
-//         if (docElm.requestFullscreen) {
-//             docElm.requestFullscreen();
-//         }
-//         else if (docElm.mozRequestFullScreen) {
-//             docElm.mozRequestFullScreen();
-//             alert("Mozilla entering fullscreen!");
-//         }
-//         else if (docElm.webkitRequestFullScreen) {
-//             docElm.webkitRequestFullScreen();
-//             alert("Webkit entering fullscreen!");
-//         }
-//     }
-// }
-// //FULLSCREEN
-// DoFullScreen();
 
-var conn;
-if (document.location.hostname == "localhost" || document.location.hostname.indexOf('192.168') > -1) {
-    conn = new WebSocket('ws://' + document.domain + ':10666');
-} else {
-    conn = new WebSocket('ws://' + document.domain + '/ws/');
-}
 var state = 'genre';    //state is songs or genre. If state is genre, random songs from chosen genre are played. Genre state is cancelled, when new songs arrive
 //default state, on page load, is genre. When some songs arrive, it is changed to songs.
 var emptyQueue = true;
@@ -93,17 +52,6 @@ var removePlayed = function() {
     }
 };
 
-var playNextOrLastGenre = function() {
-    if (queueList.children().length == 0) {   //queue is empty
-        emptyQueue = true;
-        state = 'genre';
-        conn.send('emptyQueue');
-    } else {
-        emptyQueue = false;
-        playNext();
-    }
-};
-
 var playNext = function() {
     var firstInQueue = $(queueList.children()[0]);
     audioElement.src = window.location.href + '../' + firstInQueue.find('[data-url]').attr('data-url');
@@ -118,23 +66,6 @@ audioElement.addEventListener('ended', function() {
     removePlayed();
     playNextOrLastGenre();
 }, false);
-
-conn.onopen = function() {
-    console.log("Connection established!");
-    playNextOrLastGenre();
-    setInterval(function() {
-        if(emptyQueue) {
-            console.log("asking for songs in empty queue");
-            conn.send('emptyQueue');
-        } else {
-            console.log("asking for songs");
-            conn.send('getSongs');
-        }
-    }, 6000);
-    conn.onmessage = function(event) {
-        handleSongs(JSON.parse(event.data));
-    }
-};
 
 toMMSS = function (sec_num) {
     //var sec_num = parseInt(this, 10); // don't forget the second param
@@ -170,4 +101,4 @@ setInterval(function() {
 
 window.onerror = function (e) {
     alert(e);
-}
+};
