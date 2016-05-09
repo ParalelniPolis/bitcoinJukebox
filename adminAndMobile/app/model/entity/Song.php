@@ -70,6 +70,7 @@ class Song extends Entities\BaseEntity
     	$this->name = $name;
 	    $this->albumCover = $albumCover;
 	    $this->genre = $genre;
+	    $this->hash = $hash;
     }
 
 	public function getId() : string
@@ -167,5 +168,5 @@ class Song extends Entities\BaseEntity
 	{
 		$this->hash = $hash;
 	}
-	
+
 }
