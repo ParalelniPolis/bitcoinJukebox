@@ -7,9 +7,9 @@ function getSongs() {
         error: function() {
             alert('Something is broken.');
         },
-        dataType: 'jsonp',
+        dataType: 'json',
         success: function(data) {
-            handleSongs(JSON.parse(data));
+            handleSongs(data);
         },
         type: 'GET'
     });
