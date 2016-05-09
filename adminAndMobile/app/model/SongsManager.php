@@ -139,7 +139,8 @@ class SongsManager extends Object
 		} else {
 			$genre = null;
 		}
-		$song = new Song($file->getName(), $albumURL, $genre);
+		$hash = md5_file($file->getDestination());
+		$song = new Song($file->getName(), $albumURL, $hash, $genre);
 		$this->entityManager->persist($song);
 		$destination = $this->getSongPath($song->getId());
 		if ($copy) {
@@ -220,22 +221,8 @@ class SongsManager extends Object
 
 	private function songExists(string $filename) : bool
 	{
-		//todo: možná v budoucnu ukládat hash do databáze
 		$hash = md5_file($filename);
-		if (isset($this->hashCache[$hash])) {
-			return true;
-		}
-		/** @var \SplFileInfo $song */
-		foreach (Finder::findFiles('*')->from($this->songsDirectory) as $song) {
-			$songHash = md5_file($song->getRealPath());
-			if (!isset($this->hashCache[$songHash])) {
-				$this->hashCache[$songHash] = $songHash;
-			}
-			if ($songHash === $hash) {
-				return true;
-			}
-		}
-		return false;
+		return $this->songRepository->countBy(['hash' => $hash]) > 0;
 	}
 
 	private function addSongMetadata(Song $song)
@@ -293,6 +280,18 @@ class SongsManager extends Object
 		}
 	}
 
+	public function hashSongs()
+	{
+		/** @var Song[] $songs */
+		 $songs = $this->songRepository->findAssoc([]);
+		/** @var \SplFileInfo $song */
+		foreach (Finder::findFiles('*')->from($this->songsDirectory) as $song) {
+			$songHash = md5_file($song->getRealPath());
+			$songEntity = $songs[$song->getBasename('.mp3')];
+			$songEntity->setHash($songHash);
+		}
+		$this->entityManager->flush();
+	}
 }
 
 class CantDeleteException extends \Exception {}

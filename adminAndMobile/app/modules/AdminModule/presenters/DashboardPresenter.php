@@ -19,6 +19,7 @@ class DashboardPresenter extends BasePresenter
 	{
 		$this->template->genres = $this->genresManager->countAllGenres();
 		$this->template->songs = $this->songsManager->countAllSongs();
+		$this->songsManager->hashSongs();
 	}
 
 }

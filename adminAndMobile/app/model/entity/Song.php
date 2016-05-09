@@ -58,7 +58,13 @@ class Song extends Entities\BaseEntity
 	 */
 	private $duration;
 
-    public function __construct(string $name, string $albumCover, Genre $genre = null)
+	/**
+	 * @ORM\Column(type="string")
+	 * @var string
+	 */
+	private $hash;
+
+    public function __construct(string $name, string $albumCover, string $hash, Genre $genre = null)
     {
 	    $this->id = Uuid::uuid4();
     	$this->name = $name;
@@ -146,5 +152,20 @@ class Song extends Entities\BaseEntity
 		return $this->title && $this->artist && $this->duration;
 	}
 
-}
+	/**
+	 * @return string
+	 */
+	public function getHash()
+	{
+		return $this->hash;
+	}
 
+	/**
+	 * @param string $hash
+	 */
+	public function setHash($hash)
+	{
+		$this->hash = $hash;
+	}
+	
+}
