@@ -33,7 +33,6 @@ class SongProvider
 		try {
 			$this->connection = new PDO($dsn, $username, $password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			echo "Connected to database." . PHP_EOL;
 		} catch (PDOException $e) {
 			throw new Exception('Connection failed: ' . $e->getMessage());
 		}
@@ -47,7 +46,7 @@ class SongProvider
 		$stmt = $this->connection->prepare('SELECT song.id, song.name, queue.id AS queueId, song.album_cover, song.artist, song.title, song.duration FROM song JOIN queue ON song.id = queue.song WHERE queue.paid = TRUE AND queue.proceeded = FALSE');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		var_dump($result);
+//		var_dump($result);
 
 		$queueIds = array_column($result, 'queueId');
 
@@ -58,12 +57,12 @@ class SongProvider
 			$data[] = $song;
 		}
 
-		var_dump($data);
+//		var_dump($data);
 
 		if (count($queueIds) > 0) {
 			$quotedIds = array_map(function($id) {return $this->connection->quote($id);}, $queueIds);
 			$stmt = $this->connection->prepare('UPDATE queue SET proceeded = TRUE WHERE id IN ('. implode(',', $quotedIds) . ')');
-			echo $stmt->queryString . PHP_EOL;
+//			echo $stmt->queryString . PHP_EOL;
 			$stmt->execute();
 		}
 
@@ -81,7 +80,7 @@ class SongProvider
 			$stmt->execute();
 			$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		}
-		echo 'song name: ' . $songData['name'] .  ', album cover:' . $songData['album_cover'] . PHP_EOL;
+//		echo 'song name: ' . $songData['name'] .  ', album cover:' . $songData['album_cover'] . PHP_EOL;
 		$song = new Song($songData['name'], "$this->webSongsDir/{$songData['id']}.mp3", "$this->filesystemSongsDir/{$songData['id']}.mp3", $songData['album_cover'], $songData['artist'], $songData['title'], $songData['duration']);
 		return $song;
 	}

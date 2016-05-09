@@ -142,10 +142,12 @@ require_once '../vendor/autoload.php';
 
 <?php if (\Nette\Utils\Strings::contains($_SERVER['REQUEST_URI'], 'www') || !($_SERVER['SERVER_NAME'] == 'localhost' || \Nette\Utils\Strings::startsWith($_SERVER['SERVER_NAME'], '192.168'))) { ?>
 	<script src="js/app.js"></script>
-	<script src="js/websocket.js"></script>
+<!--	<script src="js/websocket.js"></script>-->
+	<script src="js/ajax.js"></script>
 <?php } else { ?>
 	<script src="www/js/app.js"></script>
-	<script src="www/js/websocket.js"></script>
+<!--	<script src="www/js/websocket.js"></script>-->
+	<script src="www/js/ajax.js"></script>
 <?php } ?>
 
 </body>

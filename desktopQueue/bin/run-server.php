@@ -6,7 +6,6 @@ use Ratchet\WebSocket\WsServer;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../app/QueueProducer.php';
-require __DIR__ . '/../app/TransactionReader.php';
 
 if (!file_exists(__DIR__ . '/../../adminAndMobile/app/config/config.local.neon')) {
 	die('Configuration file config.local.neon is missing!');
