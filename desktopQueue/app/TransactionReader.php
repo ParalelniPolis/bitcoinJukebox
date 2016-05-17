@@ -37,8 +37,8 @@ class TransactionReader {
 		$this->logger = new Logger();
 //		$fileWriter = new Stream("log.txt");
 //		$this->logger->addWriter($fileWriter);
-		$consoleWriter = new Stream('php://output');
-		$this->logger->addWriter($consoleWriter);
+//		$consoleWriter = new Stream('php://output');
+//		$this->logger->addWriter($consoleWriter);
 		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
 
 		$options = [];
@@ -57,7 +57,7 @@ class TransactionReader {
 	private function initClient()
 	{
 		$this->client->on("connect", function() {
-			$this->logger->notice("Connected to websocket.");
+//			$this->logger->notice("Connected to websocket.");
 			$this->client->send('{"op":"unconfirmed_sub"}');
 		});
 
@@ -85,7 +85,7 @@ class TransactionReader {
 		try {
 			$this->connection = new PDO($dsn, $username, $password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->logger->notice("Connected to database.");
+//			$this->logger->notice("Connected to database.");
 		} catch (PDOException $e) {
 			throw new Exception('Connection failed: ' . $e->getMessage());
 		}
@@ -93,7 +93,7 @@ class TransactionReader {
 
 	public function transactionReceived(string $address, float $amount)
 	{
-		$this->logger->notice("Received transaction to address $address");
+//		$this->logger->notice("Received transaction to address $address");
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
 		$stmt->execute([':address' => $address]);
 
@@ -117,7 +117,7 @@ class TransactionReader {
 			file_put_contents($this->currentGenreFile, $orderedGenreId);
 		}
 
-		$this->logger->info("$orderId has been paid");
+//		$this->logger->info("$orderId has been paid");
 		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');
 		$stmt->execute([':id' => $orderId]);
 	}
@@ -138,8 +138,8 @@ class TransactionReader {
 				$this->client->open();
 				$this->loop->run();
 			} catch(\Exception $e) {
-				$this->logger->err($e->getMessage());
-				$this->logger->err($e->getTraceAsString());
+//				$this->logger->err($e->getMessage());
+//				$this->logger->err($e->getTraceAsString());
 			}
 		}
 	}
