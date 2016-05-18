@@ -44,6 +44,10 @@ class AddressProvider
 
 	public function getFreeAddress() : Address
 	{
+		if ($this->addressRepository->countBy([]) == 0) {
+			$this->generateAndPersistNewAddresses(10);
+		}
+
 		$this->entityManager->beginTransaction();
 
 		$addressMaxAge = new \DateTime($this->addressLockTime);

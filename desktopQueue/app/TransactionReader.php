@@ -135,6 +135,7 @@ class TransactionReader {
 	{
 		while (true) {
 			try {
+				$this->loadAddresses(); //aby načetl nově generované adresy
 				$this->client->open();
 				$this->loop->run();
 			} catch(\Exception $e) {
