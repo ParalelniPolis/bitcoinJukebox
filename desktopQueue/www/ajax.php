@@ -39,5 +39,12 @@ if ($msg == 'getSongs') {
 	$songData['songs'] = [$songProvider->getRandomSong($currentGenreId)];    //abych měl jednoprvkové pole
 }
 $songData['request'] = $msg;
-$data = Json::encode($songData);
+
+$data = null;
+try {
+	$data = Json::encode($songData);
+} catch(\Nette\Utils\JsonException $e) {
+	error_log("Json encoding failed: reason:" . $e->getMessage());
+	error_log('data: ' . $songData);
+}
 echo $data;
