@@ -35,8 +35,8 @@ class TransactionReader {
 		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
-//		$fileWriter = new Stream("log.txt");
-//		$this->logger->addWriter($fileWriter);
+		$fileWriter = new Stream("log.txt");
+		$this->logger->addWriter($fileWriter);
 //		$consoleWriter = new Stream('php://output');
 //		$this->logger->addWriter($consoleWriter);
 		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
@@ -139,8 +139,7 @@ class TransactionReader {
 				$this->client->open();
 				$this->loop->run();
 			} catch(\Exception $e) {
-//				$this->logger->err($e->getMessage());
-//				$this->logger->err($e->getTraceAsString());
+				$this->logger->err($e->getMessage());
 			}
 		}
 	}
