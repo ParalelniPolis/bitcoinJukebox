@@ -96,48 +96,50 @@ class SongsPresenter extends BasePresenter
 	public function orderSongs(Form $form)
 	{
 		$songsArray = $form->getValues();
-		$songs = [];
+		$songIds = [];
 		foreach ($songsArray as $song => $selected) {
 			if ($selected) {
-				$songs[] = Strings::replace($song, '~_~', '-');
+				$songIds[] = Strings::replace($song, '~_~', '-');
 			}
 		}
-		$this->redirect('order', ['songIds' => implode(', ', $songs)]);
+		$amount = $this->pricePerSong * count($songIds);
+		$address = $this->addressProvider->getFreeAddress();
+		$this->queueManager->orderSongs($songIds, $amount, $address);
+		$this->redirectUrl("bitcoin:{$address->getAddress()}?amount={$amount}");
 	}
 
-	public function actionOrder(string $songIds)
-	{
-		$songIdsArray = Strings::split($songIds, '~, ~');
-		$amount = $this->pricePerSong * count($songIdsArray);
-		$this->address = $this->addressProvider->getFreeAddress();
-		$this->queueManager->orderSongs($songIdsArray, $amount, $this->address);
-	}
-
-	public function renderOrder(string $songIds)
-	{
-		$songIdsArray = Strings::split($songIds, '~, ~');
-		$this->template->amount = $this->pricePerSong * count($songIdsArray);
-		$this->template->address = $this->address->getAddress();
-
-		$amount = $this->template->amount;
-		$address = $this->template->address;
-
-
-		$renderer = new \BaconQrCode\Renderer\Image\Png();
-		$renderer->setHeight(250);
-		$renderer->setWidth(250);
-		$renderer->setMargin(0);
-		$writer = new \BaconQrCode\Writer($renderer);
-		$url = "bitcoin:$address?amount=$amount";
-		$this->template->qrcode = base64_encode($writer->writeString($url));
-	}
-
-	private function modify(string $string) : string
-	{
-		$string = Strings::webalize($string);
-		$string = Strings::replace($string, '~-~', '_');
-		return $string;
-	}
+//	public function actionOrder(string $songIds)
+//	{
+//		$songIdsArray = Strings::split($songIds, '~, ~');
+//		$amount = $this->pricePerSong * count($songIdsArray);
+//		$this->address = $this->addressProvider->getFreeAddress();
+//		$this->queueManager->orderSongsFromIds($songIdsArray, $amount, $this->address);
+//	}
+//
+//	public function renderOrder(string $songIds)
+//	{
+//		$songIdsArray = Strings::split($songIds, '~, ~');
+//		$amount = $this->pricePerSong * count($songIdsArray);
+//		$address = $this->address->getAddress();
+//		$this->redirectUrl("bitcoin:{$address}?amount={$amount}");
+//		$this->template->amount = $amount;
+//		$this->template->address = $address;
+//
+//		$renderer = new \BaconQrCode\Renderer\Image\Png();
+//		$renderer->setHeight(250);
+//		$renderer->setWidth(250);
+//		$renderer->setMargin(0);
+//		$writer = new \BaconQrCode\Writer($renderer);
+//		$url = "bitcoin:$address?amount=$amount";
+//		$this->template->qrcode = base64_encode($writer->writeString($url));
+//	}
+//
+//	private function modify(string $string) : string
+//	{
+//		$string = Strings::webalize($string);
+//		$string = Strings::replace($string, '~-~', '_');
+//		return $string;
+//	}
 
 	/**
 	 * @param float $pricePerSong

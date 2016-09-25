@@ -35,11 +35,11 @@ class QueueManager extends Nette\Object
 
 	public function orderSongs(array $songIds, float $price, Address $address)
 	{
+		$songs = $this->songsManager->getSongsWithIds($songIds);
 		$songEntities = [];
 		$order = new Order($price, $address);
 		$songEntities[] = $order;
 		$this->entityManager->persist($order);
-		$songs = $this->songsManager->getSongsWithIds($songIds);
 		foreach ($songIds as $songId) {
 			$songEntity = $this->orderSong($songs[$songId], $order);
 			$songEntities[] = $songEntity;
