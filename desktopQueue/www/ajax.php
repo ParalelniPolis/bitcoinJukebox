@@ -45,6 +45,7 @@ try {
 	$data = Json::encode($songData);
 } catch(\Nette\Utils\JsonException $e) {
 	error_log("Json encoding failed: reason:" . $e->getMessage());
-	error_log('data: ' . $songData);
+	error_log('data: ' . implode(', ', $songData));
+	throw $e;   //just to check whether it logs or not
 }
 echo $data;
