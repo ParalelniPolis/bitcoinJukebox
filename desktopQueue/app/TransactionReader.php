@@ -35,7 +35,7 @@ class TransactionReader {
 		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
-		$fileWriter = new Stream("log.txt");
+		$fileWriter = new Stream(__DIR__ . "/../bin/log.txt");
 		$this->logger->addWriter($fileWriter);
 //		$consoleWriter = new Stream('php://output');
 //		$this->logger->addWriter($consoleWriter);

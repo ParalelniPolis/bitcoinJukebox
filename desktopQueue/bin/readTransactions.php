@@ -27,7 +27,7 @@ try {
 	$reader->run();
 } catch(\Exception $e) {
 	$logger = new \Zend\Log\Logger();
-	$fileWriter = new \Zend\Log\Writer\Stream("log.txt");
+	$fileWriter = new \Zend\Log\Writer\Stream(__DIR__ . "/log.txt");
 	$logger->addWriter($fileWriter);
 	$logger->err($e->getMessage());
 	die;
