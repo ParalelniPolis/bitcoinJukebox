@@ -113,4 +113,11 @@ class Song implements JsonSerializable
 			'album_cover' => $this->albumCover
 		];
 	}
+
+	function __toString()
+	{
+		return implode(', ', $this->jsonSerialize());
+	}
+
+
 }

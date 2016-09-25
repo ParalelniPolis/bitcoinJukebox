@@ -47,6 +47,12 @@ $data = null;
 try {
 	$data = Json::encode($songData);
 } catch(JsonException $e) {
+//	$songs = $songData['songs'];
+//	$songsString = '';
+//	/** @var Song $song */
+//	foreach ($songs as $song) {
+//		$songData
+//	}
 	$logger = new Logger();
 	$fileWriter = new Stream("log.txt");
 	$logger->addWriter($fileWriter);
