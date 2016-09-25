@@ -28,7 +28,7 @@ class SongProvider
 
 	private function connectToDatabase(string $host, string $dbName, string $username, string $password, int $port)
 	{
-		$dsn = "mysql:dbname=$dbName;host=$host;port=$port";
+		$dsn = "mysql:dbname=$dbName;host=$host;port=$port;charset=utf8";
 
 		try {
 			$this->connection = new PDO($dsn, $username, $password);
@@ -72,7 +72,9 @@ class SongProvider
 	public function getRandomSong(int $genreId) : Song
 	{
 		//todo: ošetřit, aby bylo možno objednávat jen žánry s alespoň jednou písní
-		$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover, song.artist, song.title, song.duration FROM song WHERE genre_id = :genreId ORDER BY RAND() LIMIT 1');
+//		$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover, song.artist, song.title, song.duration FROM song WHERE genre_id = :genreId ORDER BY RAND() LIMIT 1');
+		$genreId = 'd5a5f1f1-3218-4e68-abb7-a2f62148e4d3';
+		$stmt = $this->connection->prepare('SELECT song.id, song.name, song.album_cover, song.artist, song.title, song.duration FROM song WHERE id = :genreId');
 		$stmt->execute(['genreId' => $genreId]);
 		$songData = $stmt->fetch(PDO::FETCH_ASSOC);
 		if (!$songData) {   //vybraný žánr nemá žádnou skladbu
