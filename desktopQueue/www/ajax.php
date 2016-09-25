@@ -44,8 +44,11 @@ $data = null;
 try {
 	$data = Json::encode($songData);
 } catch(\Nette\Utils\JsonException $e) {
-	error_log("Json encoding failed: reason:" . $e->getMessage());
-	error_log('data: ' . implode(', ', $songData));
+	$logger = new \Zend\Log\Logger();
+	$fileWriter = new \Zend\Log\Writer\Stream("log.txt");
+	$logger->addWriter($fileWriter);
+	$logger->err("Json encoding failed: reason:" . $e->getMessage());
+	$logger->err('data: ' . implode(', ', $songData));
 	throw $e;   //just to check whether it logs or not
 }
 echo $data;
