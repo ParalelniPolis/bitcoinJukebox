@@ -57,7 +57,7 @@ class TransactionReader {
 	private function initClient()
 	{
 		$this->client->on("connect", function() {
-//			$this->logger->notice("Connected to websocket.");
+			$this->logger->notice("Connected to websocket.");
 			$this->client->send('{"op":"unconfirmed_sub"}');
 		});
 
@@ -85,15 +85,16 @@ class TransactionReader {
 		try {
 			$this->connection = new PDO($dsn, $username, $password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//			$this->logger->notice("Connected to database.");
+			$this->logger->notice("Connected to database.");
 		} catch (PDOException $e) {
+			$this->logger->err('Connection failed: ' . $e->getMessage());
 			throw new Exception('Connection failed: ' . $e->getMessage());
 		}
 	}
 
 	public function transactionReceived(string $address, float $amount)
 	{
-//		$this->logger->notice("Received transaction to address $address");
+		$this->logger->notice("Received transaction to address $address");
 		$stmt = $this->connection->prepare('UPDATE addresses SET last_used = NULL WHERE address = :address');
 		$stmt->execute([':address' => $address]);
 
@@ -117,7 +118,7 @@ class TransactionReader {
 			file_put_contents($this->currentGenreFile, $orderedGenreId);
 		}
 
-//		$this->logger->info("$orderId has been paid");
+		$this->logger->info("$orderId has been paid");
 		$stmt = $this->connection->prepare('UPDATE queue SET paid = TRUE WHERE order_id = :id');
 		$stmt->execute([':id' => $orderId]);
 	}

@@ -22,6 +22,14 @@ $password = $config['parameters']['password'] ?? '';
 $addressLockTime = $config['parameters']['addressLockTime'];
 $port = $config['doctrine']['port'];
 
-$reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime, $port);
-$reader->run();
+try {
+	$reader = new TransactionReader($host, $dbName, $username, $password, $addressLockTime, $port);
+	$reader->run();
+} catch(\Exception $e) {
+	$logger = new \Zend\Log\Logger();
+	$fileWriter = new \Zend\Log\Writer\Stream("log.txt");
+	$logger->addWriter($fileWriter);
+	$logger->err($e->getMessage());
+	die;
+}
 //$reader->transactionReceived('12U1QLFTMTyAFqEzrsH4G4jS8EeWbB1EnJ');
