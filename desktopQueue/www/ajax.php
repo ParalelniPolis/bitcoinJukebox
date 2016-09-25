@@ -3,6 +3,9 @@
 use Nette\Neon\Neon;
 use Nette\Utils\Arrays;
 use Nette\Utils\Json;
+use Zend\Log\Writer\Stream;
+use \Zend\Log\Logger;
+use \Nette\Utils\JsonException;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../app/SongProvider.php';
@@ -43,12 +46,11 @@ $songData['request'] = $msg;
 $data = null;
 try {
 	$data = Json::encode($songData);
-} catch(\Nette\Utils\JsonException $e) {
-	$logger = new \Zend\Log\Logger();
-	$fileWriter = new \Zend\Log\Writer\Stream("log.txt");
+} catch(JsonException $e) {
+	$logger = new Logger();
+	$fileWriter = new Stream("log.txt");
 	$logger->addWriter($fileWriter);
 	$logger->err("Json encoding failed: reason:" . $e->getMessage());
-	$logger->err('data: ' . implode(', ', $songData));
-	throw $e;   //just to check whether it logs or not
+	$logger->err('data: ' . implode(', ', Arrays::flatten($songData)));
 }
 echo $data;
