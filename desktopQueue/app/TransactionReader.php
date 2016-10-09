@@ -36,7 +36,7 @@ class TransactionReader {
 	/** @var string */
 	private $newAddressesFile;
 
-	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime, int $port, string $newAddressesFile)
+	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime, int $port)
 	{
 		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
@@ -45,6 +45,8 @@ class TransactionReader {
 		$this->logger->addWriter($fileWriter);
 		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
 		$this->currentReadFile = __DIR__ . '/../../adminAndMobile/app/model/lastRead.txt';
+		$this->newAddressesFile = __DIR__ . '/../../adminAndMobile/app/model/newAddressesFile.txt';
+		$this->lastReadFile = __DIR__ . '/../../adminAndMobile/app/model/lastReadFile.txt';
 
 		$options = [];
 		$options['ssl']['local_cert'] = "democert.pem";
@@ -57,7 +59,6 @@ class TransactionReader {
 		$this->initClient();
 		$this->connectToDatabase($host, $dbName, $username, $password, $port);
 		$this->loadAddresses();
-		$this->newAddressesFile = $newAddressesFile;
 	}
 
 	private function initClient()
@@ -79,6 +80,8 @@ class TransactionReader {
 				if ($newAddresses) {
 					$this->loadAddresses();
 				}
+
+				file_put_contents($this->lastReadFile, \Carbon\Carbon::now()->toAtomString());
 
 				$address = $receiver['addr'];
 				$amount = $receiver['value'] / 10000000;
