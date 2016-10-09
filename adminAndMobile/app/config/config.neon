@@ -7,6 +7,8 @@ parameters:
 	pricePerGenre: 0.000055			# in bitcoins
 	addressLockTime: '- 20 minutes'
 	currentGenreFile: %appDir%/model/currentGenre.txt
+	lastReadFile: %appDir%/model/lastRead.txt
+	newAddressesFile: %appDir%/model/newAddresses.txt
 
 php:
 	date.timezone: Europe/Prague
@@ -29,7 +31,7 @@ services:
 	- App\Model\GenresManager(songsDirectory: %songsDir%)
 	- App\Model\SongsManager(songsDirectory: %songsDir%)
 	- App\Model\QueueManager(currentGenreFile: %currentGenreFile%)
-	- App\Model\AddressProvider(masterKey: %masterKey%, addressLockTime: %addressLockTime%)
+	- App\Model\AddressProvider(masterKey: %masterKey%, addressLockTime: %addressLockTime%, newAddressesFile: %newAddressesFile%)
 	- App\Forms\AddSongFormFactory
 	- App\Forms\AddGenreFormFactory
 	- App\Model\AlbumCoverProvider

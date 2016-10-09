@@ -30,16 +30,21 @@ class TransactionReader {
 	/** @var string */
 	private $currentGenreFile;
 
-	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime, int $port)
+	/** @var string */
+	private $lastReadFile;
+
+	/** @var string */
+	private $newAddressesFile;
+
+	public function __construct(string $host, string $dbName, string $username, string $password, string $addressLockTime, int $port, string $newAddressesFile)
 	{
 		$this->addressLockTime = $addressLockTime;
 		$this->loop = Factory::create();
 		$this->logger = new Logger();
 		$fileWriter = new Stream(__DIR__ . "/../bin/log.txt");
 		$this->logger->addWriter($fileWriter);
-//		$consoleWriter = new Stream('php://output');
-//		$this->logger->addWriter($consoleWriter);
 		$this->currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
+		$this->currentReadFile = __DIR__ . '/../../adminAndMobile/app/model/lastRead.txt';
 
 		$options = [];
 		$options['ssl']['local_cert'] = "democert.pem";
@@ -52,6 +57,7 @@ class TransactionReader {
 		$this->initClient();
 		$this->connectToDatabase($host, $dbName, $username, $password, $port);
 		$this->loadAddresses();
+		$this->newAddressesFile = $newAddressesFile;
 	}
 
 	private function initClient()
@@ -68,6 +74,12 @@ class TransactionReader {
 				if (!isset($receiver['addr'])) { //some outputs does not have address, dafuq?
 					continue;
 				}
+
+				$newAddresses = file_get_contents($this->newAddressesFile);
+				if ($newAddresses) {
+					$this->loadAddresses();
+				}
+
 				$address = $receiver['addr'];
 				$amount = $receiver['value'] / 10000000;
 //				$this->logger->notice("$address, $amount");
@@ -130,6 +142,7 @@ class TransactionReader {
 		$stmt = $this->connection->prepare('SELECT address FROM addresses');
 		$stmt->execute();
 		$this->addresses = $stmt->fetchAll(PDO::FETCH_COLUMN);
+		file_put_contents($this->newAddressesFile, false);
 	}
 
 	public function run()

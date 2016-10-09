@@ -32,7 +32,10 @@ class AddressProvider
 	/** @var EntityRepository */
 	private $addressRepository;
 
-	public function __construct(EntityManager $entityManager, string $masterKey, string $addressLockTime)
+	/** @var string */
+	private $newAddressesFile;
+
+	public function __construct(EntityManager $entityManager, string $masterKey, string $addressLockTime, string $newAddressesFile)
 	{
 		$this->occupiedAddressesTreshold = 0.9;
 		$this->increaseRatio = 0.1;
@@ -40,6 +43,7 @@ class AddressProvider
 		$this->masterKey = $masterKey;
 		$this->entityManager = $entityManager;
 		$this->addressRepository = $entityManager->getRepository(Address::getClassName());
+		$this->newAddressesFile = $newAddressesFile;
 	}
 
 	public function getFreeAddress() : Address
@@ -92,6 +96,7 @@ class AddressProvider
 			$this->entityManager->persist($addressEntity);
 		}
 		$this->entityManager->flush();
+		file_put_contents($this->newAddressesFile, true);
 	}
 
 	private function generateNewAddress(int $lastIndex) : array
