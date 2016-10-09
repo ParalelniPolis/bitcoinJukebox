@@ -1,6 +1,6 @@
 function getSongs() {
     $.ajax({
-        url: 'ajax.php',
+        url: 'www/ajax.php',
         data: {
             request: 'getSongs'
         },
@@ -17,7 +17,7 @@ function getSongs() {
 
 function getEmptyQueue() {
     $.ajax({
-        url: 'ajax.php',
+        url: 'www/ajax.php',
         data: {
             request: 'emptyQueue'
         },

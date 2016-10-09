@@ -6,6 +6,7 @@ use Nette\Utils\Json;
 use Zend\Log\Writer\Stream;
 use \Zend\Log\Logger;
 use \Nette\Utils\JsonException;
+use Carbon\Carbon;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../app/SongProvider.php';
@@ -31,7 +32,28 @@ $port = $config['doctrine']['port'];
 $webSongsDir = \Nette\Utils\Strings::replace($songsDirectory, '~%wwwDir%/../../~', '');
 $songsDirectory = \Nette\Utils\Strings::replace($songsDirectory, '~%wwwDir%~', __DIR__ . '/../../adminAndMobile/www');
 $currentGenreFile = __DIR__ . '/../../adminAndMobile/app/model/currentGenre.txt';
+$sessionFile = __DIR__ . '/../../adminAndMobile/app/model/session.txt';
 
+//session id reading, security check
+$storedData = Json::decode(file_get_contents($sessionFile), Json::FORCE_ARRAY);
+session_start();
+$sessionId = session_id();
+if ($storedData === []) {
+	//save new session id
+	$storedData['sessionId'] = $sessionId;
+	$storedData['datetime'] = Carbon::now()->toAtomString();
+} else {
+	//security check, checking only to recent connection
+	 $isSessionRecent = Carbon::now()->subHour()->lt(new Carbon($storedData['datetime']));
+	if ($storedData['sessionId'] !== $sessionId && $isSessionRecent) {
+		exit;
+	}
+	$storedData['sessionId'] = $sessionId;
+	$storedData['datetime'] = Carbon::now()->toAtomString();
+}
+
+file_put_contents($sessionFile, Json::encode($storedData));
+//end of security check
 
 $songProvider = new SongProvider($host, $dbName, $username, $password, $songsDirectory, $webSongsDir, $port);
 $msg = $_GET['request'];

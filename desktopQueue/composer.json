@@ -12,7 +12,8 @@
         "nette/utils": "^2.3",
         "bacon/bacon-qr-code": "^1.0",
         "james-heinrich/getid3": "^1.9",
-        "nette/neon": "^2.3"
+        "nette/neon": "^2.3",
+        "nesbot/carbon": "^1.21"
     },
     "require-dev": {
       "phploc/phploc": "*",
