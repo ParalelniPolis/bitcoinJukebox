@@ -36,3 +36,22 @@ WantedBy=network-online.target
 
 and place it to /etc/systemd/system
 and then you can run it by systemctl start jukebox-bitcoinreader
+
+If you want to check whether the service still runs, make another service for that.
+Create file `jukebox-checker.service`
+with content
+```sh
+[Unit]
+Description=jukebox-checker
+After=mysql.service
+
+[Service]
+User=jukebox
+ExecStart=/usr/bin/php7.0 path/to/checkReading.php
+
+[Install]
+WantedBy=network-online.target
+```
+
+and place it to /etc/systemd/system
+and then you can run it by systemctl start jukebox-check
